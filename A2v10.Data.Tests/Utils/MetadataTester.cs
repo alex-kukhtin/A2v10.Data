@@ -10,11 +10,11 @@ namespace A2v10.Data.Tests
 {
     internal class MetadataTester
     {
-        public IDictionary<String, ElementMetadata> _meta;
+        public IDictionary<String, IDataMetadata> _meta;
 
         public MetadataTester(IDataModel dataModel)
         {
-            _meta = dataModel.Metadata as IDictionary<String, ElementMetadata>;
+            _meta = dataModel.Metadata as IDictionary<String, IDataMetadata>;
             Assert.IsNotNull(_meta);
         }
 

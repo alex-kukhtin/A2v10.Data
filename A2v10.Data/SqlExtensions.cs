@@ -136,5 +136,14 @@ namespace A2v10.Data
             }
         }
 
+
+        public static String Update2Metadata(this String source)
+        {
+            if (source.EndsWith(".Update"))
+                return source.Substring(0, source.Length - 7) + ".Metadata";
+            else if (source.EndsWith(".Update]"))
+                return source.Substring(0, source.Length - 8) + ".Metadata]";
+            return source;
+        }
     }
 }

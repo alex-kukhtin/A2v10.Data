@@ -15,5 +15,6 @@ namespace A2v10.Data.Interfaces
         T Eval<T>(String expression);
 
         String CreateScript(IDataScripter scripter);
+        IDictionary<String, dynamic> GetDynamic();
     }
 }

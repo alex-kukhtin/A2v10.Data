@@ -37,5 +37,10 @@ namespace A2v10.Data
             var meta = Metadata as IDictionary<String, IDataMetadata>;
             return scripter.CreateScript(sys, meta);
         }
+
+        public IDictionary<String, dynamic> GetDynamic()
+        {
+            return ObjectBuilder.BuildObject(Root as ExpandoObject);
+        }
     }
 }

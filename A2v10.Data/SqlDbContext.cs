@@ -272,7 +272,7 @@ namespace A2v10.Data
             var dataWriter = new DataModelWriter();
             using (var p = _profiler.Start(command))
             {
-                var metadataCommand = command.Replace(".Update", ".Metadata");
+                var metadataCommand = command.Update2Metadata();
                 using (var cnn = GetConnection(source))
                 {
                     using (var cmd = cnn.CreateCommandSP(metadataCommand))
@@ -316,7 +316,7 @@ namespace A2v10.Data
             var dataWriter = new DataModelWriter();
             using (var p = _profiler.Start(command))
             {
-                var metadataCommand = command.Replace(".Update", ".Metadata");
+                var metadataCommand = command.Update2Metadata();
                 using (var cnn = await GetConnectionAsync(source))
                 {
                     using (var cmd = cnn.CreateCommandSP(metadataCommand))

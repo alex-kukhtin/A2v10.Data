@@ -11,7 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "A2v10.Data.Tests", "A2v10.D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlScripts", "SqlScripts", "{EB44576B-0EDD-42AE-80B4-325C9C187B80}"
 	ProjectSection(SolutionItems) = preProject
-		a2v10test.sql = a2v10test.sql
+		SqlScripts\a2v10test.sql = SqlScripts\a2v10test.sql
+		readme.MD = readme.MD
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptBuilder", "ScriptBuilder\ScriptBuilder.csproj", "{6F24A780-DB5C-43EF-ACA3-524FC2B66E54}"
