@@ -10,7 +10,9 @@ namespace A2v10.Data.Interfaces
     public interface IDbContext
     {
         String ConnectionString(String source);
+
         Task<SqlConnection> GetConnectionAsync(String source);
+        SqlConnection GetConnection(String source);
 
         IDataModel LoadModel(String source, String command, Object prms = null);
         Task<IDataModel> LoadModelAsync(String source, String command, Object prms = null);

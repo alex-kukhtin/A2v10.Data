@@ -290,12 +290,34 @@ namespace A2v10.Data
 
         public void SaveList<T>(String source, String command, System.Object prms, IEnumerable<T> list) where T : class
         {
-            throw new System.NotImplementedException();
+            using (var token = _profiler.Start(command))
+            {
+                using (var cnn = GetConnection(source))
+                {
+                    using (var cmd = cnn.CreateCommandSP(command))
+                    {
+                        SqlCommandBuilder.DeriveParameters(cmd);
+                        SetParametersWithList<T>(cmd, prms, list);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
         }
 
-        public Task SaveListAsync<T>(String source, String command, System.Object prms, IEnumerable<T> list) where T : class
+        public async Task SaveListAsync<T>(String source, String command, System.Object prms, IEnumerable<T> list) where T : class
         {
-            throw new System.NotImplementedException();
+            using (var token = _profiler.Start(command))
+            {
+                using (var cnn = await GetConnectionAsync(source))
+                {
+                    using (var cmd = cnn.CreateCommandSP(command))
+                    {
+                        SqlCommandBuilder.DeriveParameters(cmd);
+                        SetParametersWithList<T>(cmd, prms, list);
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
         }
 
         public IDataModel SaveModel(String source, String command, System.Object data, System.Object prms = null)
@@ -492,6 +514,53 @@ namespace A2v10.Data
                 }
             }
         }
+
+        void SetParametersWithList<T>(SqlCommand cmd, Object prms, IEnumerable<T> list) where T : class
+        {
+            Type listType = typeof(T);
+            Type prmsType = prms != null ? prms.GetType() : null;
+            var props = listType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var propsD = new Dictionary<String, PropertyInfo>();
+            DataTable dt = new DataTable();
+            foreach (var p in props)
+            {
+                var column = new DataColumn(p.Name, p.PropertyType);
+                if (p.PropertyType == typeof(String))
+                    column.MaxLength = 32767;
+                dt.Columns.Add(column);
+                propsD.Add(p.Name, p);
+            }
+            for (int i = 0; i < cmd.Parameters.Count; i++)
+            {
+                SqlParameter prm = cmd.Parameters[i];
+                var simpleParamName = prm.ParameterName.Substring(1); // skip @
+                if (prm.SqlDbType == SqlDbType.Structured)
+                {
+                    foreach (var itm in list)
+                    {
+                        var row = dt.NewRow();
+                        for (int c = 0; c < dt.Columns.Count; c++)
+                        {
+                            var col = dt.Columns[c];
+                            var rowVal = propsD[col.ColumnName].GetValue(itm);
+                            var dbVal = SqlExtensions.ConvertTo(rowVal, col.DataType);
+                            row[col.ColumnName] = dbVal;
+                        }
+                        dt.Rows.Add(row);
+                    }
+                    prm.Value = dt;
+                    prm.RemoveDbName(); // remove first segment (database name)
+                }
+                else if (prmsType != null)
+                {
+                    // scalar parameter
+                    var pi = prmsType.GetProperty(simpleParamName);
+                    if (pi != null)
+                        prm.Value = pi.GetValue(prms);
+                }
+            }
+        }
+
 
         async Task SetTenantIdAsync(String source, SqlConnection cnn)
         {
