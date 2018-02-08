@@ -9,7 +9,7 @@ using A2v10.Data.Interfaces;
 
 namespace A2v10.Data.Tests
 {
-    internal class DataTester
+    public class DataTester
     {
         IDataModel _dataModel;
         ExpandoObject _instance;

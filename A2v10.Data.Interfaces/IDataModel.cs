@@ -12,7 +12,10 @@ namespace A2v10.Data.Interfaces
         ExpandoObject System { get; }
         IDictionary<String, IDataMetadata> Metadata { get; }
 
+        Boolean IsReadOnly { get; }
+
         T Eval<T>(String expression);
+        void Merge(IDataModel src);
 
         String CreateScript(IDataScripter scripter);
         IDictionary<String, dynamic> GetDynamic();

@@ -24,8 +24,11 @@ namespace A2v10.Data.Interfaces
         IList<T> LoadList<T>(String source, String command, Object prms) where T : class;
         Task<IList<T>> LoadListAsync<T>(String source, String command, Object prms) where T : class;
 
-        TOut Execute<TIn, TOut>(String source, String command, TIn element) where TIn : class where TOut: class;
-        Task<TOut> ExecuteAsync<TIn, TOut>(String source, String command, TIn element) where TIn : class where TOut : class;
+        void Execute<T>(String source, String command, T element) where T : class;
+        Task ExecuteAsync<T>(String source, String command, T element) where T: class;
+
+        TOut ExecuteAndLoad<TIn, TOut>(String source, String command, TIn element) where TIn : class where TOut: class;
+        Task<TOut> ExecuteAndLoadAsync<TIn, TOut>(String source, String command, TIn element) where TIn : class where TOut : class;
 
         void SaveList<T>(String source, String command, Object prms, IEnumerable<T> list) where T : class;
         Task SaveListAsync<T>(String source, String command, Object prms, IEnumerable<T> list) where T : class;

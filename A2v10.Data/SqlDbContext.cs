@@ -42,7 +42,39 @@ namespace A2v10.Data
             return _config.ConnectionString(source);
         }
 
-        public TOut Execute<TIn, TOut>(String source, String command, TIn element) where TIn : class where TOut: class
+        public void Execute<T>(String source, String command, T element) where T : class
+        {
+            using (var p = _profiler.Start(command))
+            {
+                using (var cnn = GetConnection(source))
+                {
+                    using (var cmd = cnn.CreateCommandSP(command))
+                    {
+                        var retParam = SetParametersFrom(cmd, element);
+                        cmd.ExecuteNonQuery();
+                        SetReturnParamResult(retParam, element);
+                    }
+                }
+            }
+
+        }
+        public async Task ExecuteAsync<T>(String source, String command, T element) where T : class
+        {
+            using (var p = _profiler.Start(command))
+            {
+                using (var cnn = await GetConnectionAsync(source))
+                {
+                    using (var cmd = cnn.CreateCommandSP(command))
+                    {
+                        var retParam = SetParametersFrom(cmd, element);
+                        await cmd.ExecuteNonQueryAsync();
+                        SetReturnParamResult(retParam, element);
+                    }
+                }
+            }
+        }
+
+        public TOut ExecuteAndLoad<TIn, TOut>(String source, String command, TIn element) where TIn : class where TOut: class
         {
             TOut outValue = null;
             using (var p = _profiler.Start(command))
@@ -68,7 +100,7 @@ namespace A2v10.Data
             return outValue;
         }
 
-        public async Task<TOut> ExecuteAsync<TIn, TOut>(String source, String command, TIn element) where TIn : class where TOut : class
+        public async Task<TOut> ExecuteAndLoadAsync<TIn, TOut>(String source, String command, TIn element) where TIn : class where TOut : class
         {
             TOut outValue = null;
             using (var p = _profiler.Start(command))
