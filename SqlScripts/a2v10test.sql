@@ -1,6 +1,6 @@
 ﻿-- Copyright © 2008-2018 Alex Kukhtin
 
-/* 20180208-7105 */
+/* 20180217-7106 */
 
 use a2v10test;
 go
@@ -463,4 +463,35 @@ begin
 	select [!TEntity!Map] = null, [Id!!Id] = cast(276 as bigint), Name = N'Entity Name'
 end
 go
+
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'SimpleModel.Localization.Load')
+	drop procedure a2test.[SimpleModel.Localization.Load]
+go
+------------------------------------------------
+create procedure a2test.[SimpleModel.Localization.Load]
+	@TenantId int = null,
+	@UserId bigint = null,
+	@Id bigint = null
+as
+begin
+	set nocount on;
+	select [Model!TModel!Object] = null, [Id!!Id] = 234, [Name!!Name]='@[Item1]';
+end
+go
+
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'ComplexObject.Localization.Load')
+	drop procedure a2test.[ComplexObject.Localization.Load]
+go
+------------------------------------------------
+create procedure a2test.[ComplexObject.Localization.Load]
+@UserId bigint = null
+as
+begin
+	set nocount on;
+	select [Document!TDocument!Object] = null, [Id!!Id]=200, [Agent.Id!TAgent!Id] = 300, [Agent.Name!TAgent] = '@[Item2]';
+end
+go
+
 

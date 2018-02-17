@@ -332,7 +332,10 @@ namespace A2v10.Data
                 if (propNames.Length != 2)
                     throw new DataLoaderException($"Invalid complex name {field.PropertyName}");
                 var innerObj = record.GetOrCreate(propNames[0]);
-                innerObj.Add(propNames[1], value);
+                if (value is String)
+                    innerObj.Add(propNames[1], _localizer.Localize(value?.ToString()));
+                else
+                    innerObj.Add(propNames[1], value);
             }
             else if (field.IsRefId)
             {
@@ -341,7 +344,7 @@ namespace A2v10.Data
                 record.Add(field.PropertyName, refValue);
             }
             else if (value is String)
-                record.Add(field.PropertyName, _localizer.Localize(value.ToString()));
+                record.Add(field.PropertyName, _localizer.Localize(value?.ToString()));
             else
                 record.Add(field.PropertyName, value);
         }
