@@ -56,6 +56,7 @@
     <Compile Include="Configuration\TestConfig.cs" />
     <Compile Include="Configuration\TestLocalizer.cs" />
     <Compile Include="Configuration\TestProfiler.cs" />
+    <Compile Include="DatabaseDataTypes.cs" />
     <Compile Include="DatabaseAliases.cs" />
     <Compile Include="DatabaseLoader.cs" />
     <Compile Include="DatabaseLoaderSync.cs" />

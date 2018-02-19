@@ -495,3 +495,27 @@ end
 go
 
 
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'TypesModel.Load')
+	drop procedure a2test.[TypesModel.Load]
+go
+------------------------------------------------
+create procedure a2test.[TypesModel.Load]
+	@TenantId int = null,
+	@UserId bigint = null,
+	@Id bigint = null
+as
+begin
+	set nocount on;
+	select [Model!TModel!Object] = null, [Id!!Id] = 123, 
+		[Name!!Name]='ObjectName', [Decimal] = cast(55.1234 as decimal(10, 5)),
+		[Int] = cast(32 as int),
+		[BigInt] = cast(77223344 as bigint),
+		[Short] = cast(27823 as smallint),
+		[Tiny] = cast(255 as tinyint),
+		[Float] = cast(77.6633 as float),
+		[Date] = cast(N'20180219' as date),
+		[DateTime] = cast(N'20180219 15:10:20' as datetime)
+end
+go
+

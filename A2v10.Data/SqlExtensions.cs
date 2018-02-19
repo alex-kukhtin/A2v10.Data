@@ -32,6 +32,8 @@ namespace A2v10.Data
                     return typeof(Int32);
                 case SqlDbType.SmallInt:
                     return typeof(Int16);
+                case SqlDbType.TinyInt:
+                    return typeof(Byte);
                 case SqlDbType.Bit:
                     return typeof(Boolean);
                 case SqlDbType.Float:
@@ -42,6 +44,8 @@ namespace A2v10.Data
                 case SqlDbType.Real:
                     return typeof(Double);
                 case SqlDbType.DateTime:
+                case SqlDbType.Date:
+                case SqlDbType.DateTime2:
                     return typeof(DateTime);
                 case SqlDbType.DateTimeOffset:
                     return typeof(DateTimeOffset);

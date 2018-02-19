@@ -19,6 +19,7 @@ namespace A2v10.Data
                     return DataType.String;
                 case "Int64":
                 case "Int32":
+                case "Int16":
                 case "Double":
                 case "Decimal":
                     return DataType.Number;
