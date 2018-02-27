@@ -24,6 +24,24 @@ namespace A2v10.Data
 			return default(T);
 		}
 
+		public static T GetOrCreate<T>(this ExpandoObject obj, String name) where T: new()
+		{
+			var d = obj as IDictionary<String, Object>;
+			if (d == null)
+				return default(T);
+			Object result;
+			if (d.TryGetValue(name, out result))
+			{
+				if (result is T)
+					return (T)result;
+				else
+					throw new InvalidCastException();
+			}
+			var no = new T();
+			d.Add(name, no);
+			return no;
+		}
+
 		public static Object GetObject(this ExpandoObject obj, String name)
 		{
 			var d = obj as IDictionary<String, Object>;

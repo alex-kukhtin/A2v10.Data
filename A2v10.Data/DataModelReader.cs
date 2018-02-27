@@ -128,7 +128,7 @@ namespace A2v10.Data
 					case SpecType.PageSize:
 						Int32 pageSize = (Int32)dataVal;
 						if (!String.IsNullOrEmpty(fi.TypeName))
-							_root.Set($"{fi.TypeName}.$PageSize", pageSize);
+							_root.GetOrCreate<ExpandoObject>("$ModelInfo").Set($"{fi.TypeName}.$PageSize", pageSize);
 						else
 						{
 							// for compatibility with older versions
@@ -139,13 +139,13 @@ namespace A2v10.Data
 						if (String.IsNullOrEmpty(fi.TypeName))
 							throw new DataLoaderException("For the $SortDir modifier, the field name must be specified");
 						String dir = dataVal.ToString();
-						_root.Set($"{fi.TypeName}.$SortDir", dir);
+						_root.GetOrCreate<ExpandoObject>("$ModelInfo").Set($"{fi.TypeName}.$SortDir", dir);
 						break;
 					case SpecType.SortOrder:
 						if (String.IsNullOrEmpty(fi.TypeName))
 							throw new DataLoaderException("For the $SortOrder modifier, the field name must be specified");
 						String order = dataVal.ToString();
-						_root.Set($"{fi.TypeName}.$SortOrder", order);
+						_root.GetOrCreate<ExpandoObject>("$ModelInfo").Set($"{fi.TypeName}.$SortOrder", order);
 						break;
 					case SpecType.ReadOnly:
 						Boolean ro = false;

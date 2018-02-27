@@ -33,7 +33,7 @@ namespace A2v10.Data.Tests
 			var dt = new DataTester(dm, "Elems");
 			dt.IsArray(1);
 
-			dt = new DataTester(dm);
+			dt = new DataTester(dm, "$ModelInfo");
 			dt.AreValueEqual(20, "Elems.$PageSize");
 			dt.AreValueEqual("asc", "Elems.$SortDir");
 			dt.AreValueEqual("Name", "Elems.$SortOrder");
