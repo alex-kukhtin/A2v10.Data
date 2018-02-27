@@ -14,21 +14,21 @@ using A2v10.Data.Tests.Configuration;
 
 namespace A2v10.Data.Tests
 {
-    [TestClass]
-    public class DatabaseWriter
-    {
-        IDbContext _dbContext;
+	[TestClass]
+	public class DatabaseWriter
+	{
+		IDbContext _dbContext;
 
-        public DatabaseWriter()
-        {
-            _dbContext = Starter.Create();
-        }
+		public DatabaseWriter()
+		{
+			_dbContext = Starter.Create();
+		}
 
-        [TestMethod]
-        public async Task WriteSubObjectData()
-        {
-            // DATA with ROOT
-            var jsonData = @"
+		[TestMethod]
+		public async Task WriteSubObjectData()
+		{
+			// DATA with ROOT
+			var jsonData = @"
             {
 			    MainObject: {
 				    Id : 45,
@@ -46,34 +46,34 @@ namespace A2v10.Data.Tests
 			    }
             }
 			";
-            var dataToSave = JsonConvert.DeserializeObject<ExpandoObject>(jsonData.Replace('\'', '"'), new ExpandoObjectConverter());
-            IDataModel dm = await _dbContext.SaveModelAsync(null, "a2test.[NestedObject.Update]", dataToSave);
+			var dataToSave = JsonConvert.DeserializeObject<ExpandoObject>(jsonData.Replace('\'', '"'), new ExpandoObjectConverter());
+			IDataModel dm = await _dbContext.SaveModelAsync(null, "a2test.[NestedObject.Update]", dataToSave);
 
-            var dt = new DataTester(dm, "MainObject");
-            dt.AreValueEqual(45L, "Id");
-            dt.AreValueEqual("MainObjectName", "Name");
+			var dt = new DataTester(dm, "MainObject");
+			dt.AreValueEqual(45L, "Id");
+			dt.AreValueEqual("MainObjectName", "Name");
 
-            var tdsub = new DataTester(dm, "MainObject.SubObject");
-            tdsub.AreValueEqual(55L, "Id");
-            tdsub.AreValueEqual("SubObjectName", "Name");
+			var tdsub = new DataTester(dm, "MainObject.SubObject");
+			tdsub.AreValueEqual(55L, "Id");
+			tdsub.AreValueEqual("SubObjectName", "Name");
 
-            var tdsubarray = new DataTester(dm, "MainObject.SubObject.SubArray");
-            tdsubarray.IsArray(2);
+			var tdsubarray = new DataTester(dm, "MainObject.SubObject.SubArray");
+			tdsubarray.IsArray(2);
 
-            tdsubarray.AreArrayValueEqual(5, 0, "X");
-            tdsubarray.AreArrayValueEqual(6, 0, "Y");
-            tdsubarray.AreArrayValueEqual(5.1M, 0, "D");
+			tdsubarray.AreArrayValueEqual(5, 0, "X");
+			tdsubarray.AreArrayValueEqual(6, 0, "Y");
+			tdsubarray.AreArrayValueEqual(5.1M, 0, "D");
 
-            tdsubarray.AreArrayValueEqual(8, 1, "X");
-            tdsubarray.AreArrayValueEqual(9, 1, "Y");
-            tdsubarray.AreArrayValueEqual(7.23M, 1, "D");
-        }
+			tdsubarray.AreArrayValueEqual(8, 1, "X");
+			tdsubarray.AreArrayValueEqual(9, 1, "Y");
+			tdsubarray.AreArrayValueEqual(7.23M, 1, "D");
+		}
 
-        [TestMethod]
-        public async Task WriteNewObject()
-        {
-            // DATA with ROOT
-            var jsonData = @"
+		[TestMethod]
+		public async Task WriteNewObject()
+		{
+			// DATA with ROOT
+			var jsonData = @"
             {
 			    MainObject: {
 				    Id : 0,
@@ -81,11 +81,11 @@ namespace A2v10.Data.Tests
 			    }
             }
 			";
-            var dataToSave = JsonConvert.DeserializeObject<ExpandoObject>(jsonData.Replace('\'', '"'), new ExpandoObjectConverter());
-            IDataModel dm = await _dbContext.SaveModelAsync(null, "a2test.[NewObject.Update]", dataToSave);
+			var dataToSave = JsonConvert.DeserializeObject<ExpandoObject>(jsonData.Replace('\'', '"'), new ExpandoObjectConverter());
+			IDataModel dm = await _dbContext.SaveModelAsync(null, "a2test.[NewObject.Update]", dataToSave);
 
-            var dt = new DataTester(dm, "MainObject");
-            dt.AreValueEqual("Id is null", "Name");
-        }
-    }
+			var dt = new DataTester(dm, "MainObject");
+			dt.AreValueEqual("Id is null", "Name");
+		}
+	}
 }

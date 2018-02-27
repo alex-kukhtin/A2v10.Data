@@ -1,6 +1,6 @@
 ﻿-- Copyright © 2008-2018 Alex Kukhtin
 
-/* 20180217-7106 */
+/* 20180227-7114 */
 
 use a2v10test;
 go
@@ -516,6 +516,25 @@ begin
 		[Float] = cast(77.6633 as float),
 		[Date] = cast(N'20180219' as date),
 		[DateTime] = cast(N'20180219 15:10:20' as datetime)
+end
+go
+
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'PagerModel.Load')
+	drop procedure a2test.[PagerModel.Load]
+go
+------------------------------------------------
+create procedure a2test.[PagerModel.Load]
+	@TenantId int = null,
+	@UserId bigint = null,
+	@Id bigint = null
+as
+begin
+	set nocount on;
+	select [Elems!TElem!Array] = null, [Id!!Id] = 1, [Name!!Name]=N'ItemName',
+	[!!RowCount] = 27;
+
+	select [!$System!] = null, [!Elems!PageSize] = 20, [!Elems!SortOrder] = N'Name', [!Elems!SortDir] = 'asc';
 end
 go
 

@@ -117,28 +117,47 @@ namespace A2v10.Data
 
 		void ProcessSystemRecord(IDataReader rdr)
 		{
-			// from !
+			// from 1
 			for (int i = 1; i < rdr.FieldCount; i++)
 			{
 				var fn = rdr.GetName(i);
+				var fi = new FieldInfo(fn);
 				var dataVal = rdr.GetValue(i);
-				if (fn == "!!PageSize")
+				switch (fi.SpecType)
 				{
-					Int32 pageSize = (Int32)dataVal;
-					_sys.Add("PageSize", pageSize);
-				}
-				else if (fn == "!!ReadOnly")
-				{
-					Boolean ro = false;
-					if (dataVal is Boolean)
-						ro = (Boolean)dataVal;
-					else if (dataVal is Int32)
-						ro = ((Int32)dataVal) != 0;
-					_sys.Add("ReadOnly", ro);
-				}
-				else
-				{
-					_sys.Add(fn, dataVal);
+					case SpecType.PageSize:
+						Int32 pageSize = (Int32)dataVal;
+						if (!String.IsNullOrEmpty(fi.TypeName))
+							_root.Set($"{fi.TypeName}.$PageSize", pageSize);
+						else
+						{
+							// for compatibility with older versions
+							_sys.Add("PageSize", pageSize);
+						}
+						break;
+					case SpecType.SortDir:
+						if (String.IsNullOrEmpty(fi.TypeName))
+							throw new DataLoaderException("For the $SortDir modifier, the field name must be specified");
+						String dir = dataVal.ToString();
+						_root.Set($"{fi.TypeName}.$SortDir", dir);
+						break;
+					case SpecType.SortOrder:
+						if (String.IsNullOrEmpty(fi.TypeName))
+							throw new DataLoaderException("For the $SortOrder modifier, the field name must be specified");
+						String order = dataVal.ToString();
+						_root.Set($"{fi.TypeName}.$SortOrder", order);
+						break;
+					case SpecType.ReadOnly:
+						Boolean ro = false;
+						if (dataVal is Boolean)
+							ro = (Boolean)dataVal;
+						else if (dataVal is Int32)
+							ro = ((Int32)dataVal) != 0;
+						_sys.Add("ReadOnly", ro);
+						break;
+					default:
+						_sys.Add(fn, dataVal);
+						break;
 				}
 			}
 		}

@@ -37,8 +37,10 @@ namespace A2v10.Data
 		Items,
 		Permissions,
 		GroupMarker,
+		ReadOnly,
 		SortOrder,
-		Direction
+		SortDir,
+		PageSize
 	}
 
 	public class FieldMetadata : IDataFieldMetadata

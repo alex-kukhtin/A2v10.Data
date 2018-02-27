@@ -4,13 +4,13 @@ using System;
 
 namespace A2v10.Data
 {
-    public static class PathHelpers
-    {
-        public static String AppendDot(this String This, String append)
-        {
-            if (String.IsNullOrEmpty(This))
-                return append;
-            return This + '.' + append;
-        }
-    }
+	public static class PathHelpers
+	{
+		public static String AppendDot(this String This, String append)
+		{
+			if (String.IsNullOrEmpty(This))
+				return append;
+			return This + '.' + append;
+		}
+	}
 }
