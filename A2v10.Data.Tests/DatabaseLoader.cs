@@ -373,5 +373,19 @@ namespace A2v10.Data.Tests
 
 		}
 
+		[TestMethod]
+		public async Task LoadEmptyArray()
+		{
+			IDataModel dm = await _dbContext.LoadModelAsync(null, "a2test.EmptyArray");
+			var md = new MetadataTester(dm);
+			md.IsAllKeys("TRoot,TElem");
+			md.HasAllProperties("TRoot", "Elements");
+			md.HasAllProperties("TElem", "Id,Name");
+			md.IsName("TElem", "Name");
+			md.IsId("TElem", "Id");
+
+			var dt = new DataTester(dm, "Elements");
+			dt.IsArray(0);
+		}
 	}
 }

@@ -46,7 +46,7 @@ namespace ScriptBuilder
 				sb.Append($" {k.Key}: {val},");
 			}
 			sb.RemoveTailComma();
-			sb.Append("});");
+			sb.Append("}, rawData);");
 			return sb;
 		}
 

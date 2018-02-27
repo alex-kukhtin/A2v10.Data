@@ -538,3 +538,21 @@ begin
 end
 go
 
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'EmptyArray')
+	drop procedure a2test.EmptyArray
+go
+------------------------------------------------
+create procedure a2test.EmptyArray
+	@TenantId int = null,
+	@UserId bigint = null
+as
+begin
+	set nocount on;
+	select [Elements!TElem!Array] = null, [Id!!Id] = 11, [Name!!Name]='Elem Name'
+	where 0 <> 0
+
+	select [!$System!] = null, [!Elements!PageSize] = 20, [!Elements!SortOrder] = N'Name', [!Elements!SortDir] = 'asc';
+end
+go
+

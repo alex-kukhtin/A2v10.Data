@@ -117,6 +117,12 @@ namespace A2v10.Data
 
 		void ProcessSystemRecord(IDataReader rdr)
 		{
+
+			ExpandoObject _createModelInfo(String elem)
+			{
+				return _root.GetOrCreate<ExpandoObject>("$ModelInfo").GetOrCreate<ExpandoObject>(elem);
+			}
+
 			// from 1
 			for (int i = 1; i < rdr.FieldCount; i++)
 			{
@@ -128,7 +134,7 @@ namespace A2v10.Data
 					case SpecType.PageSize:
 						Int32 pageSize = (Int32)dataVal;
 						if (!String.IsNullOrEmpty(fi.TypeName))
-							_root.GetOrCreate<ExpandoObject>("$ModelInfo").Set($"{fi.TypeName}.$PageSize", pageSize);
+							_createModelInfo(fi.TypeName).Set("$PageSize", pageSize);
 						else
 						{
 							// for compatibility with older versions
@@ -139,13 +145,13 @@ namespace A2v10.Data
 						if (String.IsNullOrEmpty(fi.TypeName))
 							throw new DataLoaderException("For the $SortDir modifier, the field name must be specified");
 						String dir = dataVal.ToString();
-						_root.GetOrCreate<ExpandoObject>("$ModelInfo").Set($"{fi.TypeName}.$SortDir", dir);
+						_createModelInfo(fi.TypeName).Set("$SortDir", dir);
 						break;
 					case SpecType.SortOrder:
 						if (String.IsNullOrEmpty(fi.TypeName))
 							throw new DataLoaderException("For the $SortOrder modifier, the field name must be specified");
 						String order = dataVal.ToString();
-						_root.GetOrCreate<ExpandoObject>("$ModelInfo").Set($"{fi.TypeName}.$SortOrder", order);
+						_createModelInfo(fi.TypeName).Set("$SortOrder", order);
 						break;
 					case SpecType.ReadOnly:
 						Boolean ro = false;
@@ -278,6 +284,8 @@ namespace A2v10.Data
 				typeMetadata.IsArrayType = true;
 			if (objectDef.IsGroup)
 				typeMetadata.IsGroup = true;
+			if (objectDef.IsArray && objectDef.IsVisible)
+				_root.AddToArray(objectDef.PropertyName, null); // empty record
 			bool hasRowCount = false;
 			for (int i = 1; i < rdr.FieldCount; i++)
 			{
@@ -303,7 +311,7 @@ namespace A2v10.Data
 					{
 						// create metadata for nested object or array
 						var tm = GetOrCreateMetadata(fieldDef.TypeName);
-						if (fieldDef.IsArray)
+						if (fieldDef.IsArray) 
 							tm.IsArrayType = true;
 					}
 				}

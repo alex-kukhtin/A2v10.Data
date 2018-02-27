@@ -92,7 +92,8 @@ namespace A2v10.Data
 			{
 				arr = objArr as List<ExpandoObject>;
 			}
-			arr.Add(value);
+			if (value != null)
+				arr.Add(value);
 		}
 
 		public static void CopyFrom(this ExpandoObject target, ExpandoObject source)
