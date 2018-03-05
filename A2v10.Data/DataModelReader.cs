@@ -134,24 +134,39 @@ namespace A2v10.Data
 					case SpecType.PageSize:
 						Int32 pageSize = (Int32)dataVal;
 						if (!String.IsNullOrEmpty(fi.TypeName))
-							_createModelInfo(fi.TypeName).Set("$PageSize", pageSize);
+							_createModelInfo(fi.TypeName).Set("PageSize", pageSize);
 						else
 						{
 							// for compatibility with older versions
 							_sys.Add("PageSize", pageSize);
 						}
 						break;
+					case SpecType.Offset:
+						if (String.IsNullOrEmpty(fi.TypeName))
+							throw new DataLoaderException("For the Offset modifier, the field name must be specified");
+						Int32 offset = (Int32)dataVal;
+						_createModelInfo(fi.TypeName).Set("Offset", offset);
+						break;
 					case SpecType.SortDir:
 						if (String.IsNullOrEmpty(fi.TypeName))
-							throw new DataLoaderException("For the $SortDir modifier, the field name must be specified");
+							throw new DataLoaderException("For the SortDir modifier, the field name must be specified");
 						String dir = dataVal.ToString();
-						_createModelInfo(fi.TypeName).Set("$SortDir", dir);
+						_createModelInfo(fi.TypeName).Set("SortDir", dir);
 						break;
 					case SpecType.SortOrder:
 						if (String.IsNullOrEmpty(fi.TypeName))
-							throw new DataLoaderException("For the $SortOrder modifier, the field name must be specified");
+							throw new DataLoaderException("For the SortOrder modifier, the field name must be specified");
 						String order = dataVal.ToString();
-						_createModelInfo(fi.TypeName).Set("$SortOrder", order);
+						_createModelInfo(fi.TypeName).Set("SortOrder", order);
+						break;
+					case SpecType.Filter:
+						if (String.IsNullOrEmpty(fi.TypeName))
+							throw new DataLoaderException("For the Filter modifier, the field name must be specified");
+						String filter = dataVal.ToString();
+						var xs = fi.TypeName.Split('.');
+						if (xs.Length != 2)
+							throw new DataLoaderException("For the Filter modifier, the field name must be as ItemProperty.FilterProperty");
+						_createModelInfo(xs[0]).GetOrCreate<ExpandoObject>("Filter").Set(xs[1], filter);
 						break;
 					case SpecType.ReadOnly:
 						Boolean ro = false;

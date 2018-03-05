@@ -40,7 +40,9 @@ namespace A2v10.Data
 		ReadOnly,
 		SortOrder,
 		SortDir,
-		PageSize
+		PageSize,
+		Offset,
+		Filter
 	}
 
 	public class FieldMetadata : IDataFieldMetadata
