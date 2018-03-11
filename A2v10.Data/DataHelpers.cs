@@ -110,8 +110,7 @@ namespace A2v10.Data
 
 		public static IDictionary<String, Object> GetOrCreate(this IDictionary<String, Object> dict, String key)
 		{
-			Object obj;
-			if (dict.TryGetValue(key, out obj))
+			if (dict.TryGetValue(key, out Object obj))
 				return obj as IDictionary<String, Object>;
 			obj = new ExpandoObject();
 			dict.Add(key, obj);

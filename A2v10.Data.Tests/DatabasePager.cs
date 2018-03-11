@@ -34,9 +34,9 @@ namespace A2v10.Data.Tests
 			dt.IsArray(1);
 
 			dt = new DataTester(dm, "$ModelInfo.Elems");
-			dt.AreValueEqual(20, "$PageSize");
-			dt.AreValueEqual("asc", "$SortDir");
-			dt.AreValueEqual("Name", "$SortOrder");
+			dt.AreValueEqual(20, "PageSize");
+			dt.AreValueEqual("asc", "SortDir");
+			dt.AreValueEqual("Name", "SortOrder");
 		}
 	}
 }

@@ -556,3 +556,22 @@ begin
 end
 go
 
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'SubObjects.Load')
+	drop procedure a2test.[SubObjects.Load]
+go
+------------------------------------------------
+create procedure a2test.[SubObjects.Load]
+	@TenantId int = null,
+	@UserId bigint = null
+as
+begin
+	set nocount on;
+
+	select [Document!TDocument!Object] = null, [Id!!Id] = 234, [Name!!Name]=N'Document name', 
+		[Contract!TContract!Object] = null;
+
+	select [!TContract!Object] = null, [Id!!Id] = 421, [Name!!Name]=N'Contract name', [!TDocument.Contract!ParentId] = 234;
+end
+go
+

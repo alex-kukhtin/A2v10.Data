@@ -143,8 +143,7 @@ namespace A2v10.Data
 			try
 			{
 				Signature signature = new Signature(properties);
-				Type type;
-				if (!classes.TryGetValue(signature, out type))
+				if (!classes.TryGetValue(signature, out Type type))
 				{
 					type = CreateDynamicClass(signature.properties);
 					classes.Add(signature, type);

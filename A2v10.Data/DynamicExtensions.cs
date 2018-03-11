@@ -15,8 +15,7 @@ namespace A2v10.Data
 			var d = obj as IDictionary<String, Object>;
 			if (d == null)
 				return default(T);
-			Object result;
-			if (d.TryGetValue(name, out result))
+			if (d.TryGetValue(name, out Object result))
 			{
 				if (result is T)
 					return (T)result;
@@ -29,8 +28,7 @@ namespace A2v10.Data
 			var d = obj as IDictionary<String, Object>;
 			if (d == null)
 				return default(T);
-			Object result;
-			if (d.TryGetValue(name, out result))
+			if (d.TryGetValue(name, out Object result))
 			{
 				if (result is T)
 					return (T)result;
@@ -47,8 +45,7 @@ namespace A2v10.Data
 			var d = obj as IDictionary<String, Object>;
 			if (d == null)
 				return null;
-			Object result;
-			if (d.TryGetValue(name, out result))
+			if (d.TryGetValue(name, out Object result))
 			{
 				return result;
 			}

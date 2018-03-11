@@ -94,8 +94,7 @@ namespace A2v10.Data
 		{
 			if (_aliases == null)
 				return name;
-			String outName;
-			if (_aliases.TryGetValue(name, out outName))
+			if (_aliases.TryGetValue(name, out String outName))
 				return outName;
 			return name;
 		}
@@ -342,8 +341,7 @@ namespace A2v10.Data
 		{
 			if (_metadata == null)
 				_metadata = new Dictionary<String, IDataMetadata>();
-			IDataMetadata elemMeta;
-			if (_metadata.TryGetValue(typeName, out elemMeta))
+			if (_metadata.TryGetValue(typeName, out IDataMetadata elemMeta))
 				return elemMeta as ElementMetadata;
 			var newMeta = new ElementMetadata();
 			_metadata.Add(typeName, newMeta);
@@ -354,8 +352,7 @@ namespace A2v10.Data
 		{
 			if (_groupMetadata == null)
 				_groupMetadata = new Dictionary<String, GroupMetadata>();
-			GroupMetadata groupMeta;
-			if (_groupMetadata.TryGetValue(typeName, out groupMeta))
+			if (_groupMetadata.TryGetValue(typeName, out GroupMetadata groupMeta))
 				return groupMeta;
 			groupMeta = new GroupMetadata();
 			_groupMetadata.Add(typeName, groupMeta);
@@ -422,8 +419,7 @@ namespace A2v10.Data
 				throw new DataLoaderException($"Invalid field name '{propName}' for array. 'TypeName.PropertyName' expected");
 			/*0-key, 1-Property*/
 			var key = Tuple.Create(pxa[0], id);
-			ExpandoObject mapObj = null;
-			if (!_idMap.TryGetValue(key, out mapObj))
+			if (!_idMap.TryGetValue(key, out ExpandoObject mapObj))
 				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found in map");
 			mapObj.AddToArray(pxa[1], currentRecord);
 		}
@@ -435,8 +431,7 @@ namespace A2v10.Data
 				throw new DataLoaderException($"Invalid field name '{propName}' for array. 'TypeName.PropertyName' expected");
 			/*0-key, 1-Property*/
 			var key = Tuple.Create(pxa[0], id);
-			ExpandoObject mapObj = null;
-			if (!_idMap.TryGetValue(key, out mapObj))
+			if (!_idMap.TryGetValue(key, out ExpandoObject mapObj))
 				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found in map");
 			mapObj.Set(pxa[1], currentRecord);
 		}

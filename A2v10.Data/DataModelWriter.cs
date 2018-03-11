@@ -63,9 +63,8 @@ namespace A2v10.Data
 				}
 				else
 				{
-					Object paramVal;
 					// simple parameter
-					if (scalarParams != null && scalarParams.TryGetValue(simpleParamName, out paramVal))
+					if (scalarParams != null && scalarParams.TryGetValue(simpleParamName, out Object paramVal))
 						prm.Value = SqlExtensions.Value2SqlValue(paramVal);
 				}
 			}

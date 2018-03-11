@@ -71,8 +71,7 @@ namespace A2v10.Data
 		bool IsFieldExists(String name, DataType dataType, out FieldMetadata fm)
 		{
 			fm = null;
-			IDataFieldMetadata ifm;
-			if (_fields.TryGetValue(name, out ifm))
+			if (_fields.TryGetValue(name, out IDataFieldMetadata ifm))
 			{
 				fm = ifm as FieldMetadata;
 				if (fm.DataType != dataType)
@@ -84,8 +83,7 @@ namespace A2v10.Data
 
 		public FieldMetadata GetField(String name)
 		{
-			IDataFieldMetadata fm;
-			if (_fields.TryGetValue(name, out fm))
+			if (_fields.TryGetValue(name, out IDataFieldMetadata fm))
 			{
 				return fm as FieldMetadata;
 			}

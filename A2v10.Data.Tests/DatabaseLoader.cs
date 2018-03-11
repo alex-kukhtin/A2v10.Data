@@ -387,5 +387,28 @@ namespace A2v10.Data.Tests
 			var dt = new DataTester(dm, "Elements");
 			dt.IsArray(0);
 		}
+
+
+		[TestMethod]
+		public async Task LoadSubObjects()
+		{
+			var dm = await _dbContext.LoadModelAsync(null, "a2test.[SubObjects.Load]");
+
+			var md = new MetadataTester(dm);
+			md.IsAllKeys("TRoot,TDocument,TContract");
+			md.HasAllProperties("TRoot", "Document");
+			md.HasAllProperties("TDocument", "Name,Id,Contract");
+			md.HasAllProperties("TContract", "Name,Id");
+			md.IsId("TDocument", "Id");
+			md.IsId("TContract", "Id");
+
+			var dt = new DataTester(dm, "Document");
+			dt.AreValueEqual(234, "Id");
+			dt.AreValueEqual("Document name", "Name");
+
+			dt = new DataTester(dm, "Document.Contract");
+			dt.AreValueEqual(421, "Id");
+			dt.AreValueEqual("Contract name", "Name");
+		}
 	}
 }

@@ -59,8 +59,7 @@ namespace A2v10.Data
 		{
 			if (_cache == null)
 				throw new DataLoaderException($"Group.Cache. There is no element with the key '{key}'.");
-			ExpandoObject val;
-			if (_cache.TryGetValue(key, out val))
+			if (_cache.TryGetValue(key, out ExpandoObject val))
 				return val;
 			throw new DataLoaderException($"Group.Cache. There is no element with the key '{key}'.");
 		}
