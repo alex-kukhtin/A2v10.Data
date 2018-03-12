@@ -376,7 +376,7 @@ namespace A2v10.Data.Tests
 		[TestMethod]
 		public async Task LoadEmptyArray()
 		{
-			IDataModel dm = await _dbContext.LoadModelAsync(null, "a2test.EmptyArray");
+			IDataModel dm = await _dbContext.LoadModelAsync(null, "a2test.EmptyArray2");
 			var md = new MetadataTester(dm);
 			md.IsAllKeys("TRoot,TElem");
 			md.HasAllProperties("TRoot", "Elements");
@@ -409,6 +409,13 @@ namespace A2v10.Data.Tests
 			dt = new DataTester(dm, "Document.Contract");
 			dt.AreValueEqual(421, "Id");
 			dt.AreValueEqual("Contract name", "Name");
+		}
+
+		[TestMethod]
+		public async Task LoadMapObjects()
+		{
+			var dm = await _dbContext.LoadModelAsync(null, "a2test.[MapObjects.Load]");
+			throw new NotImplementedException();
 		}
 	}
 }

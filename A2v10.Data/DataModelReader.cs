@@ -240,7 +240,7 @@ namespace A2v10.Data
 				{
 					if (rootFI.IsArray)
 					{
-						AddRecordToArray(fi.TypeName, dataVal, currentRecord);
+						AddRecordToArray(fi.TypeName, dataVal, currentRecord, rootFI.TypeName);
 						if (!rootFI.IsVisible)
 							bAdded = true;
 					}
@@ -412,16 +412,28 @@ namespace A2v10.Data
 			}
 		}
 
-		void AddRecordToArray(String propName, Object id, ExpandoObject currentRecord)
+		void AddRecordToArray(String propName, Object id, ExpandoObject currentRecord, String rootTypeName = null)
 		{
 			var pxa = propName.Split('.'); // <Type>.PropName
-			if (pxa.Length != 2)
-				throw new DataLoaderException($"Invalid field name '{propName}' for array. 'TypeName.PropertyName' expected");
-			/*0-key, 1-Property*/
+			/*0-key, 1-Property (optional)*/
 			var key = Tuple.Create(pxa[0], id);
 			if (!_idMap.TryGetValue(key, out ExpandoObject mapObj))
 				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found in map");
-			mapObj.AddToArray(pxa[1], currentRecord);
+			if (pxa.Length == 1)
+			{
+				// old syntax. Find property name by rootTypeName
+				if (rootTypeName == null)
+					throw new DataLoaderException($"AddRecordToArray. Invalid RootTypeName");
+				var elemData = GetOrCreateMetadata(pxa[0]);
+				String fieldName = elemData.FindPropertyByType(rootTypeName);
+				if (String.IsNullOrEmpty(fieldName))
+					throw new DataLoaderException($"AddRecordToArray. FieldName for type '{rootTypeName}' not found in '{propName}' object");
+				mapObj.AddToArray(fieldName, currentRecord);
+			}
+			else if (pxa.Length != 2)
+				throw new DataLoaderException($"Invalid field name '{propName}' for array. 'TypeName.PropertyName' expected");
+			else
+				mapObj.AddToArray(pxa[1], currentRecord);
 		}
 
 		void AddRecordToRecord(String propName, Object id, ExpandoObject currentRecord)

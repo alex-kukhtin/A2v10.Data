@@ -539,11 +539,11 @@ end
 go
 
 ------------------------------------------------
-if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'EmptyArray')
-	drop procedure a2test.EmptyArray
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'EmptyArray2')
+	drop procedure a2test.EmptyArray2
 go
 ------------------------------------------------
-create procedure a2test.EmptyArray
+create procedure a2test.EmptyArray2
 	@TenantId int = null,
 	@UserId bigint = null
 as
@@ -575,3 +575,22 @@ begin
 end
 go
 
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'SubObjects.Load')
+	drop procedure a2test.[SubObjects.Load]
+go
+------------------------------------------------
+create procedure a2test.[MapObjects.Load]
+	@TenantId int = null,
+	@UserId bigint = null
+as
+begin
+	set nocount on;
+
+	select [Document!TDocument!Object] = null, [Id!!Id] = 234, [Name!!Name]=N'Document name'
+		Category!
+
+
+	select [Categories!TCategory!Map] = null, [Key!!Key] = N'CAT1', [Name!!Name]=N'Category_1';
+end
+go

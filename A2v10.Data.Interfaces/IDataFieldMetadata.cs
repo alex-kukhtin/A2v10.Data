@@ -4,9 +4,10 @@ using System;
 
 namespace A2v10.Data.Interfaces
 {
-    public interface IDataFieldMetadata
-    {
-        Boolean IsLazy { get; }
-        String GetObjectType(String fieldName);
-    }
+	public interface IDataFieldMetadata
+	{
+		Boolean IsLazy { get; }
+		String GetObjectType(String fieldName);
+		String RefObject { get; }
+	}
 }

@@ -25,6 +25,14 @@ namespace A2v10.Data
 
 		public IDictionary<String, IDataFieldMetadata> Fields { get { return _fields; } }
 
+		public String FindPropertyByType(String typeName)
+		{
+			foreach (var f in Fields)
+				if (f.Value.RefObject == typeName)
+					return f.Key;
+			return null;
+		}
+
 		public FieldMetadata AddField(FieldInfo field, DataType type)
 		{
 			if (!field.IsVisible)
