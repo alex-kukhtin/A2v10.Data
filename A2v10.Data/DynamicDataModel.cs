@@ -29,6 +29,12 @@ namespace A2v10.Data
 			return (this.Root).Eval<T>(expression, fallback);
 		}
 
+		public T Eval<T>(ExpandoObject root, String expression)
+		{
+			T fallback = default(T);
+			return (root).Eval<T>(expression, fallback);
+		}
+
 		public String CreateScript(IDataScripter scripter)
 		{
 			if (scripter == null)

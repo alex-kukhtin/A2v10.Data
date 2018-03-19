@@ -587,10 +587,9 @@ as
 begin
 	set nocount on;
 
-	select [Document!TDocument!Object] = null, [Id!!Id] = 234, [Name!!Name]=N'Document name'
-		Category!
+	select [Document!TDocument!Object] = null, [Id!!Id] = 234, [Name!!Name]=N'Document name';
 
 
-	select [Categories!TCategory!Map] = null, [Key!!Key] = N'CAT1', [Name!!Name]=N'Category_1';
+	select [Categories!TCategory!Map] = null, [Id!!Id] = N'CAT1', [Name!!Name]=N'Category_1';
 end
 go

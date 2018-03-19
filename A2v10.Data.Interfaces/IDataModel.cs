@@ -6,18 +6,20 @@ using System.Dynamic;
 
 namespace A2v10.Data.Interfaces
 {
-    public interface IDataModel
-    {
-        ExpandoObject Root { get; }
-        ExpandoObject System { get; }
-        IDictionary<String, IDataMetadata> Metadata { get; }
+	public interface IDataModel
+	{
+		ExpandoObject Root { get; }
+		ExpandoObject System { get; }
+		IDictionary<String, IDataMetadata> Metadata { get; }
 
-        Boolean IsReadOnly { get; }
+		Boolean IsReadOnly { get; }
 
-        T Eval<T>(String expression);
-        void Merge(IDataModel src);
+		T Eval<T>(String expression);
+		T Eval<T>(ExpandoObject root, String expression);
 
-        String CreateScript(IDataScripter scripter);
-        IDictionary<String, dynamic> GetDynamic();
-    }
+		void Merge(IDataModel src);
+
+		String CreateScript(IDataScripter scripter);
+		IDictionary<String, dynamic> GetDynamic();
+	}
 }
