@@ -51,13 +51,20 @@ namespace A2v10.Data
 
 		void CheckReservedWords()
 		{
-
 			if (_reservedWords.Contains(PropertyName))
 			{
 				throw new DataLoaderException($"PropertyName '{PropertyName}' is a reserved word");
 			}
 		}
 
+		public void CheckValid()
+		{
+			if (!String.IsNullOrEmpty(PropertyName))
+			{
+				if (String.IsNullOrEmpty(TypeName))
+					throw new DataLoaderException($"If a property name ('{PropertyName}') is specified, then type name is mandatory");
+			}
+		}
 
 		public FieldInfo(FieldInfo source, String name)
 		{

@@ -195,6 +195,7 @@ namespace A2v10.Data
 				ProcessAliasesRecord(rdr);
 				return;
 			}
+			rootFI.CheckValid();
 			var currentRecord = new ExpandoObject();
 			bool bAdded = false;
 			Object id = null;
