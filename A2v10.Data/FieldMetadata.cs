@@ -28,6 +28,7 @@ namespace A2v10.Data
 	{
 		Unknown,
 		Id,
+		Key,
 		Name,
 		RefId,
 		ParentId,

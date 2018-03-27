@@ -237,6 +237,10 @@ namespace A2v10.Data
 						id = dataVal;
 					}
 				}
+				else if (fi.IsKey)
+				{
+					id = dataVal;
+				}
 				if (fi.IsParentId)
 				{
 					if (rootFI.IsArray)
@@ -461,7 +465,12 @@ namespace A2v10.Data
 			else if (field.IsObject)
 				_root.Add(field.PropertyName, currentRecord);
 			else if (field.IsMap)
+			{
 				_refMap.MergeObject(field.TypeName, id, currentRecord);
+				if (id == null)
+					throw new DataLoaderException("For Map objects, the property 'Key' or 'Id' is required");
+				_root.AddToMap(field.PropertyName, currentRecord, id.ToString());
+			}
 		}
 
 		void AddRowCount(String propertyName, Int32 rowCount)

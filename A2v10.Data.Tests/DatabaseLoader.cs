@@ -415,7 +415,18 @@ namespace A2v10.Data.Tests
 		public async Task LoadMapObjects()
 		{
 			var dm = await _dbContext.LoadModelAsync(null, "a2test.[MapObjects.Load]");
-			throw new NotImplementedException();
+			var dt = new DataTester(dm, "Document");
+			dt.AreValueEqual("Document name", "Name");
+
+			dt = new DataTester(dm, "Document.Category");
+			dt.AreValueEqual("CAT1", "Id");
+			//dt.AreValueEqual("CAT1", "Key");
+			dt.AreValueEqual("Category_1", "Name");
+
+			dt = new DataTester(dm, "Categories.CAT1");
+			//dt.AreValueEqual("CAT1", "Key");
+			dt.AreValueEqual("CAT1", "Id");
+			dt.AreValueEqual("Category_1", "Name");
 		}
 	}
 }

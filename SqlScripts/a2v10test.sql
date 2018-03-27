@@ -208,6 +208,14 @@ if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2te
 	drop procedure a2test.[NewObject.Update]
 go
 ------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'SubObjects.Metadata')
+	drop procedure a2test.[SubObjects.Metadata]
+go
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'SubObjects.Update')
+	drop procedure a2test.[SubObjects.Update]
+go
+------------------------------------------------
 if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'NestedMain.TableType' AND ss.name = N'a2test')
 	drop type [a2test].[NestedMain.TableType];
 go
@@ -226,7 +234,8 @@ table (
 	[Name] nvarchar(255),
 	[NumValue] float,
 	[BitValue] bit,
-	[SubObject] bigint
+	[SubObject] bigint,
+	[SubObjectString] nchar(4)
 )
 go
 ------------------------------------------------
@@ -310,6 +319,33 @@ begin
 		select [MainObject!TMainObject!Object] = null, [Name] = N'Id is null';
 	else
 		select [MainObject!TMainObject!Object] = null, [Name] = N'Id is not null';
+end
+go
+------------------------------------------------
+create procedure a2test.[SubObjects.Metadata]
+as
+begin
+	set nocount on;
+	declare @NestedMain [a2test].[NestedMain.TableType];
+	select [MainObject!MainObject!Metadata]=null, * from @NestedMain;
+end
+go
+------------------------------------------------
+create procedure a2test.[SubObjects.Update]
+	@TenantId int = null,
+	@UserId bigint = null,
+	@MainObject [a2test].[NestedMain.TableType] readonly
+as
+begin
+	set nocount on;
+	
+	declare @rootId nvarchar(255) = N'not null';
+	declare @subId nvarchar(255) = N'not null';
+	if (select Id from @MainObject) is null
+		set @rootId  = N'null';
+	if (select SubObject from @MainObject) is null
+		set @subId = N'null'
+	select [MainObject!TMainObject!Object] = null, [RootId] = @rootId, [SubId] = @subId, SubIdString = @subIdString;
 end
 go
 ------------------------------------------------
@@ -577,7 +613,7 @@ go
 
 ------------------------------------------------
 if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'SubObjects.Load')
-	drop procedure a2test.[SubObjects.Load]
+	drop procedure a2test.[MapObjects.Load]
 go
 ------------------------------------------------
 create procedure a2test.[MapObjects.Load]
@@ -587,9 +623,9 @@ as
 begin
 	set nocount on;
 
-	select [Document!TDocument!Object] = null, [Id!!Id] = 234, [Name!!Name]=N'Document name';
+	select [Document!TDocument!Object] = null, [Id!!Id] = 234, [Name!!Name]=N'Document name', [Category!TCategory!RefId] = N'CAT1';
 
 
-	select [Categories!TCategory!Map] = null, [Id!!Id] = N'CAT1', [Name!!Name]=N'Category_1';
+	select [Categories!TCategory!Map] = null, [Id!!Id] = N'CAT1', [Key!!Key] = N'CAT1', [Name!!Name]=N'Category_1';
 end
 go

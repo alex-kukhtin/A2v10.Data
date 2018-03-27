@@ -87,5 +87,34 @@ namespace A2v10.Data.Tests
 			var dt = new DataTester(dm, "MainObject");
 			dt.AreValueEqual("Id is null", "Name");
 		}
+
+		[TestMethod]
+		public async Task WriteSubObjects()
+		{
+			// DATA with ROOT
+			var jsonData = @"
+			{
+				MainObject: {
+					Id : 0,
+					Name: 'Test Object',
+					SubObject: {
+						Id: 0,
+						Name: 'Test Agent'
+					},
+					SubObjectString: {
+						Id: '',
+						Name: 'Test Method'
+					}
+				}
+			}
+			";
+			var dataToSave = JsonConvert.DeserializeObject<ExpandoObject>(jsonData.Replace('\'', '"'), new ExpandoObjectConverter());
+			IDataModel dm = await _dbContext.SaveModelAsync(null, "a2test.[SubObjects.Update]", dataToSave);
+
+			var dt = new DataTester(dm, "MainObject");
+			dt.AreValueEqual("null", "RootId");
+			dt.AreValueEqual("null", "SubId");
+			dt.AreValueEqual("null", "SubIdString");
+		}
 	}
 }

@@ -66,10 +66,8 @@ namespace A2v10.Data
 			else if (value is ExpandoObject)
 			{
 				var id = (value as ExpandoObject).GetObject("Id");
-				if (id == null)
+				if (DataHelpers.IsIdIsNull(id))
 					return DBNull.Value;
-				if (id.ToString() == "0")
-					return DBNull.Value; // Empty object
 				return Convert.ChangeType(id, to, CultureInfo.InvariantCulture);
 			}
 			else if (value is String)

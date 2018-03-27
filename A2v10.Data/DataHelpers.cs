@@ -63,6 +63,22 @@ namespace A2v10.Data
 			return SpecType.Unknown;
 		}
 
+		public static Boolean IsIdIsNull(Object id)
+		{
+			if (id == null)
+				return true;
+			var tp = id.GetType();
+			if (tp == typeof(Int64))
+				return (Int64)id == 0;
+			else if (tp == typeof(Int32))
+				return (Int32)id == 0;
+			else if (tp == typeof(Int16))
+				return (Int16)id == 0;
+			else if (tp == typeof(String))
+				return String.IsNullOrEmpty(id.ToString());
+			return false;
+		}
+
 		public static void Add(this ExpandoObject eo, String key, Object value)
 		{
 			var d = eo as IDictionary<String, Object>;
@@ -94,6 +110,18 @@ namespace A2v10.Data
 			}
 			if (value != null)
 				arr.Add(value);
+		}
+
+		public static void AddToMap(this ExpandoObject eo, String key, ExpandoObject value, String keyProp)
+		{
+			var d = eo as IDictionary<String, Object>;
+			if (!d.TryGetValue(key, out Object objVal))
+			{
+				objVal = new ExpandoObject();
+				d.Add(key, objVal);
+			}
+			var val = d[key] as ExpandoObject;
+			val.Set(keyProp, value);
 		}
 
 		public static void CopyFrom(this ExpandoObject target, ExpandoObject source)
