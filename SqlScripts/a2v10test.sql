@@ -341,10 +341,13 @@ begin
 	
 	declare @rootId nvarchar(255) = N'not null';
 	declare @subId nvarchar(255) = N'not null';
+	declare @subIdString nvarchar(255) = N'not null';
 	if (select Id from @MainObject) is null
 		set @rootId  = N'null';
 	if (select SubObject from @MainObject) is null
 		set @subId = N'null'
+	if (select SubObjectString from @MainObject) is null
+		set @subIdString = N'null'
 	select [MainObject!TMainObject!Object] = null, [RootId] = @rootId, [SubId] = @subId, SubIdString = @subIdString;
 end
 go
@@ -626,6 +629,6 @@ begin
 	select [Document!TDocument!Object] = null, [Id!!Id] = 234, [Name!!Name]=N'Document name', [Category!TCategory!RefId] = N'CAT1';
 
 
-	select [Categories!TCategory!Map] = null, [Id!!Id] = N'CAT1', [Key!!Key] = N'CAT1', [Name!!Name]=N'Category_1';
+	select [Categories!TCategory!Map] = null, [Id!!Id] = N'CAT1'/*, [Key!!Key] = N'CAT1'*/, [Name!!Name]=N'Category_1';
 end
 go
