@@ -629,6 +629,25 @@ begin
 	select [Document!TDocument!Object] = null, [Id!!Id] = 234, [Name!!Name]=N'Document name', [Category!TCategory!RefId] = N'CAT1';
 
 
+	select [Categories!TCategory!Map] = null, [Id!!Id] = N'CAT1', [Key!!Key] = N'CAT1', [Name!!Name]=N'Category_1';
+end
+go
+
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'SubObjects.NoKey.Load')
+	drop procedure a2test.[MapObjects.NoKey.Load]
+go
+------------------------------------------------
+create procedure a2test.[MapObjects.NoKey.Load]
+	@TenantId int = null,
+	@UserId bigint = null
+as
+begin
+	set nocount on;
+
+	select [Document!TDocument!Object] = null, [Id!!Id] = 234, [Name!!Name]=N'Document name', [Category!TCategory!RefId] = N'CAT1';
+
+	-- no keys. will be represened as an array
 	select [Categories!TCategory!Map] = null, [Id!!Id] = N'CAT1'/*, [Key!!Key] = N'CAT1'*/, [Name!!Name]=N'Category_1';
 end
 go

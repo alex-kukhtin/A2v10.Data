@@ -77,7 +77,6 @@ namespace A2v10.Data.ScriptBuilder
 		{
 			var sb = new StringBuilder();
 			String arrItem = ctor.IsArrayType ? "true" : "false";
-
 			sb.AppendLine($"function {name}(source, path, parent) {{")
 			.AppendLine("\tcmn.createObject(this, source, path, parent);")
 			.AppendLine("}")

@@ -58,6 +58,7 @@
     <Compile Include="Configuration\TestProfiler.cs" />
     <Compile Include="DatabaseDataTypes.cs" />
     <Compile Include="DatabaseAliases.cs" />
+    <Compile Include="TestMetadata.cs" />
     <Compile Include="DatabasePager.cs" />
     <Compile Include="DatabaseLoader.cs" />
     <Compile Include="DatabaseLoaderSync.cs" />

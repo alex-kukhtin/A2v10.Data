@@ -10,6 +10,10 @@ using System.Reflection;
 
 namespace A2v10.Data
 {
+	/*
+	 * TODO: Map with keys: Metadata
+	 */
+
 	public class DataModelReader
 	{
 
@@ -199,6 +203,7 @@ namespace A2v10.Data
 			var currentRecord = new ExpandoObject();
 			bool bAdded = false;
 			Object id = null;
+			Object key = null;
 			Int32 rowCount = 0;
 			Boolean bHasRowCount = false;
 			List<Boolean> groupKeys = null;
@@ -239,7 +244,7 @@ namespace A2v10.Data
 				}
 				else if (fi.IsKey)
 				{
-					id = dataVal;
+					key = dataVal;
 				}
 				if (fi.IsParentId)
 				{
@@ -272,7 +277,7 @@ namespace A2v10.Data
 				if (rootFI.IsGroup)
 					AddRecordToGroup(currentRecord, rootFI, groupKeys);
 				else
-					AddRecordToModel(currentRecord, rootFI, id);
+					AddRecordToModel(currentRecord, rootFI, id, key);
 			}
 			else
 				CheckRecordRef(currentRecord, rootFI, id);
@@ -299,7 +304,7 @@ namespace A2v10.Data
 			rootMetadata.AddField(objectDef, DataType.Undefined);
 			// other fields = object fields
 			var typeMetadata = GetOrCreateMetadata(objectDef.TypeName);
-			if (objectDef.IsArray || objectDef.IsTree)
+			if (objectDef.IsArray || objectDef.IsTree || objectDef.IsMap)
 				typeMetadata.IsArrayType = true;
 			if (objectDef.IsGroup)
 				typeMetadata.IsGroup = true;
@@ -308,7 +313,8 @@ namespace A2v10.Data
 			bool hasRowCount = false;
 			for (int i = 1; i < rdr.FieldCount; i++)
 			{
-				var fieldDef = new FieldInfo(GetAlias(rdr.GetName(i)));
+				String fieldName = GetAlias(rdr.GetName(i));
+				var fieldDef = new FieldInfo(fieldName);
 				if (fieldDef.IsGroupMarker)
 				{
 					GetOrCreateGroupMetadata(objectDef.TypeName).AddMarkerMetadata(fieldDef.PropertyName);
@@ -329,7 +335,10 @@ namespace A2v10.Data
 					if (fieldDef.IsRefId || fieldDef.IsArray)
 					{
 						// create metadata for nested object or array
-						var tm = GetOrCreateMetadata(fieldDef.TypeName);
+						String nestedTypeName = fieldDef.TypeName;
+						if (String.IsNullOrEmpty(nestedTypeName))
+							throw new DataLoaderException($"Type name for '{fieldName}' is required");
+						var tm = GetOrCreateMetadata(nestedTypeName);
 						if (fieldDef.IsArray) 
 							tm.IsArrayType = true;
 					}
@@ -429,7 +438,10 @@ namespace A2v10.Data
 				// old syntax. Find property name by rootTypeName
 				if (rootTypeName == null)
 					throw new DataLoaderException($"AddRecordToArray. Invalid RootTypeName");
-				var elemData = GetOrCreateMetadata(pxa[0]);
+				String oldTypeName = pxa[0];
+				if (String.IsNullOrEmpty(oldTypeName))
+					throw new DataLoaderException($"AddRecordToArray. Type name for {propName} is required");
+				var elemData = GetOrCreateMetadata(oldTypeName);
 				String fieldName = elemData.FindPropertyByType(rootTypeName);
 				if (String.IsNullOrEmpty(fieldName))
 					throw new DataLoaderException($"AddRecordToArray. FieldName for type '{rootTypeName}' not found in '{propName}' object");
@@ -453,7 +465,7 @@ namespace A2v10.Data
 			mapObj.Set(pxa[1], currentRecord);
 		}
 
-		void AddRecordToModel(ExpandoObject currentRecord, FieldInfo field, Object id)
+		void AddRecordToModel(ExpandoObject currentRecord, FieldInfo field, Object id, Object key)
 		{
 			if (field.IsArray)
 			{
@@ -467,9 +479,12 @@ namespace A2v10.Data
 			else if (field.IsMap)
 			{
 				_refMap.MergeObject(field.TypeName, id, currentRecord);
-				if (id == null)
+				if (key != null)
+					_root.AddToMap(field.PropertyName, currentRecord, key.ToString());
+				else if (id != null)
+					_root.AddToArray(field.PropertyName, currentRecord);
+				else
 					throw new DataLoaderException("For Map objects, the property 'Key' or 'Id' is required");
-				_root.AddToMap(field.PropertyName, currentRecord, id.ToString());
 			}
 		}
 

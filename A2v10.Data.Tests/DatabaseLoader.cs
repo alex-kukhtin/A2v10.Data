@@ -433,6 +433,20 @@ namespace A2v10.Data.Tests
 			var scripter = new VueScriptBuilder();
 			var script = dm.CreateScript(scripter);
 			Assert.IsFalse(String.IsNullOrEmpty(script));
+
+			dm = await _dbContext.LoadModelAsync(null, "a2test.[MapObjects.NoKey.Load]");
+			dt = new DataTester(dm, "Document");
+			dt.AreValueEqual("Document name", "Name");
+
+			dt = new DataTester(dm, "Document.Category");
+			dt.AreValueEqual("CAT1", "Id");
+			dt.AreValueEqual("Category_1", "Name");
+
+			dt = new DataTester(dm, "Categories");
+			dt.IsArray(1);
+			dt.AreArrayValueEqual("CAT1", 0, "Id");
+			dt.AreArrayValueEqual("Category_1", 0, "Name");
+
 		}
 	}
 }

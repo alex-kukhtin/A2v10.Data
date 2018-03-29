@@ -72,5 +72,13 @@ namespace A2v10.Data.Tests
 			Assert.AreEqual(fp.RefObject, refObject);
 			Assert.AreEqual(fp.ItemType, ft);
 		}
+
+		public void IsItemIsArrayLike(String key, String propName)
+		{
+			var data = _meta[key] as ElementMetadata;
+			Assert.IsTrue(data.ContainsField(propName));
+			var fp = data.GetField(propName);
+			Assert.IsTrue(fp.IsArrayLike);
+		}
 	}
 }

@@ -53,7 +53,7 @@ namespace A2v10.Data
 		public String RefObject { get; } // for object, array
 		public Boolean IsLazy { get; }
 
-		public Boolean IsArrayLike { get { return ItemType == FieldType.Object || ItemType == FieldType.Array; } }
+		public Boolean IsArrayLike { get { return ItemType == FieldType.Object || ItemType == FieldType.Array || ItemType == FieldType.Map; } }
 
 		public FieldMetadata(FieldInfo fi, DataType type)
 		{
@@ -79,10 +79,10 @@ namespace A2v10.Data
 			{
 				case FieldType.Array:
 				case FieldType.Tree:
+				case FieldType.Map:
 					return RefObject + "Array";
 				case FieldType.Object:
 				case FieldType.Group:
-				case FieldType.Map:
 					return RefObject;
 				default:
 					if (DataType == DataType.Undefined)

@@ -12,6 +12,8 @@ namespace A2v10.Data
 	{
 		IDictionary<String, Tuple<DataTable, String>> _tables = new Dictionary<String, Tuple<DataTable, String>>();
 
+		String oldFirstObjectName = null; // for oldVersion
+
 		internal void ProcessOneMetadata(IDataReader rdr)
 		{
 			var rsName = rdr.GetName(0);
@@ -20,6 +22,15 @@ namespace A2v10.Data
 				throw new DataWriterException($"First field name part '{rsName}' is invalid. 'ParamName!DataPath!Metadata' expected.");
 			var paramName = fi[0];
 			var tablePath = fi[1];
+			if (String.IsNullOrEmpty(tablePath))
+			{
+				// old version processing
+				tablePath = paramName;
+				oldFirstObjectName = paramName;
+			}
+			if (oldFirstObjectName != null)
+				tablePath = oldFirstObjectName + '.' + tablePath;
+
 			var tableTypeName = $"dbo.[{paramName}.TableType]";
 			var table = new DataTable();
 			var schemaTable = rdr.GetSchemaTable();
