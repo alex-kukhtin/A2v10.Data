@@ -1,6 +1,7 @@
 ﻿using System;
 
 using A2v10.Data.Interfaces;
+using A2v10.Data.ScriptBuilder;
 using A2v10.Data.Tests.Configuration;
 
 namespace ScriptBuilder
@@ -15,6 +16,11 @@ namespace ScriptBuilder
 
 			var scripter = new VueScriptBuilder();
 			String script = dm.CreateScript(scripter);
+			Console.WriteLine(script);
+
+
+			dm = iDbContext.LoadModel(null, "a2test.[MapObjects.Load]");
+			script = dm.CreateScript(scripter);
 			Console.WriteLine(script);
 		}
 	}

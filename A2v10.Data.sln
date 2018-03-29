@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlScripts", "SqlScripts", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestScriptBuilder", "ScriptBuilder\TestScriptBuilder.csproj", "{6F24A780-DB5C-43EF-ACA3-524FC2B66E54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "A2v10.Data.ScriptBuilder", "A2v10.Data.ScriptBuilder\A2v10.Data.ScriptBuilder.csproj", "{83C23F97-4F17-44FD-9933-FC8CAC1B589C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{6F24A780-DB5C-43EF-ACA3-524FC2B66E54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F24A780-DB5C-43EF-ACA3-524FC2B66E54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F24A780-DB5C-43EF-ACA3-524FC2B66E54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83C23F97-4F17-44FD-9933-FC8CAC1B589C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83C23F97-4F17-44FD-9933-FC8CAC1B589C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83C23F97-4F17-44FD-9933-FC8CAC1B589C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83C23F97-4F17-44FD-9933-FC8CAC1B589C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

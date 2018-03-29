@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace ScriptBuilder
+namespace A2v10.Data.ScriptBuilder
 {
 	public static class StringBuilderExtensions
 	{

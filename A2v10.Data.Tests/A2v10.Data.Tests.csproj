@@ -45,7 +45,7 @@
       <HintPath>..\packages\MSTest.TestFramework.1.2.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\A2v10\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -75,6 +75,10 @@
     <ProjectReference Include="..\A2v10.Data.Interfaces\A2v10.Data.Interfaces.csproj">
       <Project>{1C5A0097-29A8-4157-80C0-B865CEAFCCCE}</Project>
       <Name>A2v10.Data.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\A2v10.Data.ScriptBuilder\A2v10.Data.ScriptBuilder.csproj">
+      <Project>{83c23f97-4f17-44fd-9933-fc8cac1b589c}</Project>
+      <Name>A2v10.Data.ScriptBuilder</Name>
     </ProjectReference>
     <ProjectReference Include="..\A2v10.Data\A2v10.Data.csproj">
       <Project>{3cefba76-9ed3-40b4-a844-cc17d960202f}</Project>

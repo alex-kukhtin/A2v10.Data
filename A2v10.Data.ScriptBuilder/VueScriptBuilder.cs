@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 using A2v10.Data.Interfaces;
 
-namespace ScriptBuilder
+namespace A2v10.Data.ScriptBuilder
 {
 	public class VueScriptBuilder : IDataScripter
 	{

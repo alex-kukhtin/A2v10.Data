@@ -86,7 +86,7 @@ namespace A2v10.Data
 		public Boolean IsTree { get { return FieldType == FieldType.Tree; } }
 		public Boolean IsGroup { get { return FieldType == FieldType.Group; } }
 
-		public Boolean IsObjectLike { get { return IsArray || IsObject || IsTree || IsGroup; } }
+		public Boolean IsObjectLike { get { return IsArray || IsObject || IsTree || IsGroup || IsMap; } }
 
 		public Boolean IsRefId { get { return SpecType == SpecType.RefId; } }
 		public Boolean IsParentId { get { return SpecType == SpecType.ParentId; } }

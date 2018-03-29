@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6F24A780-DB5C-43EF-ACA3-524FC2B66E54}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>ScriptBuilder</RootNamespace>
-    <AssemblyName>ScriptBuilder</AssemblyName>
+    <ProjectGuid>{83C23F97-4F17-44FD-9933-FC8CAC1B589C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>A2v10.Data.ScriptBuilder</RootNamespace>
+    <AssemblyName>A2v10.Data.ScriptBuilder</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,34 +30,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
+    <Compile Include="StringBuilderExtensions.cs" />
+    <Compile Include="VueScriptBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\A2v10.Data.Interfaces\A2v10.Data.Interfaces.csproj">
       <Project>{1c5a0097-29a8-4157-80c0-b865ceafccce}</Project>
       <Name>A2v10.Data.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\A2v10.Data.ScriptBuilder\A2v10.Data.ScriptBuilder.csproj">
-      <Project>{83c23f97-4f17-44fd-9933-fc8cac1b589c}</Project>
-      <Name>A2v10.Data.ScriptBuilder</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\A2v10.Data.Tests\A2v10.Data.Tests.csproj">
-      <Project>{92474e5e-6fba-4746-900c-55f68977e500}</Project>
-      <Name>A2v10.Data.Tests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\A2v10.Data\A2v10.Data.csproj">
-      <Project>{3cefba76-9ed3-40b4-a844-cc17d960202f}</Project>
-      <Name>A2v10.Data</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

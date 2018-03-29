@@ -4,6 +4,7 @@ using System;
 using System.Dynamic;
 using System.Threading.Tasks;
 using A2v10.Data.Interfaces;
+using A2v10.Data.ScriptBuilder;
 using A2v10.Data.Tests.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -427,6 +428,11 @@ namespace A2v10.Data.Tests
 			//dt.AreValueEqual("CAT1", "Key");
 			dt.AreValueEqual("CAT1", "Id");
 			dt.AreValueEqual("Category_1", "Name");
+
+			// check for script creation
+			var scripter = new VueScriptBuilder();
+			var script = dm.CreateScript(scripter);
+			Assert.IsFalse(String.IsNullOrEmpty(script));
 		}
 	}
 }
