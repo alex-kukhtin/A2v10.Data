@@ -165,11 +165,18 @@ namespace A2v10.Data
 					case SpecType.Filter:
 						if (String.IsNullOrEmpty(fi.TypeName))
 							throw new DataLoaderException("For the Filter modifier, the field name must be specified");
-						String filter = dataVal.ToString();
+						Object filter = dataVal;
 						var xs = fi.TypeName.Split('.');
-						if (xs.Length != 2)
+						if (xs.Length < 2)
 							throw new DataLoaderException("For the Filter modifier, the field name must be as ItemProperty.FilterProperty");
-						_createModelInfo(xs[0]).GetOrCreate<ExpandoObject>("Filter").Set(xs[1], filter);
+						var fmi = _createModelInfo(xs[0]).GetOrCreate<ExpandoObject>("Filter");
+						for (Int32 ii = 1; ii<xs.Length; ii++)
+						{
+							if (ii == xs.Length - 1)
+								fmi.Set(xs[ii], filter);
+							else
+								fmi = fmi.GetOrCreate<ExpandoObject>(xs[ii]);
+						}
 						break;
 					case SpecType.ReadOnly:
 						Boolean ro = false;
