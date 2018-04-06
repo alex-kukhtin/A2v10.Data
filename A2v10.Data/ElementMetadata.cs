@@ -33,14 +33,14 @@ namespace A2v10.Data
 			return null;
 		}
 
-		public FieldMetadata AddField(FieldInfo field, DataType type)
+		public FieldMetadata AddField(FieldInfo field, DataType type, Int32 fieldLen = 0)
 		{
 			if (!field.IsVisible)
 				return null;
 			FieldMetadata fm;
 			if (IsFieldExists(field.PropertyName, type, out fm))
 				return fm;
-			fm = new FieldMetadata(field, type);
+			fm = new FieldMetadata(field, type, fieldLen);
 			_fields.Add(field.PropertyName, fm);
 			switch (field.SpecType)
 			{

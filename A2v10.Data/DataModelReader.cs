@@ -299,6 +299,7 @@ namespace A2v10.Data
 			if (rdr.FieldCount == 0)
 				return;
 			// first field = self object
+			var schemaTable = rdr.GetSchemaTable();
 			var objectDef = new FieldInfo(GetAlias(rdr.GetName(0)));
 			if (objectDef.TypeName == SYSTEM_TYPE)
 				return; // not needed
@@ -332,13 +333,18 @@ namespace A2v10.Data
 				if (!fieldDef.IsVisible)
 					continue;
 				DataType dt = rdr.GetFieldType(i).Name.TypeName2DataType();
+
+				Int32 fieldLength = 0;
+				if (dt == DataType.String)
+					fieldLength = (Int32) schemaTable.Rows[i]["ColumnSize"];
+
 				if (fieldDef.IsComplexField)
 				{
-					ProcessComplexMetadata(fieldDef, typeMetadata, dt);
+					ProcessComplexMetadata(fieldDef, typeMetadata, dt, fieldLength);
 				}
 				else
 				{
-					var fm = typeMetadata.AddField(fieldDef, dt);
+					var fm = typeMetadata.AddField(fieldDef, dt, fieldLength);
 					if (fieldDef.IsRefId || fieldDef.IsArray)
 					{
 						// create metadata for nested object or array
@@ -509,7 +515,7 @@ namespace A2v10.Data
 				_refMap.MergeObject(field.TypeName, id, currentRecord);
 		}
 
-		void ProcessComplexMetadata(FieldInfo fieldInfo, ElementMetadata elem, DataType dt)
+		void ProcessComplexMetadata(FieldInfo fieldInfo, ElementMetadata elem, DataType dt, Int32 fieldLen)
 		{
 			// create metadata for nested type
 			var innerElem = GetOrCreateMetadata(fieldInfo.TypeName);
@@ -517,7 +523,7 @@ namespace A2v10.Data
 			if (fna.Length != 2)
 				throw new DataLoaderException($"Invalid complex name {fieldInfo.PropertyName}");
 			elem.AddField(new FieldInfo($"{fna[0]}!{fieldInfo.TypeName}"), DataType.Undefined);
-			innerElem.AddField(new FieldInfo(fieldInfo, fna[1]), dt);
+			innerElem.AddField(new FieldInfo(fieldInfo, fna[1]), dt, fieldLen);
 		}
 
 		public void PostProcess()

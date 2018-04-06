@@ -102,10 +102,13 @@ namespace A2v10.Data.ScriptBuilder
 			foreach (var fd in meta.Fields)
 			{
 				var fm = fd.Value;
+				String propObj = fm.GetObjectType($"{meta.Name}.{fd.Key}");
+				if (propObj == "String")
+					propObj = $"{{type:String, len:{fm.Length} }}";
 				sb.AppendLine()
 				.Append($"'{fd.Key}'")
 				.Append(':')
-				.Append(fm.GetObjectType($"{meta.Name}.{fd.Key}"))
+				.Append(propObj)
 				.Append(",");
 			}
 			if (sb.Length == 0)

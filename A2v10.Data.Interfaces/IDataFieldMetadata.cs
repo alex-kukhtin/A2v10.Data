@@ -7,7 +7,9 @@ namespace A2v10.Data.Interfaces
 	public interface IDataFieldMetadata
 	{
 		Boolean IsLazy { get; }
-		String GetObjectType(String fieldName);
 		String RefObject { get; }
+		Int32 Length { get; }
+
+		String GetObjectType(String fieldName);
 	}
 }

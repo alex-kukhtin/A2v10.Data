@@ -52,12 +52,14 @@ namespace A2v10.Data
 		public FieldType ItemType { get; } // for object, array
 		public String RefObject { get; } // for object, array
 		public Boolean IsLazy { get; }
+		public Int32 Length { get; }
 
 		public Boolean IsArrayLike { get { return ItemType == FieldType.Object || ItemType == FieldType.Array || ItemType == FieldType.Map; } }
 
-		public FieldMetadata(FieldInfo fi, DataType type)
+		public FieldMetadata(FieldInfo fi, DataType type, Int32 length)
 		{
 			DataType = type;
+			Length = length;
 			IsLazy = fi.IsLazy;
 			ItemType = FieldType.Scalar;
 			RefObject = null;
