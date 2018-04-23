@@ -1,6 +1,15 @@
 ﻿-- Copyright © 2008-2018 Alex Kukhtin
 
-/* 20180227-7114 */
+/* 20180422-7115 */
+
+/*
+Depends on Windows Workflow Foundation scripts.
+
+	SqlWorkflowInstanceStoreSchema.sql
+	SqlWorkflowInstanceStoreLogic.sql
+
+	in %WinDir%\Microsoft.NET\Framework64\v4.0.30319\SQL\en
+*/
 
 use a2v10test;
 go
@@ -615,7 +624,7 @@ end
 go
 
 ------------------------------------------------
-if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'SubObjects.Load')
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'MapObjects.Load')
 	drop procedure a2test.[MapObjects.Load]
 go
 ------------------------------------------------
@@ -634,7 +643,7 @@ end
 go
 
 ------------------------------------------------
-if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'SubObjects.NoKey.Load')
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'MapObjects.NoKey.Load')
 	drop procedure a2test.[MapObjects.NoKey.Load]
 go
 ------------------------------------------------
