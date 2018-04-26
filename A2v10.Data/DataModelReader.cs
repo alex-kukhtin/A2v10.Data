@@ -179,12 +179,10 @@ namespace A2v10.Data
 						}
 						break;
 					case SpecType.ReadOnly:
-						Boolean ro = false;
-						if (dataVal is Boolean)
-							ro = (Boolean)dataVal;
-						else if (dataVal is Int32)
-							ro = ((Int32)dataVal) != 0;
-						_sys.Add("ReadOnly", ro);
+						_sys.Add("ReadOnly", DataHelpers.SqlToBoolean(dataVal));
+						break;
+					case SpecType.Copy:
+						_sys.Add("Copy", DataHelpers.SqlToBoolean(dataVal));
 						break;
 					default:
 						_sys.Add(fn, dataVal);

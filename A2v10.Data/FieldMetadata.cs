@@ -39,6 +39,7 @@ namespace A2v10.Data
 		Permissions,
 		GroupMarker,
 		ReadOnly,
+		Copy,
 		SortOrder,
 		SortDir,
 		PageSize,

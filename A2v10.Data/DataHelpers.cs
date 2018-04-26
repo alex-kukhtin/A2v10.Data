@@ -144,5 +144,21 @@ namespace A2v10.Data
 			dict.Add(key, obj);
 			return obj as IDictionary<String, Object>;
 		}
+
+		public static Boolean SqlToBoolean(Object dataVal)
+		{
+			if (dataVal == null)
+				return false;
+			Boolean rv = false;
+			if (dataVal is Boolean)
+				rv = (Boolean)dataVal;
+			else if (dataVal is Int32)
+				rv = ((Int32)dataVal) != 0;
+			else if (dataVal is Int16)
+				rv = ((Int16)dataVal) != 0;
+			else
+				throw new DataLoaderException($"Could not convert {dataVal.GetType()} to Boolean");
+			return rv;
+		}
 	}
 }
