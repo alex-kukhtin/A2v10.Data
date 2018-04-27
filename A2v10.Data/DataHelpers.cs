@@ -149,6 +149,8 @@ namespace A2v10.Data
 		{
 			if (dataVal == null)
 				return false;
+			if (dataVal == DBNull.Value)
+				return false;
 			Boolean rv = false;
 			if (dataVal is Boolean)
 				rv = (Boolean)dataVal;
