@@ -12,6 +12,7 @@ namespace A2v10.Data
 		Number,
 		Date,
 		Boolean,
+		Blob
 	}
 
 	public enum FieldType

@@ -29,6 +29,8 @@ namespace A2v10.Data
 					return DataType.String;
 				case "Byte":
 					return DataType.Number;
+				case "Byte[]":
+					return DataType.Blob;
 			}
 			throw new DataLoaderException($"Invalid data type {s}");
 		}
