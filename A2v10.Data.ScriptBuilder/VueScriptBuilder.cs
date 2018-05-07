@@ -105,6 +105,8 @@ namespace A2v10.Data.ScriptBuilder
 				String propObj = fm.GetObjectType($"{meta.Name}.{fd.Key}");
 				if (propObj == "String")
 					propObj = $"{{type:String, len:{fm.Length} }}";
+				else if (propObj == "TPeriod")
+					propObj = $"{{type: uPeriod.constructor}}";
 				sb.AppendLine()
 				.Append($"'{fd.Key}'")
 				.Append(':')
