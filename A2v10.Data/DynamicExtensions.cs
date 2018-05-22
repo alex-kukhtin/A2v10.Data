@@ -12,8 +12,7 @@ namespace A2v10.Data
 	{
 		public static T Get<T>(this ExpandoObject obj, String name)
 		{
-			var d = obj as IDictionary<String, Object>;
-			if (d == null)
+			if (!(obj is IDictionary<String, Object> d))
 				return default(T);
 			if (d.TryGetValue(name, out Object result))
 			{
@@ -25,8 +24,7 @@ namespace A2v10.Data
 
 		public static T GetOrCreate<T>(this ExpandoObject obj, String name) where T: new()
 		{
-			var d = obj as IDictionary<String, Object>;
-			if (d == null)
+			if (!(obj is IDictionary<String, Object> d))
 				return default(T);
 			if (d.TryGetValue(name, out Object result))
 			{
@@ -42,8 +40,7 @@ namespace A2v10.Data
 
 		public static Object GetObject(this ExpandoObject obj, String name)
 		{
-			var d = obj as IDictionary<String, Object>;
-			if (d == null)
+			if (!(obj is IDictionary<String, Object> d))
 				return null;
 			if (d.TryGetValue(name, out Object result))
 			{
@@ -54,8 +51,7 @@ namespace A2v10.Data
 
 		public static void Set(this ExpandoObject obj, String name, Object value)
 		{
-			var d = obj as IDictionary<String, Object>;
-			if (d == null)
+			if (!(obj is IDictionary<String, Object> d))
 				return;
 			if (d.ContainsKey(name))
 				d[name] = value;

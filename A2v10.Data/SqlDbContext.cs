@@ -20,7 +20,7 @@ namespace A2v10.Data
 		IDataProfiler _profiler;
 		IDataConfiguration _config;
 		ITenantManager _tenantManager;
-		IDataLocalizer _localizer;
+		readonly IDataLocalizer _localizer;
 
 		public SqlDbContext(IDataProfiler profiler, IDataConfiguration config, IDataLocalizer localizer, ITenantManager tenantManager = null)
 		{
@@ -430,8 +430,7 @@ namespace A2v10.Data
 					var sqlVal = p.GetValue(element);
 					if (sqlParam.SqlDbType == SqlDbType.VarBinary)
 					{
-						var stream = sqlVal as Stream;
-						if (stream == null)
+						if (!(sqlVal is Stream stream))
 							throw new IndexOutOfRangeException("Stream expected");
 						sqlParam.Value = new SqlBytes(stream);
 					}
@@ -465,18 +464,15 @@ namespace A2v10.Data
 				Int32 rdrNo = 0;
 				using (var cmd = cnn.CreateCommandSP(command))
 				{
-					if (setParams != null)
-						setParams(cmd.Parameters);
+					setParams?.Invoke(cmd.Parameters);
 					using (SqlDataReader rdr = await cmd.ExecuteReaderAsync())
 					{
 						do
 						{
-							if (onMetadata != null)
-								onMetadata(rdrNo, rdr);
+							onMetadata?.Invoke(rdrNo, rdr);
 							while (await rdr.ReadAsync())
 							{
-								if (onRead != null)
-									onRead(rdrNo, rdr);
+								onRead?.Invoke(rdrNo, rdr);
 							}
 							rdrNo += 1;
 						} while (await rdr.NextResultAsync());
@@ -495,18 +491,15 @@ namespace A2v10.Data
 				Int32 rdrNo = 0;
 				using (var cmd = cnn.CreateCommandSP(command))
 				{
-					if (setParams != null)
-						setParams(cmd.Parameters);
+					setParams?.Invoke(cmd.Parameters);
 					using (SqlDataReader rdr = cmd.ExecuteReader())
 					{
 						do
 						{
-							if (onMetadata != null)
-								onMetadata(rdrNo, rdr);
+							onMetadata?.Invoke(rdrNo, rdr);
 							while (rdr.Read())
 							{
-								if (onRead != null)
-									onRead(rdrNo, rdr);
+								onRead?.Invoke(rdrNo, rdr);
 							}
 							rdrNo += 1;
 						} while (rdr.NextResult());
@@ -518,7 +511,7 @@ namespace A2v10.Data
 		void SetParametersWithList<T>(SqlCommand cmd, Object prms, IEnumerable<T> list) where T : class
 		{
 			Type listType = typeof(T);
-			Type prmsType = prms != null ? prms.GetType() : null;
+			Type prmsType = prms?.GetType();
 			var props = listType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 			var propsD = new Dictionary<String, PropertyInfo>();
 			DataTable dt = new DataTable();
@@ -530,7 +523,7 @@ namespace A2v10.Data
 				dt.Columns.Add(column);
 				propsD.Add(p.Name, p);
 			}
-			for (int i = 0; i < cmd.Parameters.Count; i++)
+			for (Int32 i = 0; i < cmd.Parameters.Count; i++)
 			{
 				SqlParameter prm = cmd.Parameters[i];
 				var simpleParamName = prm.ParameterName.Substring(1); // skip @
@@ -539,7 +532,7 @@ namespace A2v10.Data
 					foreach (var itm in list)
 					{
 						var row = dt.NewRow();
-						for (int c = 0; c < dt.Columns.Count; c++)
+						for (Int32 c = 0; c < dt.Columns.Count; c++)
 						{
 							var col = dt.Columns[c];
 							var rowVal = propsD[col.ColumnName].GetValue(itm);

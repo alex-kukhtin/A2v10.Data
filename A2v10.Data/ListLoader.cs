@@ -11,7 +11,7 @@ namespace A2v10.Data
 	public class ListLoader<T> where T : class
 	{
 		Type _retType;
-		PropertyInfo[] _props;
+		readonly PropertyInfo[] _props;
 		Dictionary<String, Int32> _keyMap;
 
 		public List<T> Result;
@@ -26,7 +26,7 @@ namespace A2v10.Data
 		public void ProcessFields(IDataReader rdr)
 		{
 			_keyMap = new Dictionary<String, Int32>();
-			for (int c = 0; c < rdr.FieldCount; c++)
+			for (Int32 c = 0; c < rdr.FieldCount; c++)
 			{
 				_keyMap.Add(rdr.GetName(c), c);
 			}
@@ -35,10 +35,9 @@ namespace A2v10.Data
 		public void ProcessRecord(IDataReader rdr)
 		{
 			T item = System.Activator.CreateInstance(_retType) as T;
-			Int32 fieldIndex;
 			foreach (var p in _props)
 			{
-				if (_keyMap.TryGetValue(p.Name, out fieldIndex))
+				if (_keyMap.TryGetValue(p.Name, out Int32 fieldIndex))
 				{
 					var dbVal = rdr.GetValue(fieldIndex);
 					if (dbVal == DBNull.Value)

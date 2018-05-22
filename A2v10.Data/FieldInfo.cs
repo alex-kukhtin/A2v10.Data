@@ -101,8 +101,7 @@ namespace A2v10.Data
 			if (parts.Length == 2)
 			{
 				var p1 = parts[1];
-				SpecType st;
-				if (SpecType.TryParse(p1, out st))
+				if (SpecType.TryParse(p1, out SpecType st))
 				{
 					// A special type is specified, but there are only two parts in the field name
 					throw new DataLoaderException($"Invalid field name '{String.Join("!", parts)}'");

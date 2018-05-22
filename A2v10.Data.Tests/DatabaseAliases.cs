@@ -23,10 +23,12 @@ namespace A2v10.Data.Tests
 		[TestMethod]
 		public async Task Aliases()
 		{
-			ExpandoObject prms = new ExpandoObject();
-			prms.Add("UserId", 100);
 			Int64 docId = 10;
-			prms.Add("Id", docId);
+			ExpandoObject prms = new ExpandoObject
+			{
+				{ "UserId", 100 },
+				{ "Id", docId }
+			};
 			IDataModel dm = await _dbContext.LoadModelAsync(null, "a2test.[Document.Aliases]", prms);
 			var md = new MetadataTester(dm);
 			md.IsAllKeys("TRoot,TDocument,TRow,TEntity");

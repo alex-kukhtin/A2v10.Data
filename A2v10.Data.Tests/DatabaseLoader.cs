@@ -234,10 +234,12 @@ namespace A2v10.Data.Tests
 		[TestMethod]
 		public async Task LoadDocument()
 		{
-			ExpandoObject prms = new ExpandoObject();
-			prms.Add("UserId", 100);
 			Int64 docId = 10;
-			prms.Add("Id", docId);
+			ExpandoObject prms = new ExpandoObject
+			{
+				{ "UserId", 100 },
+				{ "Id", docId }
+			};
 			IDataModel dm = await _dbContext.LoadModelAsync(null, "a2test.[Document.Load]", prms);
 			var md = new MetadataTester(dm);
 			md.IsAllKeys("TRoot,TDocument,TAgent,TRow,TPriceList,TPriceKind,TPrice,TEntity");
@@ -305,8 +307,10 @@ namespace A2v10.Data.Tests
 		[TestMethod]
 		public async Task LoadDocument2()
 		{
-			ExpandoObject prms = new ExpandoObject();
-			prms.Add("UserId", 100);
+			ExpandoObject prms = new ExpandoObject
+			{
+				{ "UserId", 100 }
+			};
 			Int64 docId = 10;
 			prms.Add("Id", docId);
 			IDataModel dm = await _dbContext.LoadModelAsync(null, "a2test.[Document2.Load]", prms);

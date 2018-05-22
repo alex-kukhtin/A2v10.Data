@@ -59,8 +59,7 @@ namespace A2v10.Data
 
 		public static SpecType TypeName2SpecType(this String s)
 		{
-			SpecType st;
-			if (Enum.TryParse<SpecType>(s, out st))
+			if (Enum.TryParse<SpecType>(s, out SpecType st))
 				return st;
 			return SpecType.Unknown;
 		}
@@ -99,9 +98,8 @@ namespace A2v10.Data
 		public static void AddToArray(this ExpandoObject eo, String key, ExpandoObject value)
 		{
 			var d = eo as IDictionary<String, Object>;
-			Object objArr;
 			List<ExpandoObject> arr;
-			if (!d.TryGetValue(key, out objArr))
+			if (!d.TryGetValue(key, out Object objArr))
 			{
 				arr = new List<ExpandoObject>();
 				d.Add(key, arr);

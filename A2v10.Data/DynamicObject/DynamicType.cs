@@ -13,12 +13,12 @@ namespace A2v10.Data
 {
 	public abstract class DynamicClass
 	{
-		public override string ToString()
+		public override String ToString()
 		{
 			PropertyInfo[] props = this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
 			StringBuilder sb = new StringBuilder();
 			sb.Append("{");
-			for (int i = 0; i < props.Length; i++)
+			for (Int32 i = 0; i < props.Length; i++)
 			{
 				if (i > 0) sb.Append(", ");
 				sb.Append(props[i].Name);
@@ -32,32 +32,23 @@ namespace A2v10.Data
 
 	public class DynamicProperty
 	{
-		string name;
-		Type type;
+		readonly String name;
+		readonly Type type;
 
-		public DynamicProperty(string name, Type type)
+		public DynamicProperty(String name, Type type)
 		{
-			if (name == null) throw new ArgumentNullException("name");
-			if (type == null) throw new ArgumentNullException("type");
-			this.name = name;
-			this.type = type;
+			this.name = name ?? throw new ArgumentNullException("name");
+			this.type = type ?? throw new ArgumentNullException("type");
 		}
 
-		public string Name
-		{
-			get { return name; }
-		}
-
-		public Type Type
-		{
-			get { return type; }
-		}
+		public String Name => name;
+		public Type Type => type;
 	}
 
 	internal class Signature : IEquatable<Signature>
 	{
 		public DynamicProperty[] properties;
-		public int hashCode;
+		public Int32 hashCode;
 
 		public Signature(Object obj)
 		{
@@ -97,20 +88,20 @@ namespace A2v10.Data
 			return props;
 		}
 
-		public override int GetHashCode()
+		public override Int32 GetHashCode()
 		{
 			return hashCode;
 		}
 
-		public override bool Equals(object obj)
+		public override Boolean Equals(Object obj)
 		{
 			return obj is Signature ? Equals((Signature)obj) : false;
 		}
 
-		public bool Equals(Signature other)
+		public Boolean Equals(Signature other)
 		{
 			if (properties.Length != other.properties.Length) return false;
-			for (int i = 0; i < properties.Length; i++)
+			for (Int32 i = 0; i < properties.Length; i++)
 			{
 				if (properties[i].Name != other.properties[i].Name ||
 					properties[i].Type != other.properties[i].Type) return false;
@@ -124,8 +115,8 @@ namespace A2v10.Data
 
 		ReaderWriterLock rwLock;
 		Dictionary<Signature, Type> classes;
-		int classCount;
-		ModuleBuilder module;
+		Int32 classCount;
+		readonly ModuleBuilder module;
 		static ClassFactory() { }  // Trigger lazy initialization of static fields
 
 		private ClassFactory()
@@ -161,7 +152,7 @@ namespace A2v10.Data
 			LockCookie cookie = rwLock.UpgradeToWriterLock(Timeout.Infinite);
 			try
 			{
-				string typeName = "DynamicClass" + (classCount + 1);
+				String typeName = "DynamicClass" + (classCount + 1);
 				TypeBuilder tb = this.module.DefineType(typeName, TypeAttributes.Class |
 					TypeAttributes.Public, typeof(DynamicClass));
 				System.Reflection.FieldInfo[] fields = GenerateProperties(tb, properties);
@@ -178,7 +169,7 @@ namespace A2v10.Data
 		System.Reflection.FieldInfo[] GenerateProperties(TypeBuilder tb, DynamicProperty[] properties)
 		{
 			System.Reflection.FieldInfo[] fields = new FieldBuilder[properties.Length];
-			for (int i = 0; i < properties.Length; i++)
+			for (Int32 i = 0; i < properties.Length; i++)
 			{
 				DynamicProperty dp = properties[i];
 				FieldBuilder fb = tb.DefineField("_" + dp.Name, dp.Type, FieldAttributes.Private);

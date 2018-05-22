@@ -10,7 +10,7 @@ namespace A2v10.Data
 	class LoadHelper<T> where T : class
 	{
 		Type _type;
-		PropertyInfo[] _props;
+		readonly PropertyInfo[] _props;
 		Dictionary<String, Int32> _keyMap;
 		public LoadHelper()
 		{
@@ -21,7 +21,7 @@ namespace A2v10.Data
 		public void ProcessRecord(IDataReader rdr)
 		{
 			_keyMap = new Dictionary<String, Int32>();
-			for (int c = 0; c < rdr.FieldCount; c++)
+			for (Int32 c = 0; c < rdr.FieldCount; c++)
 			{
 				_keyMap.Add(rdr.GetName(c), c);
 			}
@@ -29,10 +29,9 @@ namespace A2v10.Data
 		public T ProcessFields(IDataReader rdr)
 		{
 			T result = System.Activator.CreateInstance(_type) as T;
-			Int32 fieldIndex;
 			foreach (var p in _props)
 			{
-				if (_keyMap.TryGetValue(p.Name, out fieldIndex))
+				if (_keyMap.TryGetValue(p.Name, out Int32 fieldIndex))
 				{
 					var dbVal = rdr.GetValue(fieldIndex);
 					if (dbVal == DBNull.Value)

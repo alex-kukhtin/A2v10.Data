@@ -35,7 +35,7 @@ namespace A2v10.Data
 			var table = new DataTable();
 			var schemaTable = rdr.GetSchemaTable();
 			/* starts from 1 */
-			for (int c = 1; c < rdr.FieldCount; c++)
+			for (Int32 c = 1; c < rdr.FieldCount; c++)
 			{
 				var ftp = rdr.GetFieldType(c);
 				var fieldColumn = new DataColumn(rdr.GetName(c), ftp);
@@ -49,14 +49,13 @@ namespace A2v10.Data
 		internal void SetTableParameters(SqlCommand cmd, Object data, Object prms)
 		{
 			IDictionary<String, Object> scalarParams = SqlExtensions.GetParametersDictionary(prms);
-			for (int i = 0; i < cmd.Parameters.Count; i++)
+			for (Int32 i = 0; i < cmd.Parameters.Count; i++)
 			{
 				SqlParameter prm = cmd.Parameters[i];
 				var simpleParamName = prm.ParameterName.Substring(1); /*skip @*/
 				if (prm.SqlDbType == SqlDbType.Structured)
 				{
-					Tuple<DataTable, String> table;
-					if (_tables.TryGetValue(prm.ParameterName, out table))
+					if (_tables.TryGetValue(prm.ParameterName, out Tuple<DataTable, String>  table))
 					{
 						// table parameters (binging by object name)
 						FillDataTable(table.Item1, GetDataForSave(data as ExpandoObject, table.Item2 /*path*/));
@@ -105,7 +104,7 @@ namespace A2v10.Data
 		{
 			var row = table.NewRow();
 			var dataD = data as IDictionary<String, Object>;
-			for (int c = 0; c < table.Columns.Count; c++)
+			for (Int32 c = 0; c < table.Columns.Count; c++)
 			{
 				Object rowVal;
 				var col = table.Columns[c];
@@ -129,7 +128,7 @@ namespace A2v10.Data
 			table.Rows.Add(row);
 		}
 
-		bool GetComplexValue(ExpandoObject data, String expr, out Object rowVal)
+		Boolean GetComplexValue(ExpandoObject data, String expr, out Object rowVal)
 		{
 			rowVal = null;
 			var ev = data.Eval<Object>(expr);
@@ -148,18 +147,17 @@ namespace A2v10.Data
 			var x = path.Split('.');
 			var currentData = data as IDictionary<String, Object>;
 			var currentId = data.Get<Object>("Id");
-			for (int i = 0; i < x.Length; i++)
+			for (Int32 i = 0; i < x.Length; i++)
 			{
-				bool bLast = (i == (x.Length - 1));
+				Boolean bLast = (i == (x.Length - 1));
 				String prop = x[i];
-				Object propValue;
 				// RowNumber is 1-based!
-				if (currentData.TryGetValue(prop, out propValue))
+				if (currentData.TryGetValue(prop, out Object propValue))
 				{
 					if (propValue is IList<Object>)
 					{
 						var list = propValue as IList<Object>;
-						for (int j = 0; j < list.Count; j++)
+						for (Int32 j = 0; j < list.Count; j++)
 						{
 							var currVal = list[j] as ExpandoObject;
 							currVal.Set("RowNumber", j + 1);
@@ -171,7 +169,7 @@ namespace A2v10.Data
 							else
 							{
 								String newPath = String.Empty;
-								for (int k = i + 1; k < x.Length; k++)
+								for (Int32 k = i + 1; k < x.Length; k++)
 									newPath = newPath.AppendDot(x[k]);
 								foreach (var dx in GetDataForSave(currVal, newPath, j))
 									yield return dx;
@@ -190,7 +188,7 @@ namespace A2v10.Data
 						else
 						{
 							String newPath = String.Empty;
-							for (int k = i + 1; k < x.Length; k++)
+							for (Int32 k = i + 1; k < x.Length; k++)
 								newPath = newPath.AppendDot(x[k]);
 							foreach (var dx in GetDataForSave(currVal, newPath, 0))
 								yield return dx;

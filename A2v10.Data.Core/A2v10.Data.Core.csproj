@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\A2v10.Data\FieldMetadata.cs" Link="FieldMetadata.cs" />
+    <Compile Include="..\A2v10.Data\IdMapper.cs" Link="IdMapper.cs" />
+  </ItemGroup>
+
+</Project>

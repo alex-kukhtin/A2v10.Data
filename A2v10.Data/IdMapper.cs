@@ -11,8 +11,7 @@ namespace A2v10.Data
 		public ExpandoObject Add(String typeName, Object id, ExpandoObject value)
 		{
 			var key = Tuple.Create(typeName, id);
-			ExpandoObject valObj;
-			if (!TryGetValue(key, out valObj))
+			if (!TryGetValue(key, out ExpandoObject valObj))
 			{
 				Add(key, value);
 				valObj = value;
@@ -43,8 +42,7 @@ namespace A2v10.Data
 		public void Add(String typeName, Object id, ExpandoObject value)
 		{
 			var key = Tuple.Create(typeName, id);
-			RefMapperItem item;
-			if (!TryGetValue(key, out item))
+			if (!TryGetValue(key, out RefMapperItem item))
 			{
 				item = new RefMapperItem();
 				Add(key, item);
@@ -57,11 +55,10 @@ namespace A2v10.Data
 			}
 		}
 
-		public void MergeObject(String typeName, object id, ExpandoObject source)
+		public void MergeObject(String typeName, Object id, ExpandoObject source)
 		{
 			var key = Tuple.Create(typeName, id);
-			RefMapperItem item;
-			if (TryGetValue(key, out item))
+			if (TryGetValue(key, out RefMapperItem item))
 			{
 				if (item != null)
 				{
@@ -75,8 +72,10 @@ namespace A2v10.Data
 			else
 			{
 				// forward definition
-				item = new RefMapperItem();
-				item.Source = source;
+				item = new RefMapperItem
+				{
+					Source = source
+				};
 				Add(key, item);
 			}
 		}

@@ -37,8 +37,7 @@ namespace A2v10.Data
 		{
 			if (!field.IsVisible)
 				return null;
-			FieldMetadata fm;
-			if (IsFieldExists(field.PropertyName, type, out fm))
+			if (IsFieldExists(field.PropertyName, type, out FieldMetadata fm))
 				return fm;
 			fm = new FieldMetadata(field, type, fieldLen);
 			_fields.Add(field.PropertyName, fm);
@@ -76,7 +75,7 @@ namespace A2v10.Data
 			return _fields.ContainsKey(field);
 		}
 
-		bool IsFieldExists(String name, DataType dataType, out FieldMetadata fm)
+		Boolean IsFieldExists(String name, DataType dataType, out FieldMetadata fm)
 		{
 			fm = null;
 			if (_fields.TryGetValue(name, out IDataFieldMetadata ifm))

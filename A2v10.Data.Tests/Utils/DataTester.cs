@@ -12,7 +12,7 @@ namespace A2v10.Data.Tests
 	public class DataTester
 	{
 		IDataModel _dataModel;
-		ExpandoObject _instance;
+		readonly ExpandoObject _instance;
 		IList<ExpandoObject> _instanceArray;
 		public DataTester(IDataModel dataModel, String expression)
 		{
@@ -50,21 +50,21 @@ namespace A2v10.Data.Tests
 			Assert.IsNull(obj[property]);
 		}
 
-		public void IsArray(int length = -1)
+		public void IsArray(Int32 length = -1)
 		{
 			Assert.IsTrue(_instanceArray != null && _instance == null);
 			if (length != -1)
 				Assert.AreEqual(length, _instanceArray.Count);
 		}
 
-		public void AreArrayValueEqual<T>(T expected, int index, String property)
+		public void AreArrayValueEqual<T>(T expected, Int32 index, String property)
 		{
 			IsArray();
 			var obj = _instanceArray[index] as IDictionary<String, Object>;
 			Assert.AreEqual(expected, obj[property]);
 		}
 
-		public T GetArrayValue<T>(int index, String property)
+		public T GetArrayValue<T>(Int32 index, String property)
 		{
 			IsArray();
 			var obj = _instanceArray[index] as ExpandoObject;
