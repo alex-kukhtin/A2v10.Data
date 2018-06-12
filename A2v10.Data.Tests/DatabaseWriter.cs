@@ -151,6 +151,12 @@ namespace A2v10.Data.Tests
 			dt.AreValueEqual(112233L, "Id");
 			dt.AreValueEqual("Test Agent", "Name");
 			dt.AreValueEqual("CODE", "Code");
+
+			dt = new DataTester(dm, "RootJson");
+
+			dt.AreValueEqual(112233L, "Id");
+			dt.AreValueEqual("Test Agent", "Name");
+			dt.AreValueEqual("CODE", "Code");
 		}
 	}
 }

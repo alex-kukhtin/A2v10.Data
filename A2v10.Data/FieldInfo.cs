@@ -62,7 +62,7 @@ namespace A2v10.Data
 			if (!String.IsNullOrEmpty(PropertyName))
 			{
 				if (String.IsNullOrEmpty(TypeName))
-					throw new DataLoaderException($"If a property name ('{PropertyName}') is specified, then type name is mandatory");
+					throw new DataLoaderException($"If a property name ('{PropertyName}') is specified, then type name is required");
 			}
 		}
 

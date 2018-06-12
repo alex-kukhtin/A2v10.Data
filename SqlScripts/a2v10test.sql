@@ -399,8 +399,11 @@ begin
 		set @subId = N'null'
 	if (select SubObjectString from @MainObject) is null
 		set @subIdString = N'null'
+
 	select [MainObject!TMainObject!Object] = null, [RootId] = @rootId, [SubId] = @subId, SubIdString = @subIdString,
 		[SubJson!!Json] = @JsonData;
+
+	select [RootJson!!Json] = @JsonData;
 end
 go
 ------------------------------------------------

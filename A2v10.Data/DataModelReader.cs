@@ -104,6 +104,13 @@ namespace A2v10.Data
 			return name;
 		}
 
+		void ProcessJsonRecord(FieldInfo fi, IDataReader rdr)
+		{
+			var val = rdr.GetString(0);
+			_root.Add(fi.PropertyName, JsonConvert.DeserializeObject<ExpandoObject>(val));
+
+		}
+
 		void ProcessAliasesRecord(IDataReader rdr)
 		{
 			if (_aliases == null)
@@ -203,6 +210,11 @@ namespace A2v10.Data
 			else if (rootFI.TypeName == ALIASES_TYPE)
 			{
 				ProcessAliasesRecord(rdr);
+				return;
+			}
+			if (rootFI.IsJson)
+			{
+				ProcessJsonRecord(rootFI, rdr);
 				return;
 			}
 			rootFI.CheckValid();
