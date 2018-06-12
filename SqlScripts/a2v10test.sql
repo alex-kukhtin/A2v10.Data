@@ -1,6 +1,6 @@
 ﻿-- Copyright © 2008-2018 Alex Kukhtin
 
-/* 20180422-7115 */
+/* 20180612-7131 */
 
 /*
 Depends on Windows Workflow Foundation scripts.
@@ -225,6 +225,14 @@ if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2te
 	drop procedure a2test.[SubObjects.Update]
 go
 ------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'Json.Metadata')
+	drop procedure a2test.[Json.Metadata]
+go
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'Json.Update')
+	drop procedure a2test.[Json.Update]
+go
+------------------------------------------------
 if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'NestedMain.TableType' AND ss.name = N'a2test')
 	drop type [a2test].[NestedMain.TableType];
 go
@@ -358,6 +366,41 @@ begin
 	if (select SubObjectString from @MainObject) is null
 		set @subIdString = N'null'
 	select [MainObject!TMainObject!Object] = null, [RootId] = @rootId, [SubId] = @subId, SubIdString = @subIdString;
+end
+go
+------------------------------------------------
+create procedure a2test.[Json.Metadata]
+as
+begin
+	set nocount on;
+	declare @NestedMain [a2test].[NestedMain.TableType];
+	select [MainObject!MainObject!Metadata]=null, * from @NestedMain;
+	select [JsonData!MainObject.SubObject!Json]=null;
+end
+go
+------------------------------------------------
+create procedure a2test.[Json.Update]
+	@TenantId int = null,
+	@UserId bigint = null,
+	@JsonData nvarchar(max) = null,
+	@MainObject [a2test].[NestedMain.TableType] readonly
+as
+begin
+	set nocount on;
+	
+	--throw 60000, @JsonData, 0;
+
+	declare @rootId nvarchar(255) = N'not null';
+	declare @subId nvarchar(255) = N'not null';
+	declare @subIdString nvarchar(255) = N'not null';
+	if (select Id from @MainObject) is null
+		set @rootId  = N'null';
+	if (select SubObject from @MainObject) is null
+		set @subId = N'null'
+	if (select SubObjectString from @MainObject) is null
+		set @subIdString = N'null'
+	select [MainObject!TMainObject!Object] = null, [RootId] = @rootId, [SubId] = @subId, SubIdString = @subIdString,
+		[SubJson!!Json] = @JsonData;
 end
 go
 ------------------------------------------------

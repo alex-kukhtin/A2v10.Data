@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Data;
 using System.Data.SqlClient;
+using Newtonsoft.Json;
 
 namespace A2v10.Data
 {
 	internal class DataModelWriter
 	{
 		IDictionary<String, Tuple<DataTable, String>> _tables = new Dictionary<String, Tuple<DataTable, String>>();
+		IDictionary<String, String> _jsonParams = new Dictionary<String, String>();
 
 		String oldFirstObjectName = null; // for oldVersion
 
@@ -18,10 +20,11 @@ namespace A2v10.Data
 		{
 			var rsName = rdr.GetName(0);
 			var fi = rsName.Split('!');
-			if ((fi.Length < 3) || (fi[2] != "Metadata"))
-				throw new DataWriterException($"First field name part '{rsName}' is invalid. 'ParamName!DataPath!Metadata' expected.");
+			if ((fi.Length < 3) || (fi[2] != "Metadata" && fi[2] != "Json"))
+				throw new DataWriterException($"First field name part '{rsName}' is invalid. 'ParamName!DataPath!Metadata' or 'ParamName!DataPath!Json' expected.");
 			var paramName = fi[0];
 			var tablePath = fi[1];
+
 			if (String.IsNullOrEmpty(tablePath))
 			{
 				// old version processing
@@ -31,19 +34,27 @@ namespace A2v10.Data
 			if (oldFirstObjectName != null)
 				tablePath = oldFirstObjectName + '.' + tablePath;
 
-			var tableTypeName = $"dbo.[{paramName}.TableType]";
-			var table = new DataTable();
-			var schemaTable = rdr.GetSchemaTable();
-			/* starts from 1 */
-			for (Int32 c = 1; c < rdr.FieldCount; c++)
+			if (fi[2] == "Json")
 			{
-				var ftp = rdr.GetFieldType(c);
-				var fieldColumn = new DataColumn(rdr.GetName(c), ftp);
-				if (ftp == typeof(String))
-					fieldColumn.MaxLength = Convert.ToInt32(schemaTable.Rows[c]["ColumnSize"]);
-				table.Columns.Add(fieldColumn);
+				_jsonParams.Add($"@{paramName}", tablePath);
 			}
-			_tables.Add("@" + paramName, new Tuple<DataTable, String>(table, tablePath));
+			else
+			{
+
+				var tableTypeName = $"dbo.[{paramName}.TableType]";
+				var table = new DataTable();
+				var schemaTable = rdr.GetSchemaTable();
+				/* starts from 1 */
+				for (Int32 c = 1; c < rdr.FieldCount; c++)
+				{
+					var ftp = rdr.GetFieldType(c);
+					var fieldColumn = new DataColumn(rdr.GetName(c), ftp);
+					if (ftp == typeof(String))
+						fieldColumn.MaxLength = Convert.ToInt32(schemaTable.Rows[c]["ColumnSize"]);
+					table.Columns.Add(fieldColumn);
+				}
+				_tables.Add("@" + paramName, new Tuple<DataTable, String>(table, tablePath));
+			}
 		}
 
 		internal void SetTableParameters(SqlCommand cmd, Object data, Object prms)
@@ -70,6 +81,11 @@ namespace A2v10.Data
 				else if (prm.SqlDbType == SqlDbType.VarBinary)
 				{
 					throw new NotImplementedException();
+				}
+				else if (_jsonParams.TryGetValue(prm.ParameterName, out String tablePath))
+				{
+					var dataForSave = (data as ExpandoObject).Eval<ExpandoObject>(tablePath);
+					prm.Value = JsonConvert.SerializeObject(dataForSave);
 				}
 				else
 				{

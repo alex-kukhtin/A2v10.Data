@@ -1,6 +1,7 @@
 ﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
 
 using A2v10.Data.Interfaces;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -66,7 +67,7 @@ namespace A2v10.Data
 		{
 			_aliases = new Dictionary<String, String>();
 			// 1-based
-			for (int i = 1; i < rdr.FieldCount; i++)
+			for (Int32 i = 1; i < rdr.FieldCount; i++)
 			{
 				_aliases.Add(rdr.GetName(i), null);
 			}
@@ -108,7 +109,7 @@ namespace A2v10.Data
 			if (_aliases == null)
 				throw new InvalidOperationException();
 			// 1-based
-			for (int i = 1; i < rdr.FieldCount; i++)
+			for (Int32 i = 1; i < rdr.FieldCount; i++)
 			{
 				String name = rdr.GetName(i);
 				if (_aliases.ContainsKey(name))
@@ -127,7 +128,7 @@ namespace A2v10.Data
 			}
 
 			// from 1
-			for (int i = 1; i < rdr.FieldCount; i++)
+			for (Int32 i = 1; i < rdr.FieldCount; i++)
 			{
 				var fn = rdr.GetName(i);
 				var fi = new FieldInfo(fn);
@@ -206,14 +207,14 @@ namespace A2v10.Data
 			}
 			rootFI.CheckValid();
 			var currentRecord = new ExpandoObject();
-			bool bAdded = false;
+			Boolean bAdded = false;
 			Object id = null;
 			Object key = null;
 			Int32 rowCount = 0;
 			Boolean bHasRowCount = false;
 			List<Boolean> groupKeys = null;
 			// from 1!
-			for (int i = 1; i < rdr.FieldCount; i++)
+			for (Int32 i = 1; i < rdr.FieldCount; i++)
 			{
 				var dataVal = rdr.GetValue(i);
 				if (dataVal == DBNull.Value)
@@ -226,6 +227,12 @@ namespace A2v10.Data
 						groupKeys = new List<Boolean>();
 					Boolean bVal = (dataVal != null) ? (dataVal.ToString() == "1") : false;
 					groupKeys.Add(bVal);
+					continue;
+				}
+				if (fi.IsJson)
+				{
+					if (dataVal != null)
+						AddValueToRecord(currentRecord, fi, JsonConvert.DeserializeObject<ExpandoObject>(dataVal.ToString()));
 					continue;
 				}
 				AddValueToRecord(currentRecord, fi, dataVal);
@@ -316,8 +323,8 @@ namespace A2v10.Data
 				typeMetadata.IsGroup = true;
 			if (objectDef.IsArray && objectDef.IsVisible)
 				_root.AddToArray(objectDef.PropertyName, null); // empty record
-			bool hasRowCount = false;
-			for (int i = 1; i < rdr.FieldCount; i++)
+			Boolean hasRowCount = false;
+			for (Int32 i = 1; i < rdr.FieldCount; i++)
 			{
 				String fieldName = GetAlias(rdr.GetName(i));
 				var fieldDef = new FieldInfo(fieldName);

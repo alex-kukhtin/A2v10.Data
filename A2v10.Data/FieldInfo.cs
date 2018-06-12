@@ -95,6 +95,7 @@ namespace A2v10.Data
 		public Boolean IsRowCount { get { return SpecType == SpecType.RowCount; } }
 		public Boolean IsItems { get { return SpecType == SpecType.Items; } }
 		public Boolean IsGroupMarker { get { return SpecType == SpecType.GroupMarker; } }
+		public Boolean IsJson { get { return SpecType == SpecType.Json; } }
 
 		private static void CheckField(String[] parts)
 		{

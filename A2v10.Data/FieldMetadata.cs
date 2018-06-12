@@ -45,7 +45,8 @@ namespace A2v10.Data
 		SortDir,
 		PageSize,
 		Offset,
-		Filter
+		Filter,
+		Json
 	}
 
 	public class FieldMetadata : IDataFieldMetadata
