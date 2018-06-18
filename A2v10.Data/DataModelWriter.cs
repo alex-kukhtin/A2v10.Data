@@ -163,6 +163,7 @@ namespace A2v10.Data
 			var x = path.Split('.');
 			var currentData = data as IDictionary<String, Object>;
 			var currentId = data.Get<Object>("Id");
+			var currentKey = data.Get<Object>("Key");
 			for (Int32 i = 0; i < x.Length; i++)
 			{
 				Boolean bLast = (i == (x.Length - 1));
@@ -178,6 +179,7 @@ namespace A2v10.Data
 							var currVal = list[j] as ExpandoObject;
 							currVal.Set("RowNumber", j + 1);
 							currVal.Set("ParentId", currentId);
+							currVal.Set("ParentKey", currentKey);
 							if (parentIndex != null)
 								currVal.Set("ParentRowNumber", parentIndex.Value + 1);
 							if (bLast)
@@ -199,6 +201,7 @@ namespace A2v10.Data
 						{
 							var propValEO = propValue as ExpandoObject;
 							currVal.Set("ParentId", currentId);
+							currVal.Set("ParentKey", currentKey);
 							yield return currVal;
 						}
 						else

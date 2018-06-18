@@ -1,6 +1,6 @@
 ﻿-- Copyright © 2008-2018 Alex Kukhtin
 
-/* 20180612-7131 */
+/* 20180618-7133 */
 
 /*
 Depends on Windows Workflow Foundation scripts.
@@ -233,6 +233,14 @@ if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2te
 	drop procedure a2test.[Json.Update]
 go
 ------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'ParentKey.Metadata')
+	drop procedure a2test.[ParentKey.Metadata]
+go
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'ParentKey.Update')
+	drop procedure a2test.[ParentKey.Update]
+go
+------------------------------------------------
 if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'NestedMain.TableType' AND ss.name = N'a2test')
 	drop type [a2test].[NestedMain.TableType];
 go
@@ -260,6 +268,7 @@ create type [a2test].[NestedSub.TableType] as
 table (
 	[Id] bigint null,
 	[ParentId] bigint null,
+	[ParentKey] nvarchar(255) null,
 	[Name] nvarchar(255)
 )
 go
@@ -404,6 +413,34 @@ begin
 		[SubJson!!Json] = @JsonData;
 
 	select [RootJson!!Json] = @JsonData;
+end
+go
+------------------------------------------------
+create procedure a2test.[ParentKey.Metadata]
+as
+begin
+	set nocount on;
+	declare @NestedMain [a2test].[NestedMain.TableType];
+	declare @SubObjects [a2test].[NestedSub.TableType];
+	select [MainObject!MainObject!Metadata]=null, * from @NestedMain;
+	select [SubObjects!MainObject.SubObjects!Metadata] = null, * from @SubObjects;
+end
+go
+------------------------------------------------
+create procedure a2test.[ParentKey.Update]
+	@TenantId int = null,
+	@UserId bigint = null,
+	@MainObject [a2test].[NestedMain.TableType] readonly,
+	@SubObjects [a2test].[NestedSub.TableType] readonly
+as
+begin
+	set nocount on;	
+	select [MainObject!TMainObject!Object] = null, [Id!!Id] = 55,
+		[SubObjects!TSubObject!Array] = null;
+	
+	select [!TSubObject!Array] = null, [!TMainObject.SubObjects!ParentId]=55, [Id!!Id] = Id, [Key]=ParentKey 
+	from @SubObjects;
+
 end
 go
 ------------------------------------------------

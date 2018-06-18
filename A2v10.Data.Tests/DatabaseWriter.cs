@@ -158,5 +158,46 @@ namespace A2v10.Data.Tests
 			dt.AreValueEqual("Test Agent", "Name");
 			dt.AreValueEqual("CODE", "Code");
 		}
+
+		[TestMethod]
+		public async Task WriteParentKey()
+		{
+			// DATA with ROOT
+			var jsonData = @"
+			{
+				MainObject: {
+					Id : 0,
+					Name: 'Test Object',
+					Key: 'KEY1',
+					SubObjects: [ 
+					{
+						Id: 5,
+						Name: 'Test Agent 5'
+
+					},
+					{
+						Id: 7,
+						Name: 'Test Agent 7'
+
+					},
+					]
+				}
+			}
+			";
+			var dataToSave = JsonConvert.DeserializeObject<ExpandoObject>(jsonData.Replace('\'', '"'), new ExpandoObjectConverter());
+			IDataModel dm = await _dbContext.SaveModelAsync(null, "a2test.[ParentKey.Update]", dataToSave);
+
+			var dt = new DataTester(dm, "MainObject");
+			dt.AreValueEqual(55, "Id");
+
+			dt = new DataTester(dm, "MainObject.SubObjects");
+			dt.IsArray(2);
+
+			dt.AreArrayValueEqual("KEY1", 0, "Key");
+			dt.AreArrayValueEqual(5L, 0, "Id");
+			dt.AreArrayValueEqual("KEY1", 1, "Key");
+			dt.AreArrayValueEqual(7L, 1, "Id");
+		}
+
 	}
 }
