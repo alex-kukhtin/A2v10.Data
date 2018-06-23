@@ -743,3 +743,24 @@ begin
 	select [Categories!TCategory!Map] = null, [Id!!Id] = N'CAT1'/*, [Key!!Key] = N'CAT1'*/, [Name!!Name]=N'Category_1';
 end
 go
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'Document.RowsMethods.Load')
+	drop procedure a2test.[Document.RowsMethods.Load]
+go
+------------------------------------------------
+create procedure a2test.[Document.RowsMethods.Load]
+	@TenantId int = null,
+	@UserId bigint = null,
+	@Id bigint = null
+as
+begin
+	set nocount on;
+	select [Document!TDocument!Object] = null, [Id!!Id] = 123, [Name!!Name]='Document', [Rows!TRow!Array] = null;
+
+	select [!TRow!Array] = null, [Id!!Id]=null, [!TDocument.Rows!ParentId]=123, [Methods!TMethod!Object] = null;
+
+	select [!TMethod!MapObject] = null, [Name!!Name] = N'Method 1', [!TRow.Methods!ParentId] = null, [Key!!Key] = N'Mtd1'
+	union all
+	select [!TMethod!MapObject] = null, [Name!!Name] = N'Method 2', [!TRow.Methods!ParentId] = null, [Key!!Key] = N'Mtd2'
+end
+go

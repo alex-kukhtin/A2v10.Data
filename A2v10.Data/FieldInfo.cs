@@ -83,10 +83,11 @@ namespace A2v10.Data
 		public Boolean IsArray { get { return FieldType == FieldType.Array; } }
 		public Boolean IsObject { get { return FieldType == FieldType.Object; } }
 		public Boolean IsMap { get { return FieldType == FieldType.Map; } }
+		public Boolean IsMapObject { get { return FieldType == FieldType.MapObject; } }
 		public Boolean IsTree { get { return FieldType == FieldType.Tree; } }
 		public Boolean IsGroup { get { return FieldType == FieldType.Group; } }
 
-		public Boolean IsObjectLike { get { return IsArray || IsObject || IsTree || IsGroup || IsMap; } }
+		public Boolean IsObjectLike { get { return IsArray || IsObject || IsTree || IsGroup || IsMap || IsMapObject; } }
 
 		public Boolean IsRefId { get { return SpecType == SpecType.RefId; } }
 		public Boolean IsParentId { get { return SpecType == SpecType.ParentId; } }

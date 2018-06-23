@@ -220,11 +220,13 @@ namespace A2v10.Data
 			rootFI.CheckValid();
 			var currentRecord = new ExpandoObject();
 			Boolean bAdded = false;
+			Boolean bAddMap = false;
 			Object id = null;
 			Object key = null;
 			Int32 rowCount = 0;
 			Boolean bHasRowCount = false;
 			List<Boolean> groupKeys = null;
+			String mapPropName = null;
 			// from 1!
 			for (Int32 i = 1; i < rdr.FieldCount; i++)
 			{
@@ -290,11 +292,26 @@ namespace A2v10.Data
 					else if (rootFI.IsObject)
 					{
 						// nested object
-						AddRecordToRecord(fi.TypeName, dataVal, currentRecord);
+						AddObjectToRecord(fi.TypeName, dataVal, currentRecord);
 						if (!rootFI.IsVisible)
 							bAdded = true;
 					}
+					else if (rootFI.IsMapObject)
+					{
+						if (!rootFI.IsVisible)
+						{
+							bAdded = true;
+							// defer. key needed
+							bAddMap = true;
+							mapPropName = fi.TypeName;
+							id = dataVal;
+						}
+					}
 				}
+			}
+			if (bAddMap)
+			{
+				AddMapToRecord(mapPropName, id, key, currentRecord);
 			}
 			if (!bAdded)
 			{
@@ -483,7 +500,27 @@ namespace A2v10.Data
 				mapObj.AddToArray(pxa[1], currentRecord);
 		}
 
-		void AddRecordToRecord(String propName, Object id, ExpandoObject currentRecord)
+		void AddMapToRecord(String propName, Object id, Object key, ExpandoObject currentRecord)
+		{
+			if (key == null)
+				throw new DataLoaderException($"There is no 'Key' property for field '{propName}'");
+			var pxa = propName.Split('.'); // <Type>.PropName
+			if (pxa.Length != 2)
+				throw new DataLoaderException($"Invalid field name '{propName}' for array. 'TypeName.PropertyName' expected");
+			/*0-key, 1-Property*/
+			var srcKey = Tuple.Create(pxa[0], id);
+			if (!_idMap.TryGetValue(srcKey, out ExpandoObject mapObj))
+				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found in map");
+			var innerObject = mapObj.Get<ExpandoObject>(pxa[1]);
+			if (innerObject == null)
+			{
+				innerObject = new ExpandoObject();
+				mapObj.Set(pxa[1], innerObject);
+			}
+			innerObject.Set(key.ToString(), currentRecord);
+		}
+
+		void AddObjectToRecord(String propName, Object id, ExpandoObject currentRecord)
 		{
 			var pxa = propName.Split('.'); // <Type>.PropName
 			if (pxa.Length != 2)

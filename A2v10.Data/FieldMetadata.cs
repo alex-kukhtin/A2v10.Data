@@ -22,7 +22,8 @@ namespace A2v10.Data
 		Array,
 		Map,
 		Tree,
-		Group
+		Group,
+		MapObject
 	}
 
 	public enum SpecType

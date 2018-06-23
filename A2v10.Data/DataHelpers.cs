@@ -42,6 +42,8 @@ namespace A2v10.Data
 				case "Object":
 				case "LazyObject":
 					return FieldType.Object;
+				case "MapObject":
+					return FieldType.MapObject;
 				case "Array":
 				case "LazyArray":
 					return FieldType.Array;
