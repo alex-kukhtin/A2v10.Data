@@ -373,9 +373,9 @@ namespace A2v10.Data
 					fieldLength = (Int32) schemaTable.Rows[i]["ColumnSize"];
 
 				if (fieldDef.IsComplexField)
-				{
 					ProcessComplexMetadata(fieldDef, typeMetadata, dt, fieldLength);
-				}
+				else if (fieldDef.IsMapObject)
+					ProcessMapObjectMetadata(fieldDef, typeMetadata);
 				else
 				{
 					var fm = typeMetadata.AddField(fieldDef, dt, fieldLength);
@@ -386,7 +386,7 @@ namespace A2v10.Data
 						if (String.IsNullOrEmpty(nestedTypeName))
 							throw new DataLoaderException($"Type name for '{fieldName}' is required");
 						var tm = GetOrCreateMetadata(nestedTypeName);
-						if (fieldDef.IsArray) 
+						if (fieldDef.IsArray)
 							tm.IsArrayType = true;
 					}
 				}
@@ -578,6 +578,15 @@ namespace A2v10.Data
 				throw new DataLoaderException($"Invalid complex name {fieldInfo.PropertyName}");
 			elem.AddField(new FieldInfo($"{fna[0]}!{fieldInfo.TypeName}"), DataType.Undefined);
 			innerElem.AddField(new FieldInfo(fieldInfo, fna[1]), dt, fieldLen);
+		}
+
+		void ProcessMapObjectMetadata(FieldInfo fieldInfo, ElementMetadata elem)
+		{
+			var mapType = fieldInfo.TypeName + "Map";
+			var innerElem = GetOrCreateMetadata(mapType);
+			foreach (var f in fieldInfo.MapFields)
+				innerElem.AddField(new FieldInfo($"{f}!{fieldInfo.TypeName}"), DataType.Undefined);
+			elem.AddField(new FieldInfo($"{fieldInfo.PropertyName}!{mapType}"), DataType.Undefined);
 		}
 
 		public void PostProcess()

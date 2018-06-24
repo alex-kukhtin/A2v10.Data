@@ -26,6 +26,8 @@ namespace A2v10.Data.ScriptBuilder
 			sb.AppendLine();
 			sb.AppendLine("\treturn root;");
 			sb.AppendLine("}");
+			//sb.Replace(Environment.NewLine, " ");
+			//sb.Replace('\t', ' ');
 			return sb.ToString();
 		}
 

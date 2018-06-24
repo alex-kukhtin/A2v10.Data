@@ -14,6 +14,7 @@ namespace A2v10.Data
 		public SpecType SpecType { get; }
 		public Boolean IsComplexField { get; }
 		public Boolean IsLazy { get; }
+		public String[] MapFields { get; }
 
 		public FieldInfo(String name)
 		{
@@ -22,6 +23,7 @@ namespace A2v10.Data
 			FieldType = FieldType.Scalar;
 			SpecType = SpecType.Unknown;
 			IsLazy = false;
+			MapFields = null;
 			var x = name.Split('!');
 			if (x.Length > 0)
 				PropertyName = x[0];
@@ -38,6 +40,11 @@ namespace A2v10.Data
 					SpecType = DataHelpers.TypeName2SpecType(x[2]);
 				IsLazy = x[2].Contains("Lazy");
 			}
+			if (x.Length == 4)
+			{
+				FieldType = FieldType.MapObject;
+				MapFields = x[3].Split(':');
+			}
 			IsComplexField = PropertyName.Contains('.');
 			CheckReservedWords();
 		}
@@ -46,7 +53,10 @@ namespace A2v10.Data
 			{
 				"Parent",
 				"Root",
-				"ParentId"
+				"ParentId",
+				"CurrentyKey",
+				"ParentRowNumber",
+				"ParentKey"
 			};
 
 		void CheckReservedWords()
@@ -75,6 +85,7 @@ namespace A2v10.Data
 			SpecType = source.SpecType;
 			IsComplexField = false;
 			IsLazy = false;
+			MapFields = null;
 		}
 
 

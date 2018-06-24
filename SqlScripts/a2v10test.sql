@@ -237,8 +237,12 @@ if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2te
 	drop procedure a2test.[ParentKey.Metadata]
 go
 ------------------------------------------------
-if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'ParentKey.Update')
-	drop procedure a2test.[ParentKey.Update]
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'Document.RowsMethods.Metadata')
+	drop procedure a2test.[Document.RowsMethods.Metadata]
+go
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'Document.RowsMethods.Update')
+	drop procedure a2test.[Document.RowsMethods.Update]
 go
 ------------------------------------------------
 if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'NestedMain.TableType' AND ss.name = N'a2test')
@@ -251,6 +255,22 @@ go
 ------------------------------------------------
 if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'NestedSubArray.TableType' AND ss.name = N'a2test')
 	drop type [a2test].[NestedSubArray.TableType];
+go
+------------------------------------------------
+if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'Document.TableType' AND ss.name = N'a2test')
+	drop type [a2test].[Document.TableType];
+go
+------------------------------------------------
+if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'Row.TableType' AND ss.name = N'a2test')
+	drop type [a2test].[Row.TableType];
+go
+------------------------------------------------
+if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'Method.TableType' AND ss.name = N'a2test')
+	drop type [a2test].[Method.TableType];
+go
+------------------------------------------------
+if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'MethodData.TableType' AND ss.name = N'a2test')
+	drop type [a2test].[MethodData.TableType];
 go
 ------------------------------------------------
 create type [a2test].[NestedMain.TableType] as
@@ -280,6 +300,37 @@ table (
 	[X] int,
 	[Y] int,
 	[D] decimal(10, 5)
+)
+go
+------------------------------------------------
+create type [a2test].[Document.TableType] as
+table (
+	[Id] bigint null,
+	[Name] nvarchar(255)
+)
+go
+------------------------------------------------
+create type [a2test].[Row.TableType] as
+table (
+	[Id] bigint null,
+	[RowNumber] int null
+)
+go
+------------------------------------------------
+create type [a2test].[Method.TableType] as
+table (
+	[CurrentKey] nvarchar(255) null,
+	ParentRowNumber int null,
+	[Name] nvarchar(255) null
+)
+go
+------------------------------------------------
+create type [a2test].[MethodData.TableType] as
+table (
+	[Id] int null,
+	ParentRowNumber int null,
+	ParentKey nvarchar(255) null,
+	[Code] nvarchar(255) null
 )
 go
 ------------------------------------------------
@@ -424,23 +475,6 @@ begin
 	declare @SubObjects [a2test].[NestedSub.TableType];
 	select [MainObject!MainObject!Metadata]=null, * from @NestedMain;
 	select [SubObjects!MainObject.SubObjects!Metadata] = null, * from @SubObjects;
-end
-go
-------------------------------------------------
-create procedure a2test.[ParentKey.Update]
-	@TenantId int = null,
-	@UserId bigint = null,
-	@MainObject [a2test].[NestedMain.TableType] readonly,
-	@SubObjects [a2test].[NestedSub.TableType] readonly
-as
-begin
-	set nocount on;	
-	select [MainObject!TMainObject!Object] = null, [Id!!Id] = 55,
-		[SubObjects!TSubObject!Array] = null;
-	
-	select [!TSubObject!Array] = null, [!TMainObject.SubObjects!ParentId]=55, [Id!!Id] = Id, [Key]=ParentKey 
-	from @SubObjects;
-
 end
 go
 ------------------------------------------------
@@ -757,10 +791,53 @@ begin
 	set nocount on;
 	select [Document!TDocument!Object] = null, [Id!!Id] = 123, [Name!!Name]='Document', [Rows!TRow!Array] = null;
 
-	select [!TRow!Array] = null, [Id!!Id]=null, [!TDocument.Rows!ParentId]=123, [Methods!TMethod!Object] = null;
+	select [!TRow!Array] = null, [Id!!Id]=null, [!TDocument.Rows!ParentId]=123, [Methods!TMethod!MapObject!Mtd1:Mtd2] = null;
 
-	select [!TMethod!MapObject] = null, [Name!!Name] = N'Method 1', [!TRow.Methods!ParentId] = null, [Key!!Key] = N'Mtd1'
+	select [!TMethod!MapObject] = null, [Id!!Id] = 11, [Name!!Name] = N'Method 1', [!TRow.Methods!ParentId] = null, [Key!!Key] = N'Mtd1',
+		[Data!TMethodData!Array] = null
 	union all
-	select [!TMethod!MapObject] = null, [Name!!Name] = N'Method 2', [!TRow.Methods!ParentId] = null, [Key!!Key] = N'Mtd2'
+	select [!TMethod!MapObject] = null, [Id!!Id] = 22, [Name!!Name] = N'Method 2', [!TRow.Methods!ParentId] = null, [Key!!Key] = N'Mtd2',
+		[Data!TMethodData!Array] = null
+
+	select [!TMethodData!Array] = null, [Id!!Id] = 276, Code='Code1', [!TMethod.Data!ParentId] = 11;
+end
+go
+------------------------------------------------
+create procedure a2test.[Document.RowsMethods.Metadata]
+as
+begin
+	set nocount on;
+	declare @Document [a2test].[Document.TableType];
+	declare @Rows [a2test].[Row.TableType];
+	declare @Methods [a2test].[Method.TableType];
+	declare @MethodData [a2test].[MethodData.TableType];
+	select [Document!Document!Metadata]=null, * from @Document;
+	select [Rows!Document.Rows!Metadata]=null, * from @Rows;
+	select [Methods!Document.Rows.Methods*!Metadata]=null, * from @Methods;
+	select [MethodData!Document.Rows.Methods*.Data!Metadata]=null, * from @MethodData;
+end
+go
+------------------------------------------------
+create procedure a2test.[Document.RowsMethods.Update]
+	@TenantId int = null,
+	@UserId bigint = null,
+	@Document [a2test].[Document.TableType] readonly,
+	@Rows [a2test].[Row.TableType] readonly,
+	@Methods [a2test].[Method.TableType] readonly,
+	@MethodData [a2test].[MethodData.TableType] readonly
+as
+begin
+	set nocount on;
+	select [Document!TDocument!Object] = null, [Id!!Id] = Id, [Name!!Name] = [Name]
+	from @Document;
+	
+	select [Rows!TRow!Array] = null, [Id!!Id] = Id, RowNo=RowNumber
+	from @Rows;
+
+	select [Methods!TMethod!Array] = null, [Key]=CurrentKey, [Name], RowNo=ParentRowNumber
+	from @Methods;
+
+	select [MethodData!TMethodData!Array] = null, [Code], RowNo=ParentRowNumber, [Key]=ParentKey
+	from @MethodData;
 end
 go

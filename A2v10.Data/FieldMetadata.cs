@@ -90,6 +90,8 @@ namespace A2v10.Data
 				case FieldType.Object:
 				case FieldType.Group:
 					return RefObject;
+				case FieldType.MapObject:
+					return RefObject + "Map";
 				default:
 					if (DataType == DataType.Undefined)
 						throw new DataLoaderException($"Invalid data type for '{fieldName}'");

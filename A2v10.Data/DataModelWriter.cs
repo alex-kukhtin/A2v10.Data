@@ -69,7 +69,7 @@ namespace A2v10.Data
 					if (_tables.TryGetValue(prm.ParameterName, out Tuple<DataTable, String>  table))
 					{
 						// table parameters (binging by object name)
-						FillDataTable(table.Item1, GetDataForSave(data as ExpandoObject, table.Item2 /*path*/));
+						FillDataTable(table.Item1, GetDataForSave(data as ExpandoObject, table.Item2 /*path*/, null));
 						prm.Value = table.Item1;
 						prm.RemoveDbName(); // remove first segment (database name)
 					}
@@ -156,19 +156,23 @@ namespace A2v10.Data
 			return false;
 		}
 
-		IEnumerable<ExpandoObject> GetDataForSave(ExpandoObject data, String path, Int32? parentIndex = null)
+		IEnumerable<ExpandoObject> GetDataForSave(ExpandoObject data, String path, Int32? parentIndex = null, Object parentKey = null)
 		{
 			if (String.IsNullOrEmpty(path))
 				yield return data;
 			var x = path.Split('.');
 			var currentData = data as IDictionary<String, Object>;
 			var currentId = data.Get<Object>("Id");
-			var currentKey = data.Get<Object>("Key");
 			for (Int32 i = 0; i < x.Length; i++)
 			{
 				Boolean bLast = (i == (x.Length - 1));
 				String prop = x[i];
 				// RowNumber is 1-based!
+				Boolean isMap = false;
+				if (prop.EndsWith("*")) {
+					prop = prop.Substring(0, prop.Length - 1);
+					isMap = true;
+				}
 				if (currentData.TryGetValue(prop, out Object propValue))
 				{
 					if (propValue is IList<Object>)
@@ -179,7 +183,8 @@ namespace A2v10.Data
 							var currVal = list[j] as ExpandoObject;
 							currVal.Set("RowNumber", j + 1);
 							currVal.Set("ParentId", currentId);
-							currVal.Set("ParentKey", currentKey);
+							if (parentKey != null)
+								currVal.Set("ParentKey", parentKey);
 							if (parentIndex != null)
 								currVal.Set("ParentRowNumber", parentIndex.Value + 1);
 							if (bLast)
@@ -200,17 +205,48 @@ namespace A2v10.Data
 						if (bLast)
 						{
 							var propValEO = propValue as ExpandoObject;
-							currVal.Set("ParentId", currentId);
-							currVal.Set("ParentKey", currentKey);
-							yield return currVal;
+							if (isMap)
+							{
+								var propValD = propValEO as IDictionary<String, Object>;
+								foreach (var kv in propValD)
+								{
+									var mapItem = kv.Value as ExpandoObject;
+									mapItem.Set("CurrentKey", kv.Key);
+									if (parentIndex != null)
+										mapItem.Set("ParentRowNumber", parentIndex.Value + 1);
+									yield return mapItem;
+								}
+							}
+							else
+							{
+								currVal.Set("ParentId", currentId);
+								if (parentKey != null)
+									currVal.Set("ParentKey", parentKey);
+								if (parentIndex != null)
+									currVal.Set("ParentRowNumber", parentIndex.Value + 1);
+								yield return currVal;
+							}
 						}
 						else
 						{
 							String newPath = String.Empty;
 							for (Int32 k = i + 1; k < x.Length; k++)
 								newPath = newPath.AppendDot(x[k]);
-							foreach (var dx in GetDataForSave(currVal, newPath, 0))
-								yield return dx;
+							if (isMap)
+							{
+								var currValD = currVal as IDictionary<String, Object>;
+								foreach (var kv in currValD)
+								{
+									var mapItem = kv.Value as ExpandoObject;
+									foreach (var dx in GetDataForSave(mapItem, newPath, parentIndex, kv.Key))
+										yield return dx;
+								}
+							}
+							else
+							{
+								foreach (var dx in GetDataForSave(currVal, newPath, 0))
+									yield return dx;
+							}
 						}
 					}
 				}
