@@ -546,12 +546,15 @@ namespace A2v10.Data
 			else if (field.IsMap)
 			{
 				_refMap.MergeObject(field.TypeName, id, currentRecord);
-				if (key != null)
-					_root.AddToMap(field.PropertyName, currentRecord, key.ToString());
-				else if (id != null)
-					_root.AddToArray(field.PropertyName, currentRecord);
-				else
-					throw new DataLoaderException("For Map objects, the property 'Key' or 'Id' is required");
+				if (field.IsVisible)
+				{
+					if (key != null)
+						_root.AddToMap(field.PropertyName, currentRecord, key.ToString());
+					else if (id != null)
+						_root.AddToArray(field.PropertyName, currentRecord);
+					else
+						throw new DataLoaderException("For Map objects, the property 'Key' or 'Id' is required");
+				}
 			}
 		}
 
