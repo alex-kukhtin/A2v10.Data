@@ -364,7 +364,7 @@ namespace A2v10.Data
 			}
 		}
 
-		public async Task<IDataModel> SaveModelAsync(String source, String command, System.Object data, System.Object prms = null)
+		public async Task<IDataModel> SaveModelAsync(String source, String command, System.Object data, System.Object prms = null, Func<ITableDescription, Object> onSetData = null)
 		{
 			var dataReader = new DataModelReader(_localizer);
 			var dataWriter = new DataModelWriter();
@@ -384,6 +384,8 @@ namespace A2v10.Data
 							while (await rdr.NextResultAsync());
 						}
 					}
+					if (onSetData != null)
+						data = onSetData(dataWriter.GetTableDescription());
 					using (var cmd = cnn.CreateCommandSP(command))
 					{
 						SqlCommandBuilder.DeriveParameters(cmd);

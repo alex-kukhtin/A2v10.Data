@@ -6,6 +6,8 @@ using System.Dynamic;
 using System.Data;
 using System.Data.SqlClient;
 using Newtonsoft.Json;
+using A2v10.Data.Interfaces;
+using System.Linq;
 
 namespace A2v10.Data
 {
@@ -14,7 +16,6 @@ namespace A2v10.Data
 		IDictionary<String, Tuple<DataTable, String>> _tables = new Dictionary<String, Tuple<DataTable, String>>();
 		IDictionary<String, String> _jsonParams = new Dictionary<String, String>();
 
-		String oldFirstObjectName = null; // for oldVersion
 
 		internal void ProcessOneMetadata(IDataReader rdr)
 		{
@@ -24,15 +25,6 @@ namespace A2v10.Data
 				throw new DataWriterException($"First field name part '{rsName}' is invalid. 'ParamName!DataPath!Metadata' or 'ParamName!DataPath!Json' expected.");
 			var paramName = fi[0];
 			var tablePath = fi[1];
-
-			if (String.IsNullOrEmpty(tablePath))
-			{
-				// old version processing
-				tablePath = paramName;
-				oldFirstObjectName = paramName;
-			}
-			if (oldFirstObjectName != null)
-				tablePath = oldFirstObjectName + '.' + tablePath;
 
 			if (fi[2] == "Json")
 			{
@@ -252,5 +244,13 @@ namespace A2v10.Data
 				}
 			}
 		}
+
+		internal ITableDescription GetTableDescription()
+		{
+			if (_tables.Count != 1)
+				throw new DataWriterException("Invalid tables for GetTableDescription");
+			return new TableDescription(_tables.First().Value.Item1);
+		}
 	}
 }
+;

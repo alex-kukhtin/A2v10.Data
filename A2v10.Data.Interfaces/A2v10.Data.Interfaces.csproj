@@ -47,6 +47,7 @@
     <Compile Include="IDataProfiler.cs" />
     <Compile Include="IDataScripter.cs" />
     <Compile Include="ILocalizer.cs" />
+    <Compile Include="ITableDescription.cs" />
     <Compile Include="ITenantManager.cs" />
     <Compile Include="IDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
