@@ -841,3 +841,19 @@ begin
 	from @MethodData;
 end
 go
+
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'InvalidType.Load')
+	drop procedure a2test.[InvalidType.Load]
+go
+------------------------------------------------
+create procedure a2test.[InvalidType.Load]
+	@TenantId int = null,
+	@UserId bigint = null,
+	@Id bigint = null
+as
+begin
+	set nocount on;
+	select [Model!TModel!Aray] = null, [Id!!Id] = 123;
+end
+go

@@ -334,7 +334,8 @@ namespace A2v10.Data
 				return;
 			// first field = self object
 			var schemaTable = rdr.GetSchemaTable();
-			var objectDef = new FieldInfo(GetAlias(rdr.GetName(0)));
+			var firstFieldName = GetAlias(rdr.GetName(0));
+			var objectDef = new FieldInfo(firstFieldName);
 			if (objectDef.TypeName == SYSTEM_TYPE)
 				return; // not needed
 			else if (objectDef.TypeName == ALIASES_TYPE)
@@ -342,6 +343,8 @@ namespace A2v10.Data
 				ProcessAliasesMetadata(rdr);
 				return;
 			}
+			if (objectDef.FieldType == FieldType.Scalar)
+				throw new DataLoaderException($"Invalid element type: '{firstFieldName}'");
 			var rootMetadata = GetOrCreateMetadata(ROOT);
 			rootMetadata.AddField(objectDef, DataType.Undefined);
 			// other fields = object fields

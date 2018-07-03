@@ -452,5 +452,15 @@ namespace A2v10.Data.Tests
 			dt.AreArrayValueEqual("Category_1", 0, "Name");
 
 		}
+
+		[TestMethod]
+		public void InvalidElementType()
+		{
+			var ex = Assert.ThrowsException<DataLoaderException>(() =>
+			{
+				_dbContext.LoadModel(null, "a2test.[InvalidType.Load]");
+			});
+			Assert.AreEqual(ex.Message, "Invalid element type: 'Model!TModel!Aray'");
+		}
 	}
 }
