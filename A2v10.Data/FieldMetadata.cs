@@ -23,7 +23,8 @@ namespace A2v10.Data
 		Map,
 		Tree,
 		Group,
-		MapObject
+		MapObject,
+		Json
 	}
 
 	public enum SpecType

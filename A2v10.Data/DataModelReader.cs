@@ -344,7 +344,9 @@ namespace A2v10.Data
 				return;
 			}
 			if (objectDef.FieldType == FieldType.Scalar)
+			{
 				throw new DataLoaderException($"Invalid element type: '{firstFieldName}'");
+			}
 			var rootMetadata = GetOrCreateMetadata(ROOT);
 			rootMetadata.AddField(objectDef, DataType.Undefined);
 			// other fields = object fields

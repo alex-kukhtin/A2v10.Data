@@ -36,7 +36,7 @@ namespace A2v10.Data
 			if (x.Length > 2)
 			{
 				FieldType = DataHelpers.TypeName2FieldType(x[2]);
-				if (FieldType == FieldType.Scalar || FieldType == FieldType.Array)
+				if (FieldType == FieldType.Scalar || FieldType == FieldType.Array || FieldType == FieldType.Json)
 					SpecType = DataHelpers.TypeName2SpecType(x[2]);
 				IsLazy = x[2].Contains("Lazy");
 			}
@@ -71,6 +71,8 @@ namespace A2v10.Data
 		{
 			if (!String.IsNullOrEmpty(PropertyName))
 			{
+				if (FieldType == FieldType.Json)
+					return;
 				if (String.IsNullOrEmpty(TypeName))
 					throw new DataLoaderException($"If a property name ('{PropertyName}') is specified, then type name is required");
 			}

@@ -55,6 +55,8 @@ namespace A2v10.Data
 					return FieldType.Array;
 				case "Group":
 					return FieldType.Group;
+				case "Json":
+					return FieldType.Json;
 			}
 			return FieldType.Scalar;
 		}
