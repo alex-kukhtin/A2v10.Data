@@ -142,6 +142,9 @@ namespace A2v10.Data
 				var dataVal = rdr.GetValue(i);
 				switch (fi.SpecType)
 				{
+					case SpecType.Id:
+						_sys.Add("Id", dataVal);
+						break;
 					case SpecType.PageSize:
 						Int32 pageSize = (Int32)dataVal;
 						if (!String.IsNullOrEmpty(fi.TypeName))
