@@ -66,6 +66,7 @@
     <Compile Include="DatabaseLoaderSync.cs" />
     <Compile Include="DatabaseWriter.cs" />
     <Compile Include="DatabaseLocalization.cs" />
+    <Compile Include="Providers\DbfReader.cs" />
     <Compile Include="Utils\DataTester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\MetadataTester.cs" />
@@ -73,11 +74,17 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="TestFiles\output.dbf" />
+    <None Include="TestFiles\simple.dbf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\A2v10.Data.Interfaces\A2v10.Data.Interfaces.csproj">
       <Project>{1C5A0097-29A8-4157-80C0-B865CEAFCCCE}</Project>
       <Name>A2v10.Data.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\A2v10.Data.Providers\A2v10.Data.Providers.csproj">
+      <Project>{1562EE09-1FD2-41F6-B575-5BE0343196A4}</Project>
+      <Name>A2v10.Data.Providers</Name>
     </ProjectReference>
     <ProjectReference Include="..\A2v10.Data.ScriptBuilder\A2v10.Data.ScriptBuilder.csproj">
       <Project>{83c23f97-4f17-44fd-9933-fc8cac1b589c}</Project>

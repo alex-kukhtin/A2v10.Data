@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("A2v10.Data")]
+[assembly: AssemblyTitle("A2v10.Data.Providers")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("A2v10.Data")]
+[assembly: AssemblyProduct("A2v10.Data.Providers")]
 [assembly: AssemblyCopyright("Copyright © 2015-2018 Alex Kukhtin. All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3cefba76-9ed3-40b4-a844-cc17d960202f")]
+[assembly: Guid("1562ee09-1fd2-41f6-b575-5be0343196a4")]
 
 // Version information for an assembly consists of the following four values:
 //
