@@ -79,7 +79,7 @@ namespace A2v10.Data.Providers.Dbf
 				case 'C': return FieldType.Char;
 				case 'M': return FieldType.Memo;
 				case 'L': return FieldType.Boolean;
-				case 'F': return FieldType.Boolean;
+				case 'F': return FieldType.Float;
 				default:
 					throw new FormatException($"Invalid field type: '{ch}'");
 			}
@@ -133,6 +133,10 @@ namespace A2v10.Data.Providers.Dbf
 				switch (f.Type)
 				{
 					case FieldType.Boolean:
+						{
+							Byte bVal = dat[iIndex];
+							fd.BooleanValue = bVal == (Char) 'T';
+						}
 						break;
 					case FieldType.Char:
 						{

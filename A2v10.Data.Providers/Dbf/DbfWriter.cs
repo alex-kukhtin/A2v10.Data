@@ -72,6 +72,9 @@ namespace A2v10.Data.Providers.Dbf
 					case FieldType.Numeric:
 						sz += f.Size;
 						break;
+					case FieldType.Boolean:
+						sz += 1;
+						break;
 				}
 			}
 			return sz;
@@ -102,6 +105,10 @@ namespace A2v10.Data.Providers.Dbf
 				case FieldType.Numeric:
 					wr.Write((Byte) 'N');
 					fieldSize = (Byte) f.Size;
+					break;
+				case FieldType.Boolean:
+					wr.Write((Byte)'L');
+					fieldSize = 1;
 					break;
 			}
 			wr.Write((Int32) 0); // addr
@@ -156,6 +163,9 @@ namespace A2v10.Data.Providers.Dbf
 						}
 						if (sVal.Length != fd.Size)
 							throw new InvalidProgramException();
+						break;
+					case FieldType.Boolean:
+						sVal = xd.BooleanValue ? "T" : "F";
 						break;
 					default:
 						throw new InvalidProgramException();

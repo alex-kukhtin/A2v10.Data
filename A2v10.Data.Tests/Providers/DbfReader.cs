@@ -6,7 +6,7 @@ using A2v10.Data.Providers.Dbf;
 using System.IO;
 using System.Text;
 
-namespace A2v10.Data.Tests
+namespace A2v10.Data.Providers
 {
 	[TestClass]
 	[TestCategory("Providers")]
