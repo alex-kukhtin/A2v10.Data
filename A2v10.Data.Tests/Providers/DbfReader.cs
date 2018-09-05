@@ -13,7 +13,7 @@ namespace A2v10.Data.Providers
 	public class DbfReaderTest
 	{
 		[TestMethod]
-		public void ReadSimpleFile()
+		public void DbfReadSimpleFile()
 		{
 			var f = new DataFile();
 			var rdr = new DbfReader(f);
