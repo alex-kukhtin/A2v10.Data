@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "A2v10.Data.ScriptBuilder", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "A2v10.Data.Providers", "A2v10.Data.Providers\A2v10.Data.Providers.csproj", "{1562EE09-1FD2-41F6-B575-5BE0343196A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "A2v10.Data.Generator", "A2v10.Data.Generator\A2v10.Data.Generator.csproj", "{78E6DA53-9ABB-406F-A711-55FF00386029}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{1562EE09-1FD2-41F6-B575-5BE0343196A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1562EE09-1FD2-41F6-B575-5BE0343196A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1562EE09-1FD2-41F6-B575-5BE0343196A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78E6DA53-9ABB-406F-A711-55FF00386029}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78E6DA53-9ABB-406F-A711-55FF00386029}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78E6DA53-9ABB-406F-A711-55FF00386029}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78E6DA53-9ABB-406F-A711-55FF00386029}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
