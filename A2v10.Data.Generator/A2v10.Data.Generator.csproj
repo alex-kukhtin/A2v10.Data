@@ -48,7 +48,7 @@
     <Compile Include="Metadata\Table.cs" />
     <Compile Include="Metadata\Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ModelWriter.cs" />
+    <Compile Include="ModelBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\A2v10.Data.Interfaces\A2v10.Data.Interfaces.csproj">

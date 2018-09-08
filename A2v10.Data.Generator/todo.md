@@ -1,4 +1,5 @@
 ﻿### TODO
 
-1. Tenants?
-2. Plural entity names?
+3. Primary Key
+5. Complex. Document.Entity (where)
+6. Complex Metadata

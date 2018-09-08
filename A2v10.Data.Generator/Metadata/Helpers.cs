@@ -2,24 +2,50 @@
 
 using System;
 using System.IO;
+using System.Text;
 
 namespace A2v10.Data.Generator
 {
 	public static class Helpers
 	{
-		public static void RemoveTailCommma(this StringWriter writer)
+		public static StringBuilder RemoveTailCommma(this StringBuilder sb)
 		{
-			var sb = writer.GetStringBuilder();
-			var len = sb.Length;
-			Char ch = sb[len - 1];
-			while (ch == '\r' || ch == '\n' || ch == ' ')
+			var last = sb.Length - 1;
+			if (last < 0) return sb;
+			Char ch = sb[last];
+			while (last > 0 && (ch == '\r' || ch == '\n' || ch == ' ' || ch == ','))
 			{
-				sb.Remove(len - 1, 1);
-				ch = sb[len - 1];
-				len--;
+				if (ch == ',')
+				{
+					sb.Remove(last, 1);
+					return sb;
+				}
+				last -= 1;
+				ch = sb[last];
 			}
-			if (ch == ',')
-				sb.Remove(len - 1, 1);
+			return sb;
+		}
+
+		public static StringBuilder RemoveTailSpace(this StringBuilder sb)
+		{
+			var last = sb.Length - 1;
+			if (last < 0) return sb;
+			Char ch = sb[last];
+			if (ch == ' ')
+				sb.Remove(last, 1);
+			return sb;
+		}
+
+		public static String Plural(this String s)
+		{
+			if (s == null || s.Length < 1) return s;
+			var ch = s[s.Length - 1];
+
+			if (ch == 's')
+				return s + "es";
+			else if (ch == 'y')
+				return  s.Substring(0, s.Length - 1) + "ies";
+			return s + "s";
 		}
 	}
 }

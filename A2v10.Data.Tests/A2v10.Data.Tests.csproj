@@ -60,6 +60,8 @@
     <Compile Include="DatabaseDataTypes.cs" />
     <Compile Include="DatabaseAliases.cs" />
     <Compile Include="DatabaseModels.cs" />
+    <Compile Include="Generator\ComplexModel.cs" />
+    <Compile Include="Generator\SimpleModel.cs" />
     <Compile Include="TestMetadata.cs" />
     <Compile Include="DatabasePager.cs" />
     <Compile Include="DatabaseLoader.cs" />
@@ -78,6 +80,10 @@
     <None Include="TestFiles\simple.dbf" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\A2v10.Data.Generator\A2v10.Data.Generator.csproj">
+      <Project>{78e6da53-9abb-406f-a711-55ff00386029}</Project>
+      <Name>A2v10.Data.Generator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\A2v10.Data.Interfaces\A2v10.Data.Interfaces.csproj">
       <Project>{1C5A0097-29A8-4157-80C0-B865CEAFCCCE}</Project>
       <Name>A2v10.Data.Interfaces</Name>

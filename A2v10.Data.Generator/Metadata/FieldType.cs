@@ -5,10 +5,15 @@ namespace A2v10.Data.Generator
 {
 	public enum FieldType
 	{
-		String,
-		Date,
+		VarChar,
+		Char,
+		DateTime,
 		Integer,
+		Sequence,
 		Float,
-		Money
+		Money,
+		Reference,
+		Array,
+		Parent
 	}
 }
