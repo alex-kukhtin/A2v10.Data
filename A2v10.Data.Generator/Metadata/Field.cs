@@ -9,16 +9,24 @@ using System.Threading.Tasks;
 
 namespace A2v10.Data.Generator
 {
+	public enum FieldModifier
+	{
+		None,
+		Id,
+		Name
+	}
+
 	public class Field
 	{
 		public String Name { get; set; }
 		public FieldType Type { get; set; }
 		public Int32 Size { get; set; }
 		public Boolean Nullable { get; set; }
-		public Boolean Id { get; set; }
 		public Boolean Parent { get; set; }
 		public Table Reference { get; set; }
-		public Table ParentTable {get;}
+		public Table ParentTable { get; }
+		public FieldModifier Modifier {get; set; }
+
 
 		public Field(Table parent, String name, FieldType type, Int32 size = 0)
 		{
@@ -28,6 +36,10 @@ namespace A2v10.Data.Generator
 			Size = size;
 			Nullable = true;
 		}
+
+		public Boolean IsId => Modifier == FieldModifier.Id;
+		public Boolean IsName => Modifier == FieldModifier.Name;
+		public Boolean IsReference => Type == FieldType.Reference;
 
 		public void BuildCreate(StringBuilder sb)
 		{
@@ -73,8 +85,10 @@ namespace A2v10.Data.Generator
 
 		public String FieldForSelect(String prefix)
 		{
-			if (Id)
+			if (IsId)
 				return $"[{Name}!!Id] = {prefix}[{Name}]";
+			else if (IsName)
+				return $"[{Name}!!Name] = {prefix}[{Name}]";
 			else if (Type == FieldType.Reference)
 				return $"[{Name}!T{Reference.EntityName}!RefId] = {prefix}[{Name}]";
 			else if (Type == FieldType.Parent)

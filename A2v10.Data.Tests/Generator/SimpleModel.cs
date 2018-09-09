@@ -13,7 +13,7 @@ namespace A2v10.Data.Generator
 
 		Table MakeSimpleTable()
 		{
-			var t = new Table("a2demo", "Table");
+			var t = new Table("a2demo", "Table", "Tables");
 			t.AddKeyField("Key", FieldType.VarChar, 20);
 			return t;
 		}
@@ -88,7 +88,7 @@ go
 			String expected =
 @"create procedure [a2demo].[Table.Load]
 @UserId bigint,
-@Id nvarchar(20)
+@Id nvarchar(20) = null
 as begin
 	set nocount on
 	set transaction isolation level read uncommitted;

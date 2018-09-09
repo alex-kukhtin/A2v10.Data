@@ -20,13 +20,14 @@ namespace A2v10.Data.Generator
 
 		private readonly IList<Field> _fields;
 
-		public Field Key => Fields.FirstOrDefault(f => f.Id);
+		public Field Key => Fields.FirstOrDefault(f => f.IsId);
 		public Field Parent => Fields.FirstOrDefault(f => f.Parent);
+		public Boolean HasReferences => Fields.FirstOrDefault(f => f.IsReference) != null;
 
-		public Table(String schema, String name)
+		public Table(String schema, String entity, String table)
 		{
-			EntityName = name;
-			TableName = name.Plural();
+			EntityName = entity;
+			TableName = table;
 			Schema = schema;
 			_fields = new List<Field>();
 		}
@@ -39,7 +40,7 @@ namespace A2v10.Data.Generator
 				throw new DataCreatorException($"Only one key is allowed for table {TableName}");
 			var f = new Field(this, name, type, size)
 			{
-				Id = true,
+				Modifier = FieldModifier.Id,
 				Nullable = false
 			};
 			_fields.Add(f);
@@ -118,6 +119,13 @@ namespace A2v10.Data.Generator
 			{
 				sb.Append($"{f.FieldForSelect(prefix)}").Append(", ");
 			}
+		}
+
+		public String BuildWhere()
+		{
+			if (this.Parent == null)
+				return $"[{Key.Name}] = @Id";
+			return $"[{Parent.Name}] = @Id";
 		}
 	}
 }

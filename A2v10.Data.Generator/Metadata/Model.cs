@@ -77,6 +77,10 @@ namespace A2v10.Data.Generator
 				if (f1.Type != FieldType.Reference)
 					continue;
 				yield return f1;
+
+				if (f1.Reference != null)
+					foreach (var f3 in FieldsForReferences(f1.Reference))
+						yield return f3;
 			}
 			foreach (var ch in Children)
 			{
@@ -85,15 +89,33 @@ namespace A2v10.Data.Generator
 			}
 		}
 
+		void BuildRefTables(StringBuilder sb)
+		{
+			var refFeilds = AllFieldsForReferences()
+				.Where(fld => fld.Type == FieldType.Reference)
+				.GroupBy(fld => fld.Reference.TableName)
+				.Select(grp => new { Key = grp.Key, Table = grp.First().Reference });
+			Boolean appendLast = false;
+			foreach (var f in refFeilds)
+			{
+				sb.AppendLine($"\tdeclare @all_{f.Key} table (id {f.Table.Key.TypeAsString});");
+				appendLast = true;
+			}
+			if (appendLast)
+				sb.AppendLine();
+		}
+
+
 		void BuildReferences(StringBuilder sb, Boolean where)
 		{
 			var refFeilds = AllFieldsForReferences()
 				.Where(fld => fld.Type == FieldType.Reference)
-				.GroupBy(fld => fld.Reference.EntityName)
-				.Select(grp => new { Group = grp.First(), Fields = String.Join(", ", grp.Select(g => $"m.{g.Name}"))});
+				.GroupBy(fld => fld.Reference.TableName)
+				.Select(grp => new { Reference = grp.First().Reference, Groups = grp});
+
 			foreach (var f in refFeilds)
 			{
-				var refTable = f.Group.Reference;
+				var refTable = f.Reference;
 				var refTableKey = refTable.Key;
 				sb.Append($"\tselect [!T{refTable.EntityName}!Map] = null, ");
 				// fields
@@ -101,24 +123,7 @@ namespace A2v10.Data.Generator
 				sb.RemoveTailCommma();
 				sb.RemoveTailSpace();
 				sb.AppendLine();
-				// from
-				var parentTable = f.Group.ParentTable;
-				sb.AppendLine($"\tfrom [{refTable.Schema}].[{refTable.TableName}] s");
-				sb.Append($"\tinner join [{parentTable.Schema}].[{parentTable.TableName}] m on s.[{refTableKey.Name}] in ({f.Fields})");
-				String whereKey = BasedOn.Key.Name;
-				if (parentTable != BasedOn)
-				{
-					whereKey = parentTable.Parent.Name;
-				}
-				if (where)
-				{
-					sb.AppendLine();
-					sb.AppendLine($"\twhere m.[{whereKey}] = @Id");
-				}
-				else
-				{
-					sb.AppendLine(";");
-				}
+				sb.AppendLine($"\tfrom [{refTable.Schema}].[{refTable.TableName}] s where s.[{refTable.Key.Name}] in (select id from @all_{refTable.TableName});");
 				sb.AppendLine();
 			}
 		}
@@ -136,6 +141,7 @@ namespace A2v10.Data.Generator
 
 		public void BuildCreateLoad(ModelBuilder modelBuilder)
 		{
+			HashSet<String> refTables = new HashSet<String>();
 			StringBuilder sb = modelBuilder.StringBuilder;
 			sb.AppendLine($"create procedure [{Schema}].[{Name}.Load]");
 			modelBuilder.BuildTenantParam();
@@ -143,25 +149,78 @@ namespace A2v10.Data.Generator
 			var idKey = BasedOn.Key;
 			if (idKey == null)
 				throw new DataCreatorException($"There is no key in the '{BasedOn.TableName}' table");
-			sb.AppendLine($"@Id {idKey.TypeAsString},");
+			sb.AppendLine($"@Id {idKey.TypeAsString} = null,");
 			sb.RemoveTailCommma();
 			sb.AppendLine("as begin");
 			sb.AppendLine("\tset nocount on");
 			sb.AppendLine("\tset transaction isolation level read uncommitted;");
 			sb.AppendLine();
+			BuildRefTables(sb);
 			// select
 			sb.Append($"\tselect [{Name}!T{Name}!Object] = null, ");
 			BuildFields(sb, BasedOn, "t.");
 			sb.AppendLine($"\tfrom [{BasedOn.Schema}].[{BasedOn.TableName}] t ");
 			sb.AppendLine($"\twhere t.[{idKey.Name}] = @Id;");
-			BuildChildrenLoad(sb);
+			BuildRefTableIds(sb, BasedOn, refTables);
+			BuildChildrenLoad(sb, refTables);
+			BuildRefRefTableIds(sb, refTables);
 			sb.AppendLine();
 			BuildReferences(sb, true);
 			sb.AppendLine("end");
 			sb.AppendLine("go");
 		}
 
-		void BuildChildrenLoad(StringBuilder sb)
+		void BuildRefTableIds(StringBuilder sb, Table table, HashSet<String> refs)
+		{
+			if (!table.HasReferences)
+				return;
+			var refFields = table.Fields.Where(f => f.IsReference).GroupBy(f => f.Reference.TableName).Select(g => new {Key = g.Key, Length = g.Count(), Fields = String.Join(", ", g.Select(f => $"[{f.Name}]")) });
+			foreach (var g in refFields)
+			{
+				refs.Add(g.Key);
+				sb.AppendLine();
+				sb.AppendLine($"\tinsert into @all_{g.Key}(id)");
+				if (g.Length == 1)
+				{
+					sb.AppendLine($"\t\tselect {g.Fields} from [{table.Schema}].[{table.TableName}] where {table.BuildWhere()};");
+				}
+				else
+				{
+					sb.AppendLine("\tselect [value] from (");
+					sb.AppendLine($"\t\tselect {g.Fields} from [{table.Schema}].[{table.TableName}] where {table.BuildWhere()}) d");
+					sb.AppendLine($"\t\tunpivot (value for [name] in ({g.Fields})) u;");
+				}
+			}
+		}
+
+		void BuildRefRefTableIds(StringBuilder sb, HashSet<String> refTables)
+		{
+			var refFeilds = AllFieldsForReferences()
+				.Where(fld => fld.Type == FieldType.Reference && !refTables.Contains(fld.Reference.TableName))
+				.GroupBy(fld => fld.Reference.TableName)
+				.Select(grp => new { Key = grp.Key, Length = grp.Count(), Table = grp.First().ParentTable, Fields = String.Join(", ", grp.Select(f => $"[{f.Name}]")) });
+
+			foreach (var g in refFeilds)
+			{
+				refTables.Add(g.Key);
+				sb.AppendLine();
+				sb.AppendLine($"\tinsert into @all_{g.Key}(id)");
+				if (g.Length == 1)
+				{
+					sb.AppendLine($"\t\tselect s.{g.Fields} from @all_{g.Table.TableName} b inner join [{g.Table.Schema}].[{g.Table.TableName}] s on b.id = s.[{g.Table.Key.Name}]");
+				}
+				else
+				{
+					throw new NotImplementedException();
+					sb.AppendLine("\tselect [value] from (");
+					//sb.AppendLine($"\t\tselect {g.Fields} from [{table.Schema}].[{table.TableName}] where {table.BuildWhere()}) d");
+					//sb.AppendLine($"\t\tunpivot (value for [name] in ({g.Fields})) u;");
+				}
+			}
+		}
+
+
+		void BuildChildrenLoad(StringBuilder sb, HashSet<String> refTables)
 		{
 			if (Children == null)
 				return;
@@ -176,6 +235,8 @@ namespace A2v10.Data.Generator
 				sb.AppendLine();
 				sb.AppendLine($"\tfrom [{tbl.Schema}].[{tbl.TableName}]");
 				sb.AppendLine($"\twhere [{tbl.Parent.Name}] = @Id;");
+
+				BuildRefTableIds(sb, ch.Value, refTables);
 			}
 		}
 
@@ -231,7 +292,7 @@ namespace A2v10.Data.Generator
 			// update part
 			foreach (var f in BasedOn.Fields)
 			{
-				if (f.Id) continue;
+				if (f.IsId) continue;
 				sb.AppendLine($"\t\ttarget.[{f.Name}] = source.[{f.Name}],");
 			}
 			sb.AppendLine("\t\ttarget.DateModified = getutcdate(),");
@@ -241,14 +302,14 @@ namespace A2v10.Data.Generator
 			sb.Append("\t\tinsert (");
 			foreach (var f in BasedOn.Fields)
 			{
-				if (f.Id && f.Type == FieldType.Sequence) continue;
+				if (f.IsId && f.Type == FieldType.Sequence) continue;
 				sb.Append($"[{f.Name}], ");
 			}
 			sb.AppendLine("UserCreated, UserModified) ");
 			sb.Append("\t\tvalues (");
 			foreach (var f in BasedOn.Fields)
 			{
-				if (f.Id && f.Type == FieldType.Sequence) continue;
+				if (f.IsId && f.Type == FieldType.Sequence) continue;
 				sb.Append($"[{f.Name}], ");
 			}
 			sb.AppendLine("@UserId, @UserId)");
