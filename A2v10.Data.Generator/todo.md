@@ -1,4 +1,5 @@
 ﻿### TODO
 
-3. Primary Key
-8. Simple Index with refs
+1. Create table. PrimaryKey
+2. ComplexUpdateProcedure
+3. Index with Paging

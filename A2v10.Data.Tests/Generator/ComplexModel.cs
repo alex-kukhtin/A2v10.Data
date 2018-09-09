@@ -106,16 +106,32 @@ as begin
 	set nocount on;
 	set transaction isolation level read uncommitted;
 
+	declare @all_Agents table (id bigint);
+	declare @all_Entities table (id bigint);
+	declare @all_Units table (id bigint);
+
 	select [Documents!TDocument!Array] = null, [Id!!Id] = [Id], [Date], [Sum], [Agent!TAgent!RefId] = [Agent], [Company!TAgent!RefId] = [Company], [Entity!TEntity!RefId] = [Entity], DateCreated, DateModified
 	from [a2demo].[Documents];
 
-	select [!TAgent!Map] = null, [Id!!Id] = s.[Id], [Name!!Name] = s.[Name]
-	from [a2demo].[Agents] s
-	inner join [a2demo].[Documents] m on s.[Id] in (m.Agent, m.Company);
+	insert into @all_Agents(id)
+	select [value] from (
+		select [Agent], [Company] from [a2demo].[Documents]) d
+		unpivot (value for [name] in ([Agent], [Company])) u;
 
-	select [!TEntity!Map] = null, [Id!!Id] = s.[Id], [Name!!Name] = s.[Name], s.[Price]
-	from [a2demo].[Entities] s
-	inner join [a2demo].[Documents] m on s.[Id] in (m.Entity);
+	insert into @all_Entities(id)
+		select [Entity] from [a2demo].[Documents];
+
+	insert into @all_Units(id)
+		select s.[Unit] from @all_Entities b inner join [a2demo].[Entities] s on b.id = s.[Id]
+
+	select [!TAgent!Map] = null, [Id!!Id] = s.[Id], [Name!!Name] = s.[Name]
+	from [a2demo].[Agents] s where s.[Id] in (select id from @all_Agents);
+
+	select [!TEntity!Map] = null, [Id!!Id] = s.[Id], [Name!!Name] = s.[Name], s.[Price], [Unit!TUnit!RefId] = s.[Unit]
+	from [a2demo].[Entities] s where s.[Id] in (select id from @all_Entities);
+
+	select [!TUnit!Map] = null, [Id!!Id] = s.[Id], [Name!!Name] = s.[Name], s.[Short]
+	from [a2demo].[Units] s where s.[Id] in (select id from @all_Units);
 
 end
 go

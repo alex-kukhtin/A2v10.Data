@@ -40,6 +40,7 @@ namespace A2v10.Data.Generator
 
 		public void BuildCreateIndex(ModelBuilder modelBuilder)
 		{
+			HashSet<String> refTables = new HashSet<String>();
 			var sb = modelBuilder.StringBuilder;
 			sb.AppendLine($"create procedure [{Schema}].[{Name}.Index]");
 			modelBuilder.BuildTenantParam();
@@ -51,9 +52,12 @@ namespace A2v10.Data.Generator
 			sb.AppendLine("\tset nocount on;");
 			sb.AppendLine("\tset transaction isolation level read uncommitted;");
 			sb.AppendLine();
+			BuildRefTables(sb);
 			sb.Append($"\tselect [{Name.Plural()}!T{Name}!Array] = null, ");
 			BuildFields(sb, BasedOn, String.Empty);
 			sb.AppendLine($"\tfrom [{BasedOn.Schema}].[{BasedOn.TableName}];");
+			BuildRefTableIds(sb, BasedOn, refTables, false);
+			BuildRefRefTableIds(sb, refTables);
 			sb.AppendLine();
 			BuildReferences(sb, false);
 			sb.AppendLine("end");
@@ -94,7 +98,7 @@ namespace A2v10.Data.Generator
 			var refFeilds = AllFieldsForReferences()
 				.Where(fld => fld.Type == FieldType.Reference)
 				.GroupBy(fld => fld.Reference.TableName)
-				.Select(grp => new { Key = grp.Key, Table = grp.First().Reference });
+				.Select(grp => new { grp.Key, Table = grp.First().Reference });
 			Boolean appendLast = false;
 			foreach (var f in refFeilds)
 			{
@@ -111,7 +115,7 @@ namespace A2v10.Data.Generator
 			var refFeilds = AllFieldsForReferences()
 				.Where(fld => fld.Type == FieldType.Reference)
 				.GroupBy(fld => fld.Reference.TableName)
-				.Select(grp => new { Reference = grp.First().Reference, Groups = grp});
+				.Select(grp => new { grp.First().Reference});
 
 			foreach (var f in refFeilds)
 			{
@@ -161,7 +165,7 @@ namespace A2v10.Data.Generator
 			BuildFields(sb, BasedOn, "t.");
 			sb.AppendLine($"\tfrom [{BasedOn.Schema}].[{BasedOn.TableName}] t ");
 			sb.AppendLine($"\twhere t.[{idKey.Name}] = @Id;");
-			BuildRefTableIds(sb, BasedOn, refTables);
+			BuildRefTableIds(sb, BasedOn, refTables, true);
 			BuildChildrenLoad(sb, refTables);
 			BuildRefRefTableIds(sb, refTables);
 			sb.AppendLine();
@@ -170,24 +174,25 @@ namespace A2v10.Data.Generator
 			sb.AppendLine("go");
 		}
 
-		void BuildRefTableIds(StringBuilder sb, Table table, HashSet<String> refs)
+		void BuildRefTableIds(StringBuilder sb, Table table, HashSet<String> refs, Boolean where)
 		{
 			if (!table.HasReferences)
 				return;
-			var refFields = table.Fields.Where(f => f.IsReference).GroupBy(f => f.Reference.TableName).Select(g => new {Key = g.Key, Length = g.Count(), Fields = String.Join(", ", g.Select(f => $"[{f.Name}]")) });
+			var refFields = table.Fields.Where(f => f.IsReference).GroupBy(f => f.Reference.TableName).Select(g => new {g.Key, Length = g.Count(), Fields = String.Join(", ", g.Select(f => $"[{f.Name}]")) });
 			foreach (var g in refFields)
 			{
 				refs.Add(g.Key);
 				sb.AppendLine();
+				String whereClause = where ? $" where {table.BuildWhere()}" : String.Empty;
 				sb.AppendLine($"\tinsert into @all_{g.Key}(id)");
 				if (g.Length == 1)
 				{
-					sb.AppendLine($"\t\tselect {g.Fields} from [{table.Schema}].[{table.TableName}] where {table.BuildWhere()};");
+					sb.AppendLine($"\t\tselect {g.Fields} from [{table.Schema}].[{table.TableName}]{whereClause};");
 				}
 				else
 				{
 					sb.AppendLine("\tselect [value] from (");
-					sb.AppendLine($"\t\tselect {g.Fields} from [{table.Schema}].[{table.TableName}] where {table.BuildWhere()}) d");
+					sb.AppendLine($"\t\tselect {g.Fields} from [{table.Schema}].[{table.TableName}]{whereClause}) d");
 					sb.AppendLine($"\t\tunpivot (value for [name] in ({g.Fields})) u;");
 				}
 			}
@@ -198,7 +203,7 @@ namespace A2v10.Data.Generator
 			var refFeilds = AllFieldsForReferences()
 				.Where(fld => fld.Type == FieldType.Reference && !refTables.Contains(fld.Reference.TableName))
 				.GroupBy(fld => fld.Reference.TableName)
-				.Select(grp => new { Key = grp.Key, Length = grp.Count(), Table = grp.First().ParentTable, Fields = String.Join(", ", grp.Select(f => $"[{f.Name}]")) });
+				.Select(grp => new { grp.Key, Length = grp.Count(), Table = grp.First().ParentTable, Fields = String.Join(", ", grp.Select(f => $"[{f.Name}]")) });
 
 			foreach (var g in refFeilds)
 			{
@@ -236,7 +241,7 @@ namespace A2v10.Data.Generator
 				sb.AppendLine($"\tfrom [{tbl.Schema}].[{tbl.TableName}]");
 				sb.AppendLine($"\twhere [{tbl.Parent.Name}] = @Id;");
 
-				BuildRefTableIds(sb, ch.Value, refTables);
+				BuildRefTableIds(sb, ch.Value, refTables, true);
 			}
 		}
 
