@@ -13,6 +13,7 @@ namespace A2v10.Data.Interfaces
 		IDictionary<String, IDataMetadata> Metadata { get; }
 
 		Boolean IsReadOnly { get; }
+		void SetReadOnly();
 
 		T Eval<T>(String expression);
 		T Eval<T>(ExpandoObject root, String expression);

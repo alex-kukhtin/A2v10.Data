@@ -12,7 +12,7 @@ namespace A2v10.Data
 
 		#region IDataModel
 		public ExpandoObject Root { get; }
-		public ExpandoObject System { get; }
+		public ExpandoObject System { get; set; }
 		public IDictionary<String, IDataMetadata> Metadata { get; }
 		#endregion
 
@@ -47,6 +47,13 @@ namespace A2v10.Data
 		public IDictionary<String, dynamic> GetDynamic()
 		{
 			return ObjectBuilder.BuildObject(Root as ExpandoObject);
+		}
+
+		public void SetReadOnly()
+		{
+			if (System == null)
+				System = new ExpandoObject();
+			System.Set("ReadOnly", true);
 		}
 
 		public Boolean IsReadOnly
