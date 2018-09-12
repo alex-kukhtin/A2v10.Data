@@ -54,6 +54,7 @@ namespace A2v10.Data
 			if (System == null)
 				System = new ExpandoObject();
 			System.Set("ReadOnly", true);
+			System.Set("StateReadOnly", true);
 		}
 
 		public Boolean IsReadOnly
