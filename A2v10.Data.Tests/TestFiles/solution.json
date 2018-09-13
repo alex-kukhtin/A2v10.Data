@@ -1,0 +1,112 @@
+﻿{
+	"schema": "a2demo",
+	"tables": {
+		"AgentKinds": {
+			"columns": {
+				"Kind": {
+					"type": "char",
+					"size": "4"
+				},
+				"Name": {
+									"type": "varchar",
+									"name": true
+				}
+			},
+			"primaryKey": [ "Kind" ]
+		},
+		"Agents": {
+			"columns": {
+				"Id": {
+					"type": "sequence"
+				},
+				"Kind": {
+					"parent": "AgentKinds"
+				},
+				"Name": {
+					"type": "varchar",
+									"size": 255,
+									"name": true
+				},
+				"Code": {
+					"type": "varchar",
+					"size": 20,
+					"unique": true
+				},
+				"Memo": {
+					"type": "varchar"
+					/*size:255 - default*/
+				},
+				"IsCustomer": {
+					"type": "boolean",
+					"default": false
+				},
+				"IsSupplier": {
+					"type": "boolean",
+					"default": false
+				}
+			}
+		},
+		"Documents": {
+			"Id": { "type": "sequence" },
+			"Date": { "type": "datetime" },
+			"Agent": {
+				"type": "reference",
+				"reftable": "Agents"
+			},
+			"Company": {
+				"type": "reference",
+				"reftable": "Agents"
+			},
+			"Sum": {
+				"type": "money",
+				"default": 0
+			}
+		},
+		"DocDetails": {
+			"typeName": "TRow",
+			"columns": {
+				"Id": { "type": "sequence" },
+				"Document": {
+					"parent": "Documents"
+				},
+				"Price": {
+					"type": "float",
+					"default": 0
+				},
+				"Qty": {
+					"type": "float",
+					"default": 0
+				},
+				"Sum": {
+					"type": "money",
+					"default": 0
+				}
+			}
+		}
+	},
+	"models": {
+		"Agents": {
+			"base": "Agents",
+			"index": {
+				"filters": [
+					{
+						"type": "list",
+						"column": "Kind"
+					},
+					{
+						"type": "boolean",
+						"column": "IsCustomer"
+					}
+				]
+			}
+		},
+		"Entities": {
+			"base": "Entities",
+			"index": {}
+		},
+		"Documents": {
+			"base": "Documents",
+			"index": {}
+		}
+	}
+}

@@ -79,6 +79,7 @@
     <None Include="packages.config" />
     <None Include="TestFiles\output.dbf" />
     <None Include="TestFiles\simple.dbf" />
+    <None Include="TestFiles\solution.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\A2v10.Data.Generator\A2v10.Data.Generator.csproj">
