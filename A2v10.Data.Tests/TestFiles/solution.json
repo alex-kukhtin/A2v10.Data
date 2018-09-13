@@ -29,7 +29,7 @@
 				},
 				"Code": {
 					"type": "varchar",
-					"size": 20,
+					"size": 32,
 					"unique": true
 				},
 				"Memo": {
@@ -99,10 +99,6 @@
 					}
 				]
 			}
-		},
-		"Entities": {
-			"base": "Entities",
-			"index": {}
 		},
 		"Documents": {
 			"base": "Documents",

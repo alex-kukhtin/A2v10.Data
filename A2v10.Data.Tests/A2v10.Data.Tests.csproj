@@ -62,6 +62,7 @@
     <Compile Include="DatabaseModels.cs" />
     <Compile Include="Generator\ComplexModel.cs" />
     <Compile Include="Generator\SimpleModel.cs" />
+    <Compile Include="Module\ModuleTest.cs" />
     <Compile Include="TestMetadata.cs" />
     <Compile Include="DatabasePager.cs" />
     <Compile Include="DatabaseLoader.cs" />
