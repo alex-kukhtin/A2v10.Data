@@ -87,6 +87,7 @@ namespace A2v10.Data
 						using (var rdr = cmd.ExecuteReader())
 						{
 							var helper = new LoadHelper<TOut>();
+							helper.ProcessRecord(rdr);
 							if (rdr.Read())
 							{
 								outValue = helper.ProcessFields(rdr);
@@ -113,6 +114,7 @@ namespace A2v10.Data
 						using (var rdr = await cmd.ExecuteReaderAsync())
 						{
 							var helper = new LoadHelper<TOut>();
+							helper.ProcessRecord(rdr);
 							if (await rdr.ReadAsync())
 							{
 								outValue = helper.ProcessFields(rdr);
