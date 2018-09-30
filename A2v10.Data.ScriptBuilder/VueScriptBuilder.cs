@@ -64,6 +64,8 @@ namespace A2v10.Data.ScriptBuilder
 					val = $"'{val}'";
 				else if (val is Object)
 					val = JsonConvert.SerializeObject(val);
+				else if (val is DateTime)
+					val = DateTime2StringWrap(val);
 				sb.Append($" {k.Key}: {val},");
 			}
 			sb.RemoveTailComma();
@@ -173,5 +175,15 @@ namespace A2v10.Data.ScriptBuilder
 			sb.RemoveTailComma();
 			return ",\n" + sb.ToString();
 		}
+
+		public static Object DateTime2StringWrap(Object val)
+		{
+			// TODO: join with DataHelpers
+			if (!(val is DateTime)) return val;
+			return "\"\\/" +
+				JsonConvert.SerializeObject(val, new JsonSerializerSettings() { DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Utc }) +
+				"\\/\"";
+		}
+
 	}
 }

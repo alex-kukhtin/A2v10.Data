@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 
+using Newtonsoft.Json;
+
 namespace A2v10.Data
 {
 	public static class DataHelpers
@@ -165,6 +167,14 @@ namespace A2v10.Data
 			else
 				throw new DataLoaderException($"Could not convert {dataVal.GetType()} to Boolean");
 			return rv;
+		}
+
+		public static Object DateTime2StringWrap(Object val)
+		{
+			if (!(val is DateTime)) return val;
+			return "\"\\/" +
+				JsonConvert.SerializeObject(val, new JsonSerializerSettings() { DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Utc }) +
+				"\\/\"";
 		}
 	}
 }

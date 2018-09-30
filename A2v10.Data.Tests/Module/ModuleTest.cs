@@ -21,7 +21,7 @@ namespace A2v10.Data.Solution
 			Module module = JsonConvert.DeserializeObject<Module>(json);
 			module.EndInit();
 			String result = JsonConvert.SerializeObject(module);
-			int z = 55;
+			//int z = 55;
 		}
 	}
 }

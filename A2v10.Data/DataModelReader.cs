@@ -181,6 +181,8 @@ namespace A2v10.Data
 						if (xs.Length < 2)
 							throw new DataLoaderException("For the Filter modifier, the field name must be as ItemProperty.FilterProperty");
 						var fmi = _createModelInfo(xs[0]).GetOrCreate<ExpandoObject>("Filter");
+						if (filter is DateTime)
+							filter = DataHelpers.DateTime2StringWrap(filter);
 						for (Int32 ii = 1; ii<xs.Length; ii++)
 						{
 							if (ii == xs.Length - 1)
