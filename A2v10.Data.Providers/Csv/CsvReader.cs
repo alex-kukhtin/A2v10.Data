@@ -10,6 +10,6 @@ namespace A2v10.Data.Providers.Csv
 {
 	public class CsvReader
 	{
-		private readonly DataFile _file;
+		//private readonly DataFile _file;
 	}
 }

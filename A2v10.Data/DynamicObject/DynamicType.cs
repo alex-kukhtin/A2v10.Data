@@ -32,17 +32,17 @@ namespace A2v10.Data
 
 	public class DynamicProperty
 	{
-		readonly String name;
-		readonly Type type;
+		readonly String _name;
+		readonly Type _type;
 
 		public DynamicProperty(String name, Type type)
 		{
-			this.name = name ?? throw new ArgumentNullException("name");
-			this.type = type ?? throw new ArgumentNullException("type");
+			_name = name ?? throw new ArgumentNullException("name");
+			_type = type ?? throw new ArgumentNullException("type");
 		}
 
-		public String Name => name;
-		public Type Type => type;
+		public String Name => _name;
+		public Type Type => _type;
 	}
 
 	internal class Signature : IEquatable<Signature>

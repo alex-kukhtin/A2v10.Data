@@ -217,7 +217,7 @@ namespace A2v10.Data.Generator
 				else
 				{
 					throw new NotImplementedException();
-					sb.AppendLine("\tselect [value] from (");
+					// sb.AppendLine("\tselect [value] from (");
 					//sb.AppendLine($"\t\tselect {g.Fields} from [{table.Schema}].[{table.TableName}] where {table.BuildWhere()}) d");
 					//sb.AppendLine($"\t\tunpivot (value for [name] in ({g.Fields})) u;");
 				}

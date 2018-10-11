@@ -60,6 +60,7 @@
     <Compile Include="DatabaseDataTypes.cs" />
     <Compile Include="DatabaseAliases.cs" />
     <Compile Include="DatabaseModels.cs" />
+    <Compile Include="Expressions\DynamicExpression.cs" />
     <Compile Include="Generator\ComplexModel.cs" />
     <Compile Include="Generator\SimpleModel.cs" />
     <Compile Include="Module\ModuleTest.cs" />

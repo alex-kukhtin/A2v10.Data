@@ -50,6 +50,9 @@
     <Compile Include="DynamicExtensions.cs" />
     <Compile Include="DynamicObject\DynamicType.cs" />
     <Compile Include="DynamicObject\ObjectBuilder.cs" />
+    <Compile Include="DynamicParser\DynamicParser.cs" />
+    <Compile Include="DynamicParser\DynamicRuntimeHelper.cs" />
+    <Compile Include="DynamicParser\SimpleTypes.cs" />
     <Compile Include="ElementMetadata.cs" />
     <Compile Include="FieldInfo.cs" />
     <Compile Include="FieldMetadata.cs" />
