@@ -12,40 +12,19 @@ namespace A2v10.Data.DynamicExpression
 
 	public static class DynamicParser
 	{
-		public static Expression Parse(String expression, params Object[] values)
+		public static Expression Parse(String expression)
 		{
-			ExpressionParser parser = new ExpressionParser(null, expression, values);
+			ExpressionParser parser = new ExpressionParser(null, expression);
 			return parser.Parse();
 		}
 
-		public static LambdaExpression ParseLambda(ParameterExpression[] parameters, Type resultType, String expression, params Object[] values)
+		public static LambdaExpression ParseLambda(ParameterExpression[] parameters, String expression)
 		{
-			ExpressionParser parser = new ExpressionParser(parameters, expression, values);
+			ExpressionParser parser = new ExpressionParser(parameters, expression);
 			return Expression.Lambda(parser.Parse(), parameters);
 		}
 	}
 
-	[Serializable]
-	public sealed class ParseException : Exception
-	{
-		readonly Int32 position;
-
-		public ParseException(String message, Int32 position)
-			: base(message)
-		{
-			this.position = position;
-		}
-
-		public Int32 Position
-		{
-			get { return position; }
-		}
-
-		public override String ToString()
-		{
-			return String.Format(Res.ParseExceptionFormat, Message, position);
-		}
-	}
 
 	internal class ExpressionParser
 	{
@@ -100,7 +79,6 @@ namespace A2v10.Data.DynamicExpression
 		static Dictionary<String, Object> keywords;
 
 		Dictionary<String, Object> symbols;
-		IDictionary<String, Object> externals;
 		Dictionary<Expression, String> literals;
 		ParameterExpression it;
 		String text;
@@ -109,7 +87,7 @@ namespace A2v10.Data.DynamicExpression
 		Char ch;
 		Token token;
 
-		public ExpressionParser(ParameterExpression[] parameters, String expression, Object[] values)
+		public ExpressionParser(ParameterExpression[] parameters, String expression)
 		{
 			text = expression ?? throw new ArgumentNullException("expression");
 			if (keywords == null)
@@ -118,8 +96,6 @@ namespace A2v10.Data.DynamicExpression
 			literals = new Dictionary<Expression, String>();
 			if (parameters != null)
 				ProcessParameters(parameters);
-			if (values != null)
-				ProcessValues(values);
 			textLen = text.Length;
 			SetTextPos(0);
 			NextToken();
@@ -134,23 +110,7 @@ namespace A2v10.Data.DynamicExpression
 				it = parameters[0];
 		}
 
-		void ProcessValues(Object[] values)
-		{
-			for (Int32 i = 0; i < values.Length; i++)
-			{
-				Object value = values[i];
-				if (i == values.Length - 1 && value is IDictionary<String, Object>)
-				{
-					externals = (IDictionary<String, Object>)value;
-				}
-				else
-				{
-					AddSymbol("@" + i.ToString(System.Globalization.CultureInfo.InvariantCulture), value);
-				}
-			}
-		}
-
-		void AddSymbol(String name, Object value)
+		void AddSymbol(String name, Expression value)
 		{
 			if (symbols.ContainsKey(name))
 				throw ParseError(Res.DuplicateIdentifier, name);
@@ -320,7 +280,7 @@ namespace A2v10.Data.DynamicExpression
 					expr = UnaryMinus(expr);
 				else if (op.id == TokenId.Plus)
 					expr = UnaryPlus(expr);
-				else
+				else if (op.id == TokenId.Exclamation)
 					expr = Expression.Not(PromoteLogical(expr));
 				return expr;
 			}
@@ -363,7 +323,7 @@ namespace A2v10.Data.DynamicExpression
 				case TokenId.OpenParen:
 					return ParseParenExpression();
 				default:
-					throw ParseError(Res.ExpressionExpected);
+					return ParseUnary();
 			}
 		}
 
@@ -424,8 +384,7 @@ namespace A2v10.Data.DynamicExpression
 				NextToken();
 				return (Expression) value;
 			}
-			if (symbols.TryGetValue(token.text, out value) ||
-				externals != null && externals.TryGetValue(token.text, out value))
+			if (symbols.TryGetValue(token.text, out value))
 			{
 				if (!(value is Expression expr))
 				{
@@ -453,15 +412,15 @@ namespace A2v10.Data.DynamicExpression
 
 		Expression GenerateConditional(Expression test, Expression expr1, Expression expr2, Int32 errorPos)
 		{
-			if (test.Type != typeof(Boolean))
-				throw ParseError(errorPos, Res.FirstExprMustBeBool);
+			test = PromoteLogical(test);
 			return Expression.Condition(test, expr1, expr2);
 		}
 
 
 		Expression ParseMemberAccess(Type type, Expression instance)
 		{
-			if (instance != null) type = instance.Type;
+			if (instance != null)
+				type = instance.Type;
 			Int32 errorPos = token.pos;
 			String id = GetIdentifier();
 			NextToken();
@@ -489,19 +448,10 @@ namespace A2v10.Data.DynamicExpression
 			Expression[] args = ParseArguments();
 			ValidateToken(TokenId.CloseBracket, Res.CloseBracketOrCommaExpected);
 			NextToken();
-			if (expr.Type.IsArray)
-			{
-				if (expr.Type.GetArrayRank() != 1 || args.Length != 1)
-					throw ParseError(errorPos, Res.CannotIndexMultiDimArray);
-				Expression index = args[0];
-				if (index == null)
-					throw ParseError(errorPos, Res.InvalidIndex);
-				return Expression.ArrayIndex(expr, index);
-			}
-			else
-			{
-				return null;
-			}
+			if (args.Length != 1)
+				throw ParseError(errorPos, Res.CannotIndexMultiDimArray);
+			Expression index = args[0];
+			return Expression.Call(typeof(DynamicRuntimeHelper), "ElementAccess", null, expr, index);
 		}
 
 		void SetTextPos(Int32 pos)
@@ -769,9 +719,7 @@ namespace A2v10.Data.DynamicExpression
 		public const String ExpressionExpected = "Expression expected";
 		public const String InvalidNumberLiteral = "Invalid number literal '{0}'";
 		public const String UnknownIdentifier = "Unknown identifier '{0}'";
-		public const String FirstExprMustBeBool = "The first expression must be of type 'Boolean'";
 		public const String CannotIndexMultiDimArray = "Indexing of multi-dimensional arrays is not supported";
-		public const String InvalidIndex = "Array index must be an integer expression";
 		public const String UnterminatedStringLiteral = "Unterminated string literal";
 		public const String InvalidCharacter = "Syntax error '{0}'";
 		public const String DigitExpected = "Digit expected";

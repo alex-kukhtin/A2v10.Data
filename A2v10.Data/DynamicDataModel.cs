@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq.Expressions;
+using A2v10.Data.DynamicExpression;
 using A2v10.Data.Interfaces;
 
 namespace A2v10.Data
@@ -15,6 +17,8 @@ namespace A2v10.Data
 		public ExpandoObject System { get; set; }
 		public IDictionary<String, IDataMetadata> Metadata { get; }
 		#endregion
+
+		private IDictionary<String, Delegate> _lambdas;
 
 		public DynamicDataModel(IDictionary<String, IDataMetadata> metadata, ExpandoObject root, ExpandoObject system)
 		{
@@ -33,6 +37,41 @@ namespace A2v10.Data
 		{
 			T fallback = default(T);
 			return (root).Eval<T>(expression, fallback);
+		}
+
+
+		public T CalcExpression<T>(String expression)
+		{
+			return CalcExpression<T>(this.Root, expression);
+		}
+
+		public T CalcExpression<T>(ExpandoObject root, String expression)
+		{
+			Object result = null;
+			if (_lambdas != null && _lambdas.TryGetValue(expression, out Delegate expr))
+			{
+				result = expr.DynamicInvoke(root);
+			}
+			else
+			{
+				if (_lambdas == null)
+					_lambdas = new Dictionary<String, Delegate>();
+				var prms = new ParameterExpression[] {
+					Expression.Parameter(typeof(ExpandoObject), "Root")
+				};
+				var lexpr = DynamicParser.ParseLambda(prms, expression);
+				expr = lexpr.Compile();
+				_lambdas.Add(expression, expr);
+				result = expr.DynamicInvoke(root);
+			}
+			if (result == null)
+				return default(T);
+			if (result is T resultT)
+				return resultT;
+			var tp = typeof(T);
+			if (tp.IsNullableType())
+				tp = Nullable.GetUnderlyingType(tp);
+			return (T) Convert.ChangeType(result, tp);
 		}
 
 		public String CreateScript(IDataScripter scripter)

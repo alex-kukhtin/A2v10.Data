@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 
 namespace A2v10.Data.DynamicExpression
@@ -36,7 +37,7 @@ namespace A2v10.Data.DynamicExpression
 		{
 			// TODO: JS number/string rules
 			if ((elem1 is String) || (elem2 is String))
-				return elem1.ToString() + elem2.ToString();
+				return elem1?.ToString() + elem2?.ToString();
 			return Decimal.Parse(elem1.ToString()) + Decimal.Parse(elem2.ToString());
 		}
 
@@ -136,6 +137,8 @@ namespace A2v10.Data.DynamicExpression
 		{
 			if (elem == null)
 				return false;
+			if (elem is String strVal)
+				return !String.IsNullOrEmpty(strVal);
 			var elemType = elem.GetType();
 			if (elemType.IsClass)
 				return elem != null;
@@ -181,6 +184,22 @@ namespace A2v10.Data.DynamicExpression
 			else if (elem is Boolean boolVal)
 				return boolVal ? -1M : -0M;
 			return NaN.Value;
+		}
+
+		public static Object ElementAccess(Object elem, Object arg)
+		{
+			if (arg == null)
+				throw new ArgumentNullException(nameof(arg));
+			if (elem is List<Object> list)
+			{
+				Int32 index = Convert.ToInt32(arg);
+				if (index < 0 || index >= list.Count)
+					throw new IndexOutOfRangeException();
+				return list[index];
+			} else if (elem is ExpandoObject expObj) {
+				return expObj.Get<Object>(arg.ToString());
+			}
+			return null;
 		}
 	}
 }
