@@ -204,8 +204,13 @@ namespace A2v10.Data.Tests.Expressions
 		public void MemberAccess()
 		{
 
-			var agent = new ExpandoObject();
-			agent.Set("Name", "agent name");
+			var agent = new ExpandoObject
+			{
+				{ "Name", "agent name" },
+				{ "$dollar", "$"},
+				{ "_underscore", "_" }
+			};
+
 			var addr = new ExpandoObject();
 			addr.Set("Text", "text");
 			agent.Set("Address", addr);
@@ -219,6 +224,12 @@ namespace A2v10.Data.Tests.Expressions
 
 			var result = CalcExpression("Agent.Name", "Agent", agent);
 			Assert.AreEqual(result, "agent name");
+
+			result = CalcExpression("Agent.$dollar", "Agent", agent);
+			Assert.AreEqual(result, "$");
+
+			result = CalcExpression("Agent._underscore", "Agent", agent);
+			Assert.AreEqual(result, "_");
 
 			result = CalcExpression("Agent.Address.Text", "Agent", agent);
 			Assert.AreEqual(result, "text");
@@ -263,6 +274,9 @@ namespace A2v10.Data.Tests.Expressions
 
 			objResult = dm.CalcExpression<Object>("Model.Name + ' 1'");
 			Assert.AreEqual("ObjectName 1", objResult);
+
+			objResult = dm.CalcExpression<Object>("Model.Name + ` @_$ 5`");
+			Assert.AreEqual("ObjectName @_$ 5", objResult);
 		}
 	}
 }

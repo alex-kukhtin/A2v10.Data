@@ -613,6 +613,7 @@ namespace A2v10.Data.DynamicExpression
 					break;
 				case '"':
 				case '\'':
+				case '`':
 					Char quote = ch;
 					do
 					{
@@ -625,12 +626,12 @@ namespace A2v10.Data.DynamicExpression
 					t = TokenId.StringLiteral;
 					break;
 				default:
-					if (Char.IsLetter(ch) || ch == '@' || ch == '_')
+					if (Char.IsLetter(ch) || ch == '_' || ch == '$')
 					{
 						do
 						{
 							NextChar();
-						} while (Char.IsLetterOrDigit(ch) || ch == '_');
+						} while (Char.IsLetterOrDigit(ch) || ch == '_' || ch == '$');
 						t = TokenId.Identifier;
 						break;
 					}
