@@ -161,6 +161,16 @@ namespace A2v10.Data
 						Int32 offset = (Int32)dataVal;
 						_createModelInfo(fi.TypeName).Set("Offset", offset);
 						break;
+					case SpecType.HasRows:
+						if (String.IsNullOrEmpty(fi.TypeName))
+							throw new DataLoaderException("For the HasRows modifier, the field name must be specified");
+						if (dataVal is Int32 intHasRows)
+							_createModelInfo(fi.TypeName).Set("HasRows", intHasRows != 0);
+						else if (dataVal is Boolean boolHasRows)
+							_createModelInfo(fi.TypeName).Set("HasRows", boolHasRows);
+						else
+							throw new DataLoaderException("Invalid data type for the TotalRows modifier. Expected 'int' or 'bit'");
+						break;
 					case SpecType.SortDir:
 						if (String.IsNullOrEmpty(fi.TypeName))
 							throw new DataLoaderException("For the SortDir modifier, the field name must be specified");

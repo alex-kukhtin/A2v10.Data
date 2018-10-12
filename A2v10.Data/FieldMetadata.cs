@@ -48,6 +48,7 @@ namespace A2v10.Data
 		PageSize,
 		Offset,
 		Filter,
+		HasRows,
 		Json
 	}
 

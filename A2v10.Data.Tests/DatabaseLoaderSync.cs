@@ -17,7 +17,7 @@ namespace A2v10.Data.Tests
 		}
 
 		[TestMethod]
-		public void LoadSimpleModel()
+		public void LoadSimpleModelSync()
 		{
 			var dm = _dbContext.LoadModel(null, "a2test.[SimpleModel.Load]");
 

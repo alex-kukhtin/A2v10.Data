@@ -39,7 +39,7 @@ namespace A2v10.Data.Tests
 		}
 
 		[TestMethod]
-		public async Task LoadComplexObjects()
+		public async Task LocalizeComplexObjects()
 		{
 			IDataModel dm = await _dbContext.LoadModelAsync(null, "a2test.[ComplexObject.Localization.Load]");
 			var md = new MetadataTester(dm);
