@@ -16,6 +16,7 @@ namespace A2v10.Data
 		public ExpandoObject Root { get; }
 		public ExpandoObject System { get; set; }
 		public IDictionary<String, IDataMetadata> Metadata { get; }
+		public Object FirstElementId { get; set; }
 		#endregion
 
 		private IDictionary<String, Delegate> _lambdas;
@@ -87,6 +88,8 @@ namespace A2v10.Data
 		{
 			return ObjectBuilder.BuildObject(Root as ExpandoObject);
 		}
+
+
 
 		public void SetReadOnly()
 		{

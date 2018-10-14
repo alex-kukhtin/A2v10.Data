@@ -28,6 +28,7 @@ namespace A2v10.Data
 		RefMapper _refMap = new RefMapper();
 		ExpandoObject _root = new ExpandoObject();
 		IDictionary<String, Object> _sys = new ExpandoObject() as IDictionary<String, Object>;
+		FieldInfo? firstElement;
 
 		public DataModelReader(IDataLocalizer localizer)
 		{
@@ -90,9 +91,26 @@ namespace A2v10.Data
 					return _dataModel;
 				if (_groupMetadata != null)
 					_sys.Add("Levels", GroupMetadata.GetLevels(_groupMetadata));
-				_dataModel = new DynamicDataModel(_metadata, _root, _sys as ExpandoObject);
+				_dataModel = new DynamicDataModel(_metadata, _root, _sys as ExpandoObject)
+				{
+					FirstElementId = GetFirstElementId()
+				};
 				return _dataModel;
 			}
+		}
+
+		Object GetFirstElementId()
+		{
+			if (firstElement == null)
+				return null;
+			if (!_metadata.TryGetValue(firstElement.Value.TypeName, out IDataMetadata meta))
+				return null;
+			if (String.IsNullOrEmpty(meta.Id))
+				return null;
+			var elem = _root.Get<ExpandoObject>(firstElement.Value.PropertyName);
+			if (elem == null)
+				return null;
+			return elem.Get<Object>(meta.Id);
 		}
 
 		String GetAlias(String name)
@@ -366,6 +384,8 @@ namespace A2v10.Data
 			rootMetadata.AddField(objectDef, DataType.Undefined);
 			// other fields = object fields
 			var typeMetadata = GetOrCreateMetadata(objectDef.TypeName);
+			if (firstElement == null)
+				firstElement = objectDef;
 			if (objectDef.IsArray || objectDef.IsTree || objectDef.IsMap)
 				typeMetadata.IsArrayType = true;
 			if (objectDef.IsGroup)

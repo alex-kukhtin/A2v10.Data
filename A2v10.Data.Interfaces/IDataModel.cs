@@ -12,6 +12,7 @@ namespace A2v10.Data.Interfaces
 		ExpandoObject System { get; }
 		IDictionary<String, IDataMetadata> Metadata { get; }
 
+		Object FirstElementId { get; }
 		Boolean IsReadOnly { get; }
 		void SetReadOnly();
 

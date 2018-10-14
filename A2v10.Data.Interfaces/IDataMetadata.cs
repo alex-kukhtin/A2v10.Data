@@ -7,18 +7,18 @@ using System.Text;
 
 namespace A2v10.Data.Interfaces
 {
-    public interface IDataMetadata
-    {
-        String Id { get; }
-        String Name { get; }
-        String RowNumber { get; }
-        String HasChildren { get; }
-        String Permissions { get; }
-        String Items { get; set; }
+	public interface IDataMetadata
+	{
+		String Id { get; }
+		String Name { get; }
+		String RowNumber { get; }
+		String HasChildren { get; }
+		String Permissions { get; }
+		String Items { get; set; }
 
-        IDictionary<String, IDataFieldMetadata> Fields { get; }
+		IDictionary<String, IDataFieldMetadata> Fields { get; }
 
-        Boolean IsArrayType { get; }
-        Boolean IsGroup { get; }
-    }
+		Boolean IsArrayType { get; }
+		Boolean IsGroup { get; }
+	}
 }
