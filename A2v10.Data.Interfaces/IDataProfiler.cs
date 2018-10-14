@@ -4,8 +4,8 @@ using System;
 
 namespace A2v10.Data.Interfaces
 {
-    public interface IDataProfiler
-    {
-        IDisposable Start(String command);
-    }
+	public interface IDataProfiler
+	{
+		IDisposable Start(String command);
+	}
 }
