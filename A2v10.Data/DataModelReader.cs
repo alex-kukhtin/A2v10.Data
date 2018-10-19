@@ -201,6 +201,12 @@ namespace A2v10.Data
 						String order = dataVal.ToString();
 						_createModelInfo(fi.TypeName).Set("SortOrder", order);
 						break;
+					case SpecType.GroupBy:
+						if (String.IsNullOrEmpty(fi.TypeName))
+							throw new DataLoaderException("For the Group modifier, the field name must be specified");
+						String group = dataVal.ToString();
+						_createModelInfo(fi.TypeName).Set("GroupBy", group);
+						break;
 					case SpecType.Filter:
 						if (String.IsNullOrEmpty(fi.TypeName))
 							throw new DataLoaderException("For the Filter modifier, the field name must be specified");

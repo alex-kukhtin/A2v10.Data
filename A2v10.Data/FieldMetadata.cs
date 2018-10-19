@@ -47,6 +47,7 @@ namespace A2v10.Data
 		SortDir,
 		PageSize,
 		Offset,
+		GroupBy,
 		Filter,
 		HasRows,
 		Json
