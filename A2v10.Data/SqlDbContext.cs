@@ -565,6 +565,12 @@ namespace A2v10.Data
 					prm.Value = dt;
 					prm.RemoveDbName(); // remove first segment (database name)
 				}
+				else if (prms is ExpandoObject eo)
+				{
+					var pv = eo.Get<Object>(simpleParamName);
+					if (pv != null)
+						prm.Value = pv;
+				}
 				else if (prmsType != null)
 				{
 					// scalar parameter
