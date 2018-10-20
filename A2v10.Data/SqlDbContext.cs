@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
+using System.Dynamic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -299,8 +300,9 @@ namespace A2v10.Data
 					using (var cmd = cnn.CreateCommandSP(command))
 					{
 						SqlCommandBuilder.DeriveParameters(cmd);
-						SetParametersWithList<T>(cmd, prms, list);
+						var retParam = SetParametersWithList<T>(cmd, prms, list);
 						cmd.ExecuteNonQuery();
+						SetReturnParamResult(retParam, prms);
 					}
 				}
 			}
@@ -315,8 +317,9 @@ namespace A2v10.Data
 					using (var cmd = cnn.CreateCommandSP(command))
 					{
 						SqlCommandBuilder.DeriveParameters(cmd);
-						SetParametersWithList<T>(cmd, prms, list);
+						var retParam = SetParametersWithList<T>(cmd, prms, list);
 						await cmd.ExecuteNonQueryAsync();
+						SetReturnParamResult(retParam, prms);
 					}
 				}
 			}
@@ -453,9 +456,16 @@ namespace A2v10.Data
 				return;
 			if (retParam.Value == DBNull.Value)
 				return;
-			var idProp = element.GetType().GetProperty("Id");
-			if (idProp != null)
-				idProp.SetValue(element, retParam.Value);
+			if (element is ExpandoObject eo)
+			{
+				eo.Set("Id", retParam.Value);
+			}
+			else
+			{
+				var idProp = element.GetType().GetProperty("Id");
+				if (idProp != null)
+					idProp.SetValue(element, retParam.Value);
+			}
 		}
 
 		async Task ReadDataAsync(String source, String command,
@@ -512,8 +522,9 @@ namespace A2v10.Data
 			}
 		}
 
-		void SetParametersWithList<T>(SqlCommand cmd, Object prms, IEnumerable<T> list) where T : class
+		SqlParameter SetParametersWithList<T>(SqlCommand cmd, Object prms, IEnumerable<T> list) where T : class
 		{
+			SqlParameter retParam = null;
 			Type listType = typeof(T);
 			Type prmsType = prms?.GetType();
 			var props = listType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -530,6 +541,12 @@ namespace A2v10.Data
 			for (Int32 i = 0; i < cmd.Parameters.Count; i++)
 			{
 				SqlParameter prm = cmd.Parameters[i];
+				if (prm.ParameterName == RET_PARAM_NAME)
+				{
+					retParam = prm;
+					prm.Value = DBNull.Value;
+					continue;
+				}
 				var simpleParamName = prm.ParameterName.Substring(1); // skip @
 				if (prm.SqlDbType == SqlDbType.Structured)
 				{
@@ -556,6 +573,7 @@ namespace A2v10.Data
 						prm.Value = pi.GetValue(prms);
 				}
 			}
+			return retParam;
 		}
 
 
