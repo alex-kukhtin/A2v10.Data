@@ -1,12 +1,13 @@
 ﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
 
+using A2v10.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace A2v10.Data.Providers
 {
-	public class DataFile
+	public class DataFile : IExternalDataFile
 	{
 		IList<Field> _fields;
 		IList<Record> _records;
@@ -43,9 +44,18 @@ namespace A2v10.Data.Providers
 		}
 		public IEnumerable<Field> Fields => _fields;
 
+		private IDictionary<String, Int32> _fieldMap;
+
+		internal void MapFields()
+		{
+			_fieldMap = new Dictionary<String, Int32>();
+			for (Int32 f = 0; f < _fields.Count; f++)
+				_fieldMap.Add(_fields[f].Name, f);
+		}
+
 		public Record CreateRecord()
 		{
-			var r = new Record();
+			var r = new Record(_fieldMap);
 			_records.Add(r);
 			return r;
 		}
@@ -56,6 +66,7 @@ namespace A2v10.Data.Providers
 				throw new InvalidOperationException();
 			return _records[index];
 		}
-		public IEnumerable<Record> Records => _records;
+		public IEnumerable<IExternalDataRecord> Records => _records;
+
 	}
 }

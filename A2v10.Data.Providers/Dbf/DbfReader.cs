@@ -4,11 +4,12 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using A2v10.Data.Providers;
+
+using A2v10.Data.Interfaces;
 
 namespace A2v10.Data.Providers.Dbf
 {
-	public class DbfReader
+	public class DbfReader : IExternalDataReader
 	{
 		private readonly DataFile _file;
 
@@ -19,12 +20,13 @@ namespace A2v10.Data.Providers.Dbf
 			_file = file;
 		}
 
-		public void Read(Stream stream)
+		public IExternalDataFile Read(Stream stream)
 		{
 			using (var rdr = new BinaryReader(stream))
 			{
 				Read(rdr);
 			}
+			return _file;
 		}
 
 		public void Read(BinaryReader rdr)
@@ -107,6 +109,7 @@ namespace A2v10.Data.Providers.Dbf
 			rdr.ReadInt16(); // reserved
 			Byte flag = rdr.ReadByte();
 			rdr.ReadBytes(8); // tail
+			_file.MapFields();
 		}
 
 		void ReadRecord(BinaryReader rdr, Int16 recordSize)

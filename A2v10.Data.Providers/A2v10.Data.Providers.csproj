@@ -48,8 +48,15 @@
     <Compile Include="Common\FieldType.cs" />
     <Compile Include="Common\Record.cs" />
     <Compile Include="Dbf\DbfWriter.cs" />
+    <Compile Include="ExternalDataContext.cs" />
+    <Compile Include="ExternalDataException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\A2v10.Data.Interfaces\A2v10.Data.Interfaces.csproj">
+      <Project>{1C5A0097-29A8-4157-80C0-B865CEAFCCCE}</Project>
+      <Name>A2v10.Data.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

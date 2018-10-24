@@ -12,5 +12,24 @@ namespace A2v10.Data.Providers
 		public Boolean BooleanValue { get; set; }
 
 		public FieldType FieldType { get; set; }
+
+		public Object Value { get
+			{
+				switch (FieldType)
+				{
+					case FieldType.Char:
+					case FieldType.Memo:
+						return StringValue;
+					case FieldType.Numeric:
+					case FieldType.Float:
+						return DecimalValue;
+					case FieldType.Boolean:
+						return BooleanValue;
+					case FieldType.Date:
+						return DateValue;
+				}
+				throw new ExternalDataException($"Invalid FieldType: {FieldType}");
+			}
+		}
 	}
 }
