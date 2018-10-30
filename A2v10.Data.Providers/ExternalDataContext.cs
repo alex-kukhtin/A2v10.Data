@@ -1,12 +1,10 @@
 ﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using A2v10.Data.Interfaces;
+using A2v10.Data.Providers.Csv;
 using A2v10.Data.Providers.Dbf;
 
 namespace A2v10.Data.Providers
@@ -20,11 +18,17 @@ namespace A2v10.Data.Providers
 			switch (format?.ToLowerInvariant())
 			{
 				case "dbf":
-					var dataFile = new DataFile()
+					var dataFileDbf = new DataFile()
 					{
 						Encoding = enc
 					};
-					return new DbfReader(dataFile);
+					return new DbfReader(dataFileDbf);
+				case "csv":
+					var dataFileCsv = new DataFile()
+					{
+						Encoding = enc
+					};
+					return new CsvReader(dataFileCsv);
 			}
 			return null;
 		}
