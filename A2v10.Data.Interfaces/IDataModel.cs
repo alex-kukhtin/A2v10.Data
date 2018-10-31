@@ -6,14 +6,22 @@ using System.Dynamic;
 
 namespace A2v10.Data.Interfaces
 {
+	public struct DataElementInfo
+	{
+		public IDataMetadata Metadata { get; set; }
+		public Object Element { get; set; }
+		public Object Id { get; set; }
+	}
+
 	public interface IDataModel
 	{
 		ExpandoObject Root { get; }
 		ExpandoObject System { get; }
 		IDictionary<String, IDataMetadata> Metadata { get; }
 
-		Object FirstElementId { get; }
+		DataElementInfo MainElement { get; }
 		Boolean IsReadOnly { get; }
+		Boolean IsEmpty { get; }
 		void SetReadOnly();
 
 		T Eval<T>(String expression);

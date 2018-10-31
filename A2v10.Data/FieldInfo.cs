@@ -14,6 +14,7 @@ namespace A2v10.Data
 		public SpecType SpecType { get; }
 		public Boolean IsComplexField { get; }
 		public Boolean IsLazy { get; }
+		public Boolean IsMain { get; set; }
 		public String[] MapFields { get; }
 
 		public FieldInfo(String name)
@@ -23,6 +24,7 @@ namespace A2v10.Data
 			FieldType = FieldType.Scalar;
 			SpecType = SpecType.Unknown;
 			IsLazy = false;
+			IsMain = false;
 			MapFields = null;
 			var x = name.Split('!');
 			if (x.Length > 0)
@@ -39,6 +41,7 @@ namespace A2v10.Data
 				if (FieldType == FieldType.Scalar || FieldType == FieldType.Array || FieldType == FieldType.Json)
 					SpecType = DataHelpers.TypeName2SpecType(x[2]);
 				IsLazy = x[2].Contains("Lazy");
+				IsMain = x[2].Contains("Main");
 			}
 			if (x.Length == 4)
 			{
@@ -87,6 +90,7 @@ namespace A2v10.Data
 			SpecType = source.SpecType;
 			IsComplexField = false;
 			IsLazy = false;
+			IsMain = false;
 			MapFields = null;
 		}
 

@@ -43,6 +43,7 @@ namespace A2v10.Data
 			{
 				case "Object":
 				case "LazyObject":
+				case "MainObject":
 					return FieldType.Object;
 				case "MapObject":
 					return FieldType.MapObject;

@@ -28,7 +28,7 @@ namespace A2v10.Data
 		RefMapper _refMap = new RefMapper();
 		ExpandoObject _root = new ExpandoObject();
 		IDictionary<String, Object> _sys = new ExpandoObject() as IDictionary<String, Object>;
-		FieldInfo? firstElement;
+		FieldInfo? mainElement;
 
 		public DataModelReader(IDataLocalizer localizer)
 		{
@@ -93,24 +93,26 @@ namespace A2v10.Data
 					_sys.Add("Levels", GroupMetadata.GetLevels(_groupMetadata));
 				_dataModel = new DynamicDataModel(_metadata, _root, _sys as ExpandoObject)
 				{
-					FirstElementId = GetFirstElementId()
+					MainElement = GetMainElement()
 				};
 				return _dataModel;
 			}
 		}
 
-		Object GetFirstElementId()
+		DataElementInfo GetMainElement()
 		{
-			if (firstElement == null)
-				return null;
-			if (!_metadata.TryGetValue(firstElement.Value.TypeName, out IDataMetadata meta))
-				return null;
+			DataElementInfo dei = new DataElementInfo();
+			if (mainElement == null)
+				return dei;
+			if (!_metadata.TryGetValue(mainElement.Value.TypeName, out IDataMetadata meta))
+				return dei;
 			if (String.IsNullOrEmpty(meta.Id))
-				return null;
-			var elem = _root.Get<ExpandoObject>(firstElement.Value.PropertyName);
-			if (elem == null)
-				return null;
-			return elem.Get<Object>(meta.Id);
+				return dei;
+			dei.Metadata = meta;
+			var elem = _root.Get<ExpandoObject>(mainElement.Value.PropertyName);
+			dei.Element = elem;
+			dei.Id = elem.Get<Object>(meta.Id);
+			return dei;
 		}
 
 		String GetAlias(String name)
@@ -390,8 +392,8 @@ namespace A2v10.Data
 			rootMetadata.AddField(objectDef, DataType.Undefined);
 			// other fields = object fields
 			var typeMetadata = GetOrCreateMetadata(objectDef.TypeName);
-			if (firstElement == null)
-				firstElement = objectDef;
+			if (objectDef.IsMain && mainElement == null)
+				mainElement = objectDef;
 			if (objectDef.IsArray || objectDef.IsTree || objectDef.IsMap)
 				typeMetadata.IsArrayType = true;
 			if (objectDef.IsGroup)

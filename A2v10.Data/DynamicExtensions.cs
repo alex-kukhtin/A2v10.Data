@@ -49,6 +49,15 @@ namespace A2v10.Data
 			return null;
 		}
 
+		public static Boolean IsEmpty(this ExpandoObject obj)
+		{
+			if (!(obj is IDictionary<String, Object> d))
+				return true;
+			if (d.Keys.Count == 0)
+				return true;
+			return false;
+		}
+
 		public static void Set(this ExpandoObject obj, String name, Object value)
 		{
 			if (!(obj is IDictionary<String, Object> d))

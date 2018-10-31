@@ -16,7 +16,7 @@ namespace A2v10.Data
 		public ExpandoObject Root { get; }
 		public ExpandoObject System { get; set; }
 		public IDictionary<String, IDataMetadata> Metadata { get; }
-		public Object FirstElementId { get; set; }
+		public DataElementInfo MainElement { get; set; }
 		#endregion
 
 		private IDictionary<String, Delegate> _lambdas;
@@ -108,6 +108,19 @@ namespace A2v10.Data
 				return false;
 			}
 		}
+
+		public Boolean IsEmpty
+		{
+			get
+			{
+				if (Metadata != null)
+					return false;
+				if (Root != null && !Root.IsEmpty())
+					return false;
+				return true;
+			}
+		}
+
 
 		public void Merge(IDataModel src)
 		{
