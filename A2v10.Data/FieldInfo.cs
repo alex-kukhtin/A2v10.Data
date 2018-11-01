@@ -127,5 +127,22 @@ namespace A2v10.Data
 				}
 			}
 		}
+
+		public Object ConvertToSpecType(Object dataVal)
+		{
+			switch (SpecType)
+			{
+				case SpecType.UtcDate:
+					return ConvertToUtcDate(dataVal);
+			}
+			return dataVal;
+		}
+
+		public DateTime ConvertToUtcDate(Object dataVal)
+		{
+			if (!(dataVal is DateTime dt))
+				throw new DataLoaderException($"The field with the qualifier 'UtcDate' must be of type 'datetime'");
+			return DateTime.SpecifyKind(dt.ToLocalTime(), DateTimeKind.Unspecified);
+		}
 	}
 }

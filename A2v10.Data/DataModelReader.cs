@@ -276,6 +276,7 @@ namespace A2v10.Data
 					dataVal = null;
 				var fn = GetAlias(rdr.GetName(i));
 				FieldInfo fi = new FieldInfo(fn);
+				dataVal = fi.ConvertToSpecType(dataVal);
 				if (fi.IsGroupMarker)
 				{
 					if (groupKeys == null)

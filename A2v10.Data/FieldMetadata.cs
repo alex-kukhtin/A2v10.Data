@@ -33,6 +33,7 @@ namespace A2v10.Data
 		Id,
 		Key,
 		Name,
+		UtcDate,
 		RefId,
 		ParentId,
 		RowCount,
