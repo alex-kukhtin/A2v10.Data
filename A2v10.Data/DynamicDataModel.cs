@@ -4,11 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
+
 using A2v10.Data.DynamicExpression;
 using A2v10.Data.Interfaces;
 
 namespace A2v10.Data
 {
+	[DataContract]
 	public class DynamicDataModel : IDataModel
 	{
 
