@@ -15,7 +15,10 @@ namespace A2v10.Data.Providers
 		[TestMethod]
 		public void DbfReadSimpleFile()
 		{
-			var f = new DataFile();
+			var f = new DataFile()
+			{
+				Encoding = Encoding.GetEncoding(866)
+			};
 			var rdr = new DbfReader(f);
 
 			using (var file = File.Open("../../testfiles/simple.dbf", FileMode.Open))
@@ -43,5 +46,30 @@ namespace A2v10.Data.Providers
 					Assert.IsTrue(b1[i] == b2[i]);
 			}
 		}
+
+		[TestMethod]
+		public void DbfReadAutoEncoding()
+		{
+			var f = new DataFile()
+			{
+				Encoding = null // AUTO
+			};
+
+			var rdr = new DbfReader(f);
+
+			using (var file = File.Open("../../testfiles/ENCODING.dbf", FileMode.Open))
+			{
+				rdr.Read(file);
+			}
+
+			var wrt = new DbfWriter(f);
+			using (var file = File.Open("../../testfiles/output.dbf", FileMode.OpenOrCreate | FileMode.Truncate))
+			{
+				wrt.Write(file);
+			}
+
+			CompareFiles("../../testfiles/ENCODING.dbf", "../../testfiles/output.dbf");
+		}
+
 	}
 }

@@ -78,6 +78,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="TestFiles\ENCODING.DBF" />
     <None Include="TestFiles\output.dbf" />
     <None Include="TestFiles\simple.dbf" />
     <None Include="TestFiles\solution.json" />

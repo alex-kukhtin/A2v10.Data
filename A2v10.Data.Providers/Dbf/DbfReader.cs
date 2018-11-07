@@ -146,7 +146,7 @@ namespace A2v10.Data.Providers.Dbf
 							Byte[] xb = new Byte[f.Size];
 							for (Int32 j = 0; j < f.Size; j++)
 								xb[j] = dat[iIndex + j];
-							Decoder dec = _file.Encoding.GetDecoder();
+							Decoder dec = _file.FindDecoding(xb).GetDecoder();
 							Char[] chs = new Char[xb.Length];
 							dec.GetChars(xb, 0, xb.Length, chs, 0);
 							StringBuilder sb = new StringBuilder();
