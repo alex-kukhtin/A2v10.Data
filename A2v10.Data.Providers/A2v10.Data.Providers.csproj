@@ -43,6 +43,7 @@
     <Compile Include="Common\DataFile.cs" />
     <Compile Include="Common\Field.cs" />
     <Compile Include="Csv\CsvReader.cs" />
+    <Compile Include="Csv\CsvWriter.cs" />
     <Compile Include="Dbf\DbfReader.cs" />
     <Compile Include="Common\FieldData.cs" />
     <Compile Include="Common\FieldType.cs" />

@@ -1,10 +1,11 @@
-﻿using System;
+﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using A2v10.Data.Providers;
-using A2v10.Data.Providers.Dbf;
 using System.IO;
 using System.Text;
+
+using A2v10.Data.Providers.Dbf;
+using A2v10.Data.Tests.Providers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace A2v10.Data.Providers
 {
@@ -32,19 +33,7 @@ namespace A2v10.Data.Providers
 				wrt.Write(file);
 			}
 
-			CompareFiles("../../testfiles/simple.dbf", "../../testfiles/output.dbf");
-		}
-
-		void CompareFiles(String file1, String file2)
-		{
-			var b1 = File.ReadAllBytes(file1);
-			var b2 = File.ReadAllBytes(file2);
-			Assert.AreEqual(b1.Length, b2.Length);
-			for (Int32 i=0; i<b1.Length; i++)
-			{
-				if (b1[i] != b2[i])
-					Assert.IsTrue(b1[i] == b2[i]);
-			}
+			ProviderTools.CompareFiles("../../testfiles/simple.dbf", "../../testfiles/output.dbf");
 		}
 
 		[TestMethod]
@@ -68,7 +57,7 @@ namespace A2v10.Data.Providers
 				wrt.Write(file);
 			}
 
-			CompareFiles("../../testfiles/ENCODING.dbf", "../../testfiles/output.dbf");
+			ProviderTools.CompareFiles("../../testfiles/ENCODING.dbf", "../../testfiles/output.dbf");
 		}
 
 	}

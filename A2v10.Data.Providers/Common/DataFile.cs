@@ -25,6 +25,7 @@ namespace A2v10.Data.Providers
 		}
 
 		public Encoding Encoding { get; set; }
+		public Char Delimiter { get; set; }
 
 		public Encoding FindDecoding(Byte[] chars)
 		{

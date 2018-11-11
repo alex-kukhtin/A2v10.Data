@@ -63,6 +63,8 @@
     <Compile Include="Generator\ComplexModel.cs" />
     <Compile Include="Generator\SimpleModel.cs" />
     <Compile Include="Module\ModuleTest.cs" />
+    <Compile Include="Providers\CsvReader.cs" />
+    <Compile Include="Providers\ProviderTools.cs" />
     <Compile Include="TestMetadata.cs" />
     <Compile Include="DatabasePager.cs" />
     <Compile Include="DatabaseLoader.cs" />
@@ -80,6 +82,7 @@
     <None Include="packages.config" />
     <None Include="TestFiles\ENCODING.DBF" />
     <None Include="TestFiles\output.dbf" />
+    <None Include="TestFiles\simple.csv" />
     <None Include="TestFiles\simple.dbf" />
     <None Include="TestFiles\solution.json" />
   </ItemGroup>
