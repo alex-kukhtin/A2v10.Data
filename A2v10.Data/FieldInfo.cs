@@ -130,6 +130,8 @@ namespace A2v10.Data
 
 		public Object ConvertToSpecType(Object dataVal)
 		{
+			if (dataVal == null)
+				return null;
 			switch (SpecType)
 			{
 				case SpecType.UtcDate:
