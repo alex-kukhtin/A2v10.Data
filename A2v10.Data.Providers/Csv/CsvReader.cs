@@ -109,6 +109,30 @@ namespace A2v10.Data.Providers.Csv
 				token.Clear();
 			}
 
+			void _readString()
+			{
+				Char sch;
+				token.Clear();
+				while (true)
+				{
+					sch = _nextChar();
+					if (sch == '"')
+					{
+						var nextStrChar = _nextChar();
+						if (nextStrChar == '"')
+							token.Append(nextStrChar);
+						else
+						{
+							_addToken();
+							break;
+						}
+					} else
+					{
+						token.Append(sch);
+					}
+				}
+			}
+
 			while (true)
 			{
 				ch = _nextChar();
@@ -124,11 +148,7 @@ namespace A2v10.Data.Providers.Csv
 				}
 				else if (ch == '"')
 				{
-					var nextChar = _nextChar();
-					if (nextChar == '"')
-						token.Append(ch);
-					else
-						ix -= 1; // prev char
+					_readString();
 				}
 				else
 				{
