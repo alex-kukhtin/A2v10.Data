@@ -14,7 +14,7 @@ namespace A2v10.Data.Providers
 		public Record(IDictionary<String, Int32> fields)
 		{
 			DataFields = new List<FieldData>();
-			_fieldMap = fields;
+			_fieldMap = fields ?? throw new ArgumentNullException(nameof(fields));
 		}
 
 		public Record(List<FieldData> dat, IDictionary<String, Int32> fields)

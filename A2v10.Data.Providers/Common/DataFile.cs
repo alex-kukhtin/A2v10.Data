@@ -12,7 +12,7 @@ namespace A2v10.Data.Providers
 		IList<Field> _fields;
 		IList<Record> _records;
 
-		private readonly Byte[] byteCodes1251 = new Byte[] { 0x81, 0x83, 0xA1, 0xA2, 0xA5, 0xA8, 0xAA, 0xAF, 0xB2, 0xB3, 0xB4, 0xBA, 0xBF };
+		private readonly Byte[] byteCodes1251 = new Byte[] { 0x81, 0x83, 0xA1, 0xA2, 0xA5, 0xA8, 0xAA, 0xAF, 0xB2, 0xB3, 0xB4, 0xB9, 0xBA, 0xBF };
 
 		public DateTime LastModifedDate { get; set; }
 
@@ -41,10 +41,22 @@ namespace A2v10.Data.Providers
 					countASCII += 1;
 					continue;
 				}
+				bool b1251 = false;
+				bool b866 = false;
 				if (ch >= 0xC0 && ch <= 0xFF || Array.IndexOf(byteCodes1251, ch) != -1)
+				{
 					count1251 += 1;
+					b1251 = true;
+				}
 				if (ch >= 0x80 && ch <= 0xAF || ch >= 0xE0 && ch <= 0xF7)
+				{
 					count866 += 1;
+					b866 = true;
+				}
+				if (!b1251 && !b866)
+				{
+					// invalid symbol
+				}
 			}
 			if (countASCII == chars.Length)
 				return Encoding.ASCII;

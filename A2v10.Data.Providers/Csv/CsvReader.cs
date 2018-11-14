@@ -27,7 +27,7 @@ namespace A2v10.Data.Providers.Csv
 				ReadHeader(rdr);
 				Read(rdr);
 			}
-			return null; 
+			return _file; 
 		}
 
 		void FindEncoding(Stream stream)
@@ -82,6 +82,7 @@ namespace A2v10.Data.Providers.Csv
 				var f = _file.CreateField();
 				f.Name = fields[i];
 			}
+			_file.MapFields();
 		}
 
 		IList<String> ParseLine(String line)
