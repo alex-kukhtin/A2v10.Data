@@ -10,6 +10,10 @@ namespace A2v10.Data.ScriptBuilder
 {
 	public class VueScriptBuilder : IDataScripter
 	{
+		public String CreateDataModelScript(IDataModel model)
+		{
+			return model != null ? model.CreateScript(this) : CreateEmptyStript();
+		}
 
 		public String CreateScript(IDictionary<String, Object> sys, IDictionary<String, IDataMetadata> meta)
 		{
@@ -31,7 +35,7 @@ namespace A2v10.Data.ScriptBuilder
 			return sb.ToString();
 		}
 
-		public String CreateEmptyStript()
+		String CreateEmptyStript()
 		{
 			var sb = new StringBuilder();
 			sb.AppendLine("function modelData(template, data) {");
@@ -50,7 +54,7 @@ namespace A2v10.Data.ScriptBuilder
 			return sb.ToString();
 		}
 
-		public StringBuilder SetModelInfo(IDictionary<String, Object> sys)
+		StringBuilder SetModelInfo(IDictionary<String, Object> sys)
 		{
 			if (sys == null)
 				return null;
@@ -73,7 +77,7 @@ namespace A2v10.Data.ScriptBuilder
 			return sb;
 		}
 
-		public StringBuilder GetConstructors(IDictionary<String, IDataMetadata> meta)
+		StringBuilder GetConstructors(IDictionary<String, IDataMetadata> meta)
 		{
 			if (meta == null)
 				return null;
@@ -96,7 +100,7 @@ namespace A2v10.Data.ScriptBuilder
 			return sb;
 		}
 
-		public StringBuilder GetOneConstructor(String name, IDataMetadata ctor)
+		StringBuilder GetOneConstructor(String name, IDataMetadata ctor)
 		{
 			var sb = new StringBuilder();
 			String arrItem = ctor.IsArrayType ? "true" : "false";
@@ -119,7 +123,7 @@ namespace A2v10.Data.ScriptBuilder
 			return sb;
 		}
 
-		public StringBuilder GetProperties(IDataMetadata meta)
+		StringBuilder GetProperties(IDataMetadata meta)
 		{
 			var sb = new StringBuilder();
 			foreach (var fd in meta.Fields)
@@ -142,7 +146,7 @@ namespace A2v10.Data.ScriptBuilder
 			return sb;
 		}
 
-		public String GetSpecialProperties(IDataMetadata meta)
+		String GetSpecialProperties(IDataMetadata meta)
 		{
 			StringBuilder sb = new StringBuilder();
 			if (!String.IsNullOrEmpty(meta.Id))
