@@ -13,9 +13,20 @@ namespace A2v10.Data.Providers
 	{
 		#region IExternalDataProvider
 
-		public IExternalDataReader GetReader(String format, Encoding enc)
+		public IExternalDataReader GetReader(String format, Encoding enc, String fileName)
 		{
-			switch (format?.ToLowerInvariant())
+			if (format == null)
+				format = "auto";
+			else
+				format = format.ToLowerInvariant();
+			if (format == "auto")
+			{
+				if (fileName.EndsWith(".dbf"))
+					format = "dbf";
+				else if (fileName.EndsWith(".csv"))
+					format = "csv";
+			}
+			switch (format)
 			{
 				case "dbf":
 					var dataFileDbf = new DataFile()

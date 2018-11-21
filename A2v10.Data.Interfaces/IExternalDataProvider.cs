@@ -8,6 +8,6 @@ namespace A2v10.Data.Interfaces
 
 	public interface IExternalDataProvider
 	{
-		IExternalDataReader GetReader(String format, Encoding enc);
+		IExternalDataReader GetReader(String format, Encoding enc, String fileName);
 	}
 }
