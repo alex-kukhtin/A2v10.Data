@@ -364,7 +364,7 @@ table (
 	[Id] bigint,
 	[GUID] uniqueidentifier,
 	ParentId bigint, 
-	[ParentGuid] uniqueidentifier,
+	[ParentGUID] uniqueidentifier,
 	RowNumber int,
 	ParentRowNumber int,
 	[Code] nvarchar(255)
@@ -905,12 +905,14 @@ begin
 
 	select [Document!Document!Metadata]=null, * from @Document;
 	select [Rows!Document.Rows!Metadata]=null, * from @Rows;
+	select [SubRows!Document.Rows.SubRows!Metadata]=null, * from @Rows;
 end
 go
 ------------------------------------------------
 create or alter procedure a2test.[Guid.Update]
 @Document [a2test].[GuidMain.TableType] readonly,
-@Rows [a2test].[GuidRow.TableType] readonly
+@Rows [a2test].[GuidRow.TableType] readonly,
+@SubRows [a2test].[GuidRow.TableType] readonly
 as
 begin
 	set nocount on;
@@ -923,8 +925,14 @@ begin
 		[GUID] from @Document;
 
 	select [!TRow!Array] = null, [!TDocument.Rows!ParentId]=@Id, 
-		Id, Code, ParentGuid=@Guid, RowNo = RowNumber, ParentRN = ParentRowNumber
+		[Id!!Id] = Id, Code, ParentGuid = ParentGUID, RowNo = RowNumber, ParentRN = ParentRowNumber, [GUID],
+		[SubRows!TSubRow!Array] = null
 	from @Rows
+	order by Id;
+
+	select [!TSubRow!Array] = null, [!TRow.SubRows!ParentId] = cast(10 as bigint), [GUID],
+		Id, Code, ParentGuid=ParentGUID, RowNo = RowNumber, ParentRN = ParentRowNumber
+	from @SubRows
 	order by Id;
 end
 go

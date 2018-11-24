@@ -175,12 +175,11 @@ namespace A2v10.Data
 						var list = propValue as IList<Object>;
 						for (Int32 j = 0; j < list.Count; j++)
 						{
-							var rowGUID = Guid.NewGuid();
 							var currVal = list[j] as ExpandoObject;
 							currVal.Set("RowNumber", j + 1);
-							currVal.Set("GUID", rowGUID);
 							currVal.Set("ParentId", currentId);
 							currVal.SetNotNull("ParentKey", parentKey);
+							var rowGuid = currVal.GetOrCreate<Guid>("GUID", () => Guid.NewGuid());
 							if (parentIndex != null)
 								currVal.Set("ParentRowNumber", parentIndex.Value + 1);
 							currVal.SetNotNull("ParentGUID", parentGuid);
@@ -191,7 +190,7 @@ namespace A2v10.Data
 								String newPath = String.Empty;
 								for (Int32 k = i + 1; k < x.Length; k++)
 									newPath = newPath.AppendDot(x[k]);
-								foreach (var dx in GetDataForSave(currVal, newPath, parentIndex:j, parentKey:null, parentGuid:currentGuid))
+								foreach (var dx in GetDataForSave(currVal, newPath, parentIndex:j, parentKey:null, parentGuid:rowGuid))
 									yield return dx;
 							}
 						}
@@ -211,7 +210,7 @@ namespace A2v10.Data
 									mapItem.Set("CurrentKey", kv.Key);
 									if (parentIndex != null)
 										mapItem.Set("ParentRowNumber", parentIndex.Value + 1);
-									currVal.SetNotNull("ParentGUID", parentGuid);
+									mapItem.SetNotNull("ParentGUID", parentGuid);
 									yield return mapItem;
 								}
 							}

@@ -177,7 +177,10 @@ namespace A2v10.Data.Tests
 				Document: {
 					Id : 150,
 					Rows: [
-						{ Id: 10, Code: 'C10'},
+						{ Id: 10, Code: 'C10', SubRows: [
+								{Id: 100, Code: 'SUBCODE:100'}, 
+								{Id: 200, Code: 'SUBCODE:200'}
+							]},
 						{ Id: 20, Code: 'C20'},
 					]
 				}
@@ -196,7 +199,18 @@ namespace A2v10.Data.Tests
 			rows.AreArrayValueEqual(10L, 0, "Id");
 			rows.AreArrayValueEqual(20L, 1, "Id");
 			rows.AreArrayValueEqual(1, 0, "RowNo"); // 1-based
-			rows.AreArrayValueEqual(2, 1, "RowNo"); 
+			rows.AreArrayValueEqual(2, 1, "RowNo");
+
+			var rowguid = rows.GetArrayValue<Guid>(0, "GUID");
+			Assert.AreNotEqual(guid, rowguid);
+			var subrows = new DataTester(dm, "Document.Rows[0].SubRows");
+			subrows.IsArray(2);
+			subrows.AreArrayValueEqual(rowguid, 0, "ParentGuid");
+			subrows.AreArrayValueEqual(rowguid, 1, "ParentGuid");
+			subrows.AreArrayValueEqual(1, 0, "RowNo"); // 1-based
+			subrows.AreArrayValueEqual(2, 1, "RowNo");
+			subrows.AreArrayValueEqual(1, 0, "ParentRN"); // 1-based
+			subrows.AreArrayValueEqual(1, 1, "ParentRN");
 		}
 	}
 }
