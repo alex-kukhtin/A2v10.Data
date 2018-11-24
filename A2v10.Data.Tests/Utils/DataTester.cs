@@ -70,5 +70,10 @@ namespace A2v10.Data.Tests
 			var obj = _instanceArray[index] as ExpandoObject;
 			return obj.Get<T>(property);
 		}
+
+		public T GetValue<T>(String property)
+		{
+			return _instance.Get<T>(property);
+		}
 	}
 }

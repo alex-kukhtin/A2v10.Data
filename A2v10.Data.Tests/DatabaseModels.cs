@@ -94,7 +94,15 @@ namespace A2v10.Data.Tests
 	}]
 }}";
 			var dataToSave = JsonConvert.DeserializeObject<ExpandoObject>(jsonData.Replace('\'', '"'), new ExpandoObjectConverter());
-			IDataModel dm = await _dbContext.SaveModelAsync(null, "a2test.[Document.RowsMethods.Update]", dataToSave);
+			IDataModel dm = null;
+			try
+			{
+				dm = await _dbContext.SaveModelAsync(null, "a2test.[Document.RowsMethods.Update]", dataToSave);
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
 
 			var dt = new DataTester(dm, "Document");
 			dt.AreValueEqual<Object>(null, "Id");

@@ -38,6 +38,23 @@ namespace A2v10.Data
 			return no;
 		}
 
+		public static T GetOrCreate<T>(this ExpandoObject obj, String name, Func<T> create) where T : new()
+		{
+			if (!(obj is IDictionary<String, Object> d))
+				return default(T);
+			if (d.TryGetValue(name, out Object result))
+			{
+				if (result is T)
+					return (T)result;
+				else
+					throw new InvalidCastException();
+			}
+			var no = create();
+			d.Add(name, no);
+			return no;
+		}
+
+
 		public static Object GetObject(this ExpandoObject obj, String name)
 		{
 			if (!(obj is IDictionary<String, Object> d))
@@ -66,6 +83,13 @@ namespace A2v10.Data
 				d[name] = value;
 			else
 				d.Add(name, value);
+		}
+
+		public static void SetNotNull(this ExpandoObject obj, String name, Object value) 
+		{
+			if (value == null)
+				return;
+			obj.Set(name, value);
 		}
 
 		public static T Eval<T>(this ExpandoObject root, String expression, T fallback = default(T), Boolean throwIfError = false)

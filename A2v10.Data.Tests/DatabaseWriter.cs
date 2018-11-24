@@ -46,16 +46,25 @@ namespace A2v10.Data.Tests
 			    }
             }
 			";
+			IDataModel dm = null;
 			var dataToSave = JsonConvert.DeserializeObject<ExpandoObject>(jsonData.Replace('\'', '"'), new ExpandoObjectConverter());
-			IDataModel dm = await _dbContext.SaveModelAsync(null, "a2test.[NestedObject.Update]", dataToSave);
+			try
+			{
+				dm = await _dbContext.SaveModelAsync(null, "a2test.[NestedObject.Update]", dataToSave);
+			}
+			catch (Exception ex) {
+				throw;
+			}
 
 			var dt = new DataTester(dm, "MainObject");
 			dt.AreValueEqual(45L, "Id");
 			dt.AreValueEqual("MainObjectName", "Name");
+			var guid = dt.GetValue<Guid>("GUID");
 
 			var tdsub = new DataTester(dm, "MainObject.SubObject");
 			tdsub.AreValueEqual(55L, "Id");
 			tdsub.AreValueEqual("SubObjectName", "Name");
+			tdsub.AreValueEqual(guid, "ParentGuid");
 
 			var tdsubarray = new DataTester(dm, "MainObject.SubObject.SubArray");
 			tdsubarray.IsArray(2);
@@ -157,6 +166,37 @@ namespace A2v10.Data.Tests
 			dt.AreValueEqual(112233L, "Id");
 			dt.AreValueEqual("Test Agent", "Name");
 			dt.AreValueEqual("CODE", "Code");
+		}
+
+		[TestMethod]
+		public async Task WriteModelWithGuids()
+		{
+			// DATA with ROOT
+			var jsonData = @"
+			{
+				Document: {
+					Id : 150,
+					Rows: [
+						{ Id: 10, Code: 'C10'},
+						{ Id: 20, Code: 'C20'},
+					]
+				}
+			}
+			";
+			var dataToSave = JsonConvert.DeserializeObject<ExpandoObject>(jsonData.Replace('\'', '"'), new ExpandoObjectConverter());
+			IDataModel dm = await _dbContext.SaveModelAsync(null, "a2test.[Guid.Update]", dataToSave);
+
+			var dt = new DataTester(dm, "Document");
+			dt.AreValueEqual(150L, "Id");
+			var guid = dt.GetValue<Guid>("GUID");
+			var rows = new DataTester(dm, "Document.Rows");
+			rows.IsArray(2);
+			rows.AreArrayValueEqual(guid, 0, "ParentGuid");
+			rows.AreArrayValueEqual(guid, 1, "ParentGuid");
+			rows.AreArrayValueEqual(10L, 0, "Id");
+			rows.AreArrayValueEqual(20L, 1, "Id");
+			rows.AreArrayValueEqual(1, 0, "RowNo"); // 1-based
+			rows.AreArrayValueEqual(2, 1, "RowNo"); 
 		}
 	}
 }

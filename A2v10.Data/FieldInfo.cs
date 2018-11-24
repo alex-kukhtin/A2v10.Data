@@ -59,7 +59,8 @@ namespace A2v10.Data
 				"ParentId",
 				"CurrentyKey",
 				"ParentRowNumber",
-				"ParentKey"
+				"ParentKey",
+				"ParentGUID"
 			};
 
 		void CheckReservedWords()

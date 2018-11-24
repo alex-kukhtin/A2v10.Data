@@ -245,6 +245,14 @@ if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2te
 	drop procedure a2test.[Document.RowsMethods.Update]
 go
 ------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'Guid.Metadata')
+	drop procedure a2test.[Guid.Metadata]
+go
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'Guid.Update')
+	drop procedure a2test.[Guid.Update]
+go
+------------------------------------------------
 if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'NestedMain.TableType' AND ss.name = N'a2test')
 	drop type [a2test].[NestedMain.TableType];
 go
@@ -273,15 +281,12 @@ if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.s
 	drop type [a2test].[MethodData.TableType];
 go
 ------------------------------------------------
-create type [a2test].[NestedMain.TableType] as
-table (
-	[Id] bigint null,
-	[Name] nvarchar(255),
-	[NumValue] float,
-	[BitValue] bit,
-	[SubObject] bigint,
-	[SubObjectString] nchar(4)
-)
+if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'GuidMain.TableType' AND ss.name = N'a2test')
+	drop type [a2test].[GuidMain.TableType];
+go
+------------------------------------------------
+if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'GuidRow.TableType' AND ss.name = N'a2test')
+	drop type [a2test].[GuidRow.TableType];
 go
 ------------------------------------------------
 create type [a2test].[NestedSub.TableType] as
@@ -289,7 +294,8 @@ table (
 	[Id] bigint null,
 	[ParentId] bigint null,
 	[ParentKey] nvarchar(255) null,
-	[Name] nvarchar(255)
+	[Name] nvarchar(255),
+	ParentGUID uniqueidentifier
 )
 go
 ------------------------------------------------
@@ -334,6 +340,37 @@ table (
 )
 go
 ------------------------------------------------
+create type [a2test].[NestedMain.TableType] as
+table (
+	[Id] bigint null,
+	[Name] nvarchar(255),
+	[NumValue] float,
+	[BitValue] bit,
+	[SubObject] bigint,
+	[SubObjectString] nchar(4),
+	[GUID] uniqueidentifier
+)
+go
+------------------------------------------------
+create type [a2test].[GuidMain.TableType] as
+table (
+	[Id] bigint null,
+	[GUID] uniqueidentifier
+)
+go
+------------------------------------------------
+create type [a2test].[GuidRow.TableType] as
+table (
+	[Id] bigint,
+	[GUID] uniqueidentifier,
+	ParentId bigint, 
+	[ParentGuid] uniqueidentifier,
+	RowNumber int,
+	ParentRowNumber int,
+	[Code] nvarchar(255)
+)
+go
+------------------------------------------------
 create procedure a2test.[NestedObject.Metadata]
 as
 begin
@@ -372,11 +409,12 @@ begin
 
 	select [MainObject!TMainObject!Object] = null, [Id!!Id] = Id, [Name!!Name] = Name,
 		NumValue = NumValue, BitValue= BitValue,
-		[SubObject!TSubObject!RefId] = SubObject
+		[SubObject!TSubObject!RefId] = SubObject, [GUID]
 	from @MainObject;
 
 	select [!TSubObject!Map] = null, [Id!!Id] = Id, [Name!!Name] = Name, [!TMainObject.SubObject!ParentId] = ParentId,
-		[SubArray!TSubObjectArrayItem!Array] = null
+		[SubArray!TSubObjectArrayItem!Array] = null,
+		ParentGuid = ParentGUID
 	from @SubObject;
 
 	select [!TSubObjectArrayItem!Array] = null, [X] = X, [Y] = Y, [D] = D, [!TSubObject.SubArray!ParentId] = ParentId
@@ -856,4 +894,40 @@ begin
 	set nocount on;
 	select [Model!TModel!Aray] = null, [Id!!Id] = 123;
 end
+go
+------------------------------------------------
+create procedure a2test.[Guid.Metadata]
+as
+begin
+	set nocount on;
+	declare @Document [a2test].[GuidMain.TableType];
+	declare @Rows [a2test].[GuidRow.TableType];
+
+	select [Document!Document!Metadata]=null, * from @Document;
+	select [Rows!Document.Rows!Metadata]=null, * from @Rows;
+end
+go
+------------------------------------------------
+create or alter procedure a2test.[Guid.Update]
+@Document [a2test].[GuidMain.TableType] readonly,
+@Rows [a2test].[GuidRow.TableType] readonly
+as
+begin
+	set nocount on;
+	declare @Id bigint = null;
+	declare @Guid uniqueidentifier = null;
+
+	select @Id = Id, @Guid = [GUID] from @Document;
+
+	select [Document!TDocument!Object] = null, [Id!!Id] = Id, [Rows!TRow!Array] = null,  
+		[GUID] from @Document;
+
+	select [!TRow!Array] = null, [!TDocument.Rows!ParentId]=@Id, 
+		Id, Code, ParentGuid=@Guid, RowNo = RowNumber, ParentRN = ParentRowNumber
+	from @Rows
+	order by Id;
+end
+go
+------------------------------------------------
+exec a2test.[Workflow.Clear.All]
 go
