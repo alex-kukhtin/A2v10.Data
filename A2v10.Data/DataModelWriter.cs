@@ -153,8 +153,7 @@ namespace A2v10.Data
 			if (String.IsNullOrEmpty(path))
 				yield return data;
 			var x = path.Split('.');
-			var currentData = data as IDictionary<String, Object>;
-			if (currentData == null)
+			if (!(data is IDictionary<String, Object> currentData))
 				throw new DataWriterException("There is no current data");
 			var currentId = data.Get<Object>("Id");
 			Guid? currentGuid = null;

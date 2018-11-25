@@ -19,6 +19,8 @@ namespace A2v10.Data.Interfaces
 		ExpandoObject System { get; }
 		IDictionary<String, IDataMetadata> Metadata { get; }
 
+		IDataHelper DataHelper { get; }
+
 		DataElementInfo MainElement { get; }
 		Boolean IsReadOnly { get; }
 		Boolean IsEmpty { get; }

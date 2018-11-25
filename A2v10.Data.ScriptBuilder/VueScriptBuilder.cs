@@ -15,7 +15,7 @@ namespace A2v10.Data.ScriptBuilder
 			return model != null ? model.CreateScript(this) : CreateEmptyStript();
 		}
 
-		public String CreateScript(IDictionary<String, Object> sys, IDictionary<String, IDataMetadata> meta)
+		public String CreateScript(IDataHelper helper, IDictionary<String, Object> sys, IDictionary<String, IDataMetadata> meta)
 		{
 			var sb = new StringBuilder();
 			sb.AppendLine("function modelData(template, data) {");
@@ -26,7 +26,7 @@ namespace A2v10.Data.ScriptBuilder
 			}
 			sb.AppendLine("\tcmn.implementRoot(TRoot, template, ctors);");
 			sb.AppendLine("\tlet root = new TRoot(data);");
-			sb.Append(SetModelInfo(sys));
+			sb.Append(SetModelInfo(helper, sys));
 			sb.AppendLine();
 			sb.AppendLine("\treturn root;");
 			sb.AppendLine("}");
@@ -54,7 +54,7 @@ namespace A2v10.Data.ScriptBuilder
 			return sb.ToString();
 		}
 
-		StringBuilder SetModelInfo(IDictionary<String, Object> sys)
+		StringBuilder SetModelInfo(IDataHelper helper, IDictionary<String, Object> sys)
 		{
 			if (sys == null)
 				return null;
@@ -69,7 +69,7 @@ namespace A2v10.Data.ScriptBuilder
 				else if (val is Object)
 					val = JsonConvert.SerializeObject(val);
 				else if (val is DateTime)
-					val = DateTime2StringWrap(val);
+					val = helper.DateTime2StringWrap(val);
 				sb.Append($" {k.Key}: {val},");
 			}
 			sb.RemoveTailComma();
@@ -179,15 +179,5 @@ namespace A2v10.Data.ScriptBuilder
 			sb.RemoveTailComma();
 			return ",\n" + sb.ToString();
 		}
-
-		public static Object DateTime2StringWrap(Object val)
-		{
-			// TODO: join with DataHelpers
-			if (!(val is DateTime)) return val;
-			return "\"\\/" +
-				JsonConvert.SerializeObject(val, new JsonSerializerSettings() { DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Utc }) +
-				"\\/\"";
-		}
-
 	}
 }

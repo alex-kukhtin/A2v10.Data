@@ -4,8 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
-
 using Newtonsoft.Json;
+
+using A2v10.Data.Interfaces;
 
 namespace A2v10.Data
 {
@@ -176,6 +177,14 @@ namespace A2v10.Data
 			return "\"\\/" +
 				JsonConvert.SerializeObject(val, new JsonSerializerSettings() { DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Utc }) +
 				"\\/\"";
+		}
+	}
+
+	public class DataHelper : IDataHelper
+	{
+		public Object DateTime2StringWrap(Object val)
+		{
+			return DataHelpers.DateTime2StringWrap(val);
 		}
 	}
 }

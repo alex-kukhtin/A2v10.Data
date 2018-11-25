@@ -84,7 +84,7 @@ namespace A2v10.Data
 				throw new ArgumentNullException(nameof(scripter));
 			var sys = System as IDictionary<String, Object>;
 			var meta = Metadata as IDictionary<String, IDataMetadata>;
-			return scripter.CreateScript(sys, meta);
+			return scripter.CreateScript(DataHelper, sys, meta);
 		}
 
 		public IDictionary<String, dynamic> GetDynamic()
@@ -92,7 +92,17 @@ namespace A2v10.Data
 			return ObjectBuilder.BuildObject(Root as ExpandoObject);
 		}
 
+		IDataHelper _helper;
 
+		public IDataHelper DataHelper
+		{
+			get
+			{
+				if (_helper == null)
+					_helper = new DataHelper();
+				return _helper;
+			}
+		}
 
 		public void SetReadOnly()
 		{

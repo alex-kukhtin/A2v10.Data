@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="IDataConfiguration.cs" />
     <Compile Include="IDataFieldMetadata.cs" />
+    <Compile Include="IDataHelper.cs" />
     <Compile Include="IDataMetadata.cs" />
     <Compile Include="IDataModel.cs" />
     <Compile Include="IDataProfiler.cs" />
