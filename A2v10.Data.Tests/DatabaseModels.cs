@@ -99,7 +99,7 @@ namespace A2v10.Data.Tests
 			{
 				dm = await _dbContext.SaveModelAsync(null, "a2test.[Document.RowsMethods.Update]", dataToSave);
 			}
-			catch (Exception ex)
+			catch (Exception /*ex*/)
 			{
 				throw;
 			}
