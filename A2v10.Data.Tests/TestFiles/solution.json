@@ -1,31 +1,32 @@
 ﻿{
-	"schema": "a2demo",
+	"schema": "a2sql",
 	"tables": {
 		"AgentKinds": {
 			"columns": {
 				"Kind": {
 					"type": "char",
+					"primaryKey": true,
 					"size": "4"
 				},
 				"Name": {
-									"type": "varchar",
-									"name": true
+					"type": "varchar",
+					"name": true
 				}
-			},
-			"primaryKey": [ "Kind" ]
+			}
 		},
 		"Agents": {
 			"columns": {
 				"Id": {
-					"type": "sequence"
+					"type": "sequence",
+					"primaryKey": true
 				},
 				"Kind": {
 					"parent": "AgentKinds"
 				},
 				"Name": {
 					"type": "varchar",
-									"size": 255,
-									"name": true
+					"size": 255,
+					"name": true
 				},
 				"Code": {
 					"type": "varchar",
@@ -44,22 +45,25 @@
 					"type": "boolean",
 					"default": false
 				}
-			}
+			},
+			"primaryKey": [ "Id" ]
 		},
 		"Documents": {
-			"Id": { "type": "sequence" },
-			"Date": { "type": "datetime" },
-			"Agent": {
-				"type": "reference",
-				"reftable": "Agents"
-			},
-			"Company": {
-				"type": "reference",
-				"reftable": "Agents"
-			},
-			"Sum": {
-				"type": "money",
-				"default": 0
+			"columns": {
+				"Id": { "type": "sequence", "primaryKey":  true },
+				"Date": { "type": "datetime" },
+				"Agent": {
+					"type": "reference",
+					"reftable": "Agents"
+				},
+				"Company": {
+					"type": "reference",
+					"reftable": "Agents"
+				},
+				"Sum": {
+					"type": "money",
+					"default": 0
+				}
 			}
 		},
 		"DocDetails": {

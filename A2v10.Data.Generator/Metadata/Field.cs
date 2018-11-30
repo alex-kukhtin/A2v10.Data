@@ -1,11 +1,7 @@
 ﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
 
 using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace A2v10.Data.Generator
 {
@@ -13,7 +9,8 @@ namespace A2v10.Data.Generator
 	{
 		None,
 		Id,
-		Name
+		Name,
+		UtcDate
 	}
 
 	public class Field
@@ -26,6 +23,7 @@ namespace A2v10.Data.Generator
 		public Table Reference { get; set; }
 		public Table ParentTable { get; }
 		public FieldModifier Modifier {get; set; }
+		public Boolean IsPrimaryKey { get; set; }
 
 
 		public Field(Table parent, String name, FieldType type, Int32 size = 0)
@@ -68,16 +66,20 @@ namespace A2v10.Data.Generator
 						sb.Append("money");
 						break;
 					case FieldType.Sequence:
-						sb.Append("bigint");
-						break;
 					case FieldType.Integer:
 						sb.Append("int");
+						break;
+					case FieldType.Boolean:
+						sb.Append("bit");
 						break;
 					case FieldType.Float:
 						sb.Append("float");
 						break;
+					case FieldType.Reference:
+						sb.Append("bigint");
+						break;
 					default:
-						throw new NotSupportedException();
+						throw new NotSupportedException($"Invalid field type {Type}");
 				}
 				return sb.ToString();
 			}

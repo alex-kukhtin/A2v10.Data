@@ -2,9 +2,9 @@
 
 using System;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using A2v10.Data.Generator.Solution;
 using Newtonsoft.Json;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using A2v10.Data.Generator;
 
 namespace A2v10.Data.Solution
 {
@@ -18,7 +18,7 @@ namespace A2v10.Data.Solution
 		public void SimpleModuleLoad()
 		{
 			var json = File.ReadAllText(SOLUTION_FILE);
-			Module module = JsonConvert.DeserializeObject<Module>(json);
+			JsonModule module = JsonConvert.DeserializeObject<JsonModule>(json);
 			module.EndInit();
 			String result = JsonConvert.SerializeObject(module);
 			//int z = 55;

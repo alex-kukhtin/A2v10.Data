@@ -176,7 +176,7 @@ namespace A2v10.Data
 						{
 							var currVal = list[j] as ExpandoObject;
 							currVal.Set("RowNumber", j + 1);
-							currVal.Set("ParentId", currentId);
+							currVal.SetNotNull("ParentId", currentId);
 							currVal.SetNotNull("ParentKey", parentKey);
 							var rowGuid = currVal.GetOrCreate<Guid>("GUID", () => Guid.NewGuid());
 							if (parentIndex != null)
@@ -215,7 +215,7 @@ namespace A2v10.Data
 							}
 							else
 							{
-								currVal.Set("ParentId", currentId);
+								currVal.SetNotNull("ParentId", currentId);
 								currVal.SetNotNull("ParentKey", parentKey);
 								if (parentIndex != null)
 									currVal.Set("ParentRowNumber", parentIndex.Value + 1);

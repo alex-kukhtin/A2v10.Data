@@ -7,15 +7,18 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
-namespace A2v10.Data.Generator.Solution
+namespace A2v10.Data.Generator
 {
-	public class Module
+	public class JsonModule
 	{
+		[JsonProperty("schema")]
+		public String Schema { get; set; }
+
 		[JsonProperty("tables")]
-		public Dictionary<String, Table> Tables { get; set; }
+		public Dictionary<String, JsonTable> Tables { get; set; }
 
 		[JsonProperty("models")]
-		public Dictionary<String, Model> Models { get; set; }
+		public Dictionary<String, JsonModel> Models { get; set; }
 
 		public void EndInit()
 		{

@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "A2v10.Data.Providers", "A2v
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "A2v10.Data.Generator", "A2v10.Data.Generator\A2v10.Data.Generator.csproj", "{78E6DA53-9ABB-406F-A711-55FF00386029}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlBuilder", "SqlBuilder\SqlBuilder.csproj", "{D1EE1993-A6FF-4B22-BB87-ADAD1BD80BAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{78E6DA53-9ABB-406F-A711-55FF00386029}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78E6DA53-9ABB-406F-A711-55FF00386029}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78E6DA53-9ABB-406F-A711-55FF00386029}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1EE1993-A6FF-4B22-BB87-ADAD1BD80BAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1EE1993-A6FF-4B22-BB87-ADAD1BD80BAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1EE1993-A6FF-4B22-BB87-ADAD1BD80BAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1EE1993-A6FF-4B22-BB87-ADAD1BD80BAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

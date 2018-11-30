@@ -219,6 +219,8 @@ namespace A2v10.Data
 						var fmi = _createModelInfo(xs[0]).GetOrCreate<ExpandoObject>("Filter");
 						if (filter is DateTime)
 							filter = DataHelpers.DateTime2StringWrap(filter);
+						else if (filter is String)
+							filter = _localizer.Localize(filter.ToString());
 						for (Int32 ii = 1; ii<xs.Length; ii++)
 						{
 							if (ii == xs.Length - 1)
