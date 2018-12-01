@@ -11,10 +11,12 @@ namespace A2v10.Data.Generator
 		public Boolean MultiTenant { get; set; }
 
 		StringBuilder _stringBuilder;
+		String _divider { get; set; }
 
 		public ModelBuilder()
 		{
 			_stringBuilder = new StringBuilder();
+			_divider = new String('-', 32);
 		}
 
 
@@ -22,6 +24,11 @@ namespace A2v10.Data.Generator
 		{
 			if (!MultiTenant) return;
 			_stringBuilder.AppendLine("@TenantId int,");
+		}
+
+		public void WriteDivider()
+		{
+			_stringBuilder.AppendLine(_divider);
 		}
 
 		public String TenantParamEQ => MultiTenant ? "@TenantId = @TenantId," : String.Empty;

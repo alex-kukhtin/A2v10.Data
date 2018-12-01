@@ -21,10 +21,11 @@ namespace A2v10.Data.Generator
 		public Boolean Nullable { get; set; }
 		public Boolean Parent { get; set; }
 		public Table Reference { get; set; }
-		public Table ParentTable { get; }
 		public FieldModifier Modifier {get; set; }
-		public Boolean IsPrimaryKey { get; set; }
+		public Boolean PrimaryKey { get; set; }
+		public Object Default { get; set; }
 
+		public Table ParentTable { get; }
 
 		public Field(Table parent, String name, FieldType type, Int32 size = 0)
 		{
@@ -37,51 +38,43 @@ namespace A2v10.Data.Generator
 
 		public Boolean IsId => Modifier == FieldModifier.Id;
 		public Boolean IsName => Modifier == FieldModifier.Name;
-		public Boolean IsReference => Type == FieldType.Reference;
+		public Boolean IsReference => Reference != null && !Parent;
 
 		public void BuildCreate(StringBuilder sb)
 		{
 			if (Type == FieldType.Array)
 				return;
-			sb.AppendLine($"\t[{Name}] {TypeAsString} {NullAsString},");
+			Field f = this;
+			if (Parent)
+				f = Reference.PrimaryKey;
+			sb.AppendLine($"\t[{Name}] {f.TypeAsString} {f.NullAsString},");
 		}
 
 		public String TypeAsString
 		{
 			get
 			{
-				var sb = new StringBuilder();
 				switch (Type)
 				{
 					case FieldType.VarChar:
-						sb.Append($"nvarchar({Size})");
-						break;
+						return $"nvarchar({Size})";
 					case FieldType.Char:
-						sb.Append($"nchar({Size})");
-						break;
+						return $"nchar({Size})";
 					case FieldType.DateTime:
-						sb.Append("datetime");
-						break;
+						return "datetime";
 					case FieldType.Money:
-						sb.Append("money");
-						break;
+						return "money";
 					case FieldType.Sequence:
+						return "bigint";
 					case FieldType.Integer:
-						sb.Append("int");
-						break;
+						return "int";
 					case FieldType.Boolean:
-						sb.Append("bit");
-						break;
+						return "bit";
 					case FieldType.Float:
-						sb.Append("float");
-						break;
-					case FieldType.Reference:
-						sb.Append("bigint");
-						break;
+						return "float";
 					default:
 						throw new NotSupportedException($"Invalid field type {Type}");
 				}
-				return sb.ToString();
 			}
 		}
 
@@ -91,7 +84,7 @@ namespace A2v10.Data.Generator
 				return $"[{Name}!!Id] = {prefix}[{Name}]";
 			else if (IsName)
 				return $"[{Name}!!Name] = {prefix}[{Name}]";
-			else if (Type == FieldType.Reference)
+			else if (IsReference)
 				return $"[{Name}!T{Reference.EntityName}!RefId] = {prefix}[{Name}]";
 			else if (Type == FieldType.Parent)
 				return $"[!T{Reference.EntityName}!ParentId] = {prefix}[{Name}]";

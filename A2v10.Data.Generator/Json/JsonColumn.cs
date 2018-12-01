@@ -19,5 +19,20 @@ namespace A2v10.Data.Generator
 
 		[JsonProperty("parent")]
 		public String Parent { get; set; }
+
+		[JsonProperty("reference")]
+		public String Reference { get; set; }
+
+		[JsonProperty("primaryKey")]
+		public Boolean PrimaryKey { get; set; }
+
+		[JsonProperty("default")]
+		public Object Default { get; set; }
+
+		[JsonIgnore]
+		public Boolean IsParent => !String.IsNullOrEmpty(Parent);
+
+		[JsonIgnore]
+		public Boolean IsReference => !String.IsNullOrEmpty(Reference);
 	}
 }

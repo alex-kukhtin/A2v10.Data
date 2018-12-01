@@ -36,7 +36,10 @@ namespace A2v10.Data.Generator
 		public void MakeTables(ModelBuilder builder)
 		{
 			foreach (var t in _tables)
+			{
+				builder.WriteDivider();
 				t.Value.BuildCreate(builder);
+			}
 		}
 	}
 }

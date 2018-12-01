@@ -31,9 +31,6 @@ namespace A2v10.Data.Generator
 		[JsonProperty("money")]
 		Money,
 
-		[JsonProperty("reference")]
-		Reference,
-
 		[JsonProperty("array")]
 		Array,
 

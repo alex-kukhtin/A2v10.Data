@@ -5,12 +5,11 @@
 			"columns": {
 				"Kind": {
 					"type": "char",
-					"primaryKey": true,
-					"size": "4"
+					"size": "4",
+					"primaryKey": true
 				},
 				"Name": {
-					"type": "varchar",
-					"name": true
+					"type": "varchar"
 				}
 			}
 		},
@@ -45,20 +44,20 @@
 					"type": "boolean",
 					"default": false
 				}
-			},
-			"primaryKey": [ "Id" ]
+			}
 		},
 		"Documents": {
 			"columns": {
-				"Id": { "type": "sequence", "primaryKey":  true },
+				"Id": {
+					"type": "sequence",
+					"primaryKey": true
+				},
 				"Date": { "type": "datetime" },
 				"Agent": {
-					"type": "reference",
-					"reftable": "Agents"
+					"reference": "Agents"
 				},
 				"Company": {
-					"type": "reference",
-					"reftable": "Agents"
+					"reference": "Agents"
 				},
 				"Sum": {
 					"type": "money",
@@ -69,7 +68,10 @@
 		"DocDetails": {
 			"typeName": "TRow",
 			"columns": {
-				"Id": { "type": "sequence" },
+				"Id": {
+					"type": "sequence",
+					"primaryKey": true
+				},
 				"Document": {
 					"parent": "Documents"
 				},

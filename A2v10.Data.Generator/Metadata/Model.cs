@@ -68,7 +68,7 @@ namespace A2v10.Data.Generator
 		{
 			foreach (var f1 in t.Fields)
 			{
-				if (f1.Type != FieldType.Reference)
+				if (!f1.IsReference)
 					continue;
 				yield return f1;
 			}
@@ -78,7 +78,7 @@ namespace A2v10.Data.Generator
 		{
 			foreach (var f1 in FieldsForReferences(BasedOn))
 			{
-				if (f1.Type != FieldType.Reference)
+				if (!f1.IsReference)
 					continue;
 				yield return f1;
 
@@ -96,7 +96,7 @@ namespace A2v10.Data.Generator
 		void BuildRefTables(StringBuilder sb)
 		{
 			var refFeilds = AllFieldsForReferences()
-				.Where(fld => fld.Type == FieldType.Reference)
+				.Where(fld => fld.IsReference)
 				.GroupBy(fld => fld.Reference.TableName)
 				.Select(grp => new { grp.Key, Table = grp.First().Reference });
 			Boolean appendLast = false;
@@ -113,7 +113,7 @@ namespace A2v10.Data.Generator
 		void BuildReferences(StringBuilder sb, Boolean where)
 		{
 			var refFeilds = AllFieldsForReferences()
-				.Where(fld => fld.Type == FieldType.Reference)
+				.Where(fld => fld.IsReference)
 				.GroupBy(fld => fld.Reference.TableName)
 				.Select(grp => new { grp.First().Reference});
 
@@ -201,7 +201,7 @@ namespace A2v10.Data.Generator
 		void BuildRefRefTableIds(StringBuilder sb, HashSet<String> refTables)
 		{
 			var refFeilds = AllFieldsForReferences()
-				.Where(fld => fld.Type == FieldType.Reference && !refTables.Contains(fld.Reference.TableName))
+				.Where(fld => fld.IsReference && !refTables.Contains(fld.Reference.TableName))
 				.GroupBy(fld => fld.Reference.TableName)
 				.Select(grp => new { grp.Key, Length = grp.Count(), Table = grp.First().ParentTable, Fields = String.Join(", ", grp.Select(f => $"[{f.Name}]")) });
 

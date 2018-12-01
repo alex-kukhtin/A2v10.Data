@@ -26,6 +26,7 @@ namespace A2v10.Data.Generator
 		public Field Key => Fields.FirstOrDefault(f => f.IsId);
 		public Field Parent => Fields.FirstOrDefault(f => f.Parent);
 		public Boolean HasReferences => Fields.FirstOrDefault(f => f.IsReference) != null;
+		public Field PrimaryKey => Fields.FirstOrDefault(f => f.PrimaryKey);
 
 		public Table(Solution solution, String name, JsonTable jsonTable)
 		{
@@ -52,10 +53,16 @@ namespace A2v10.Data.Generator
 			foreach (var col in _jsonTable.Columns)
 			{
 				var column = col.Value;
-				if (!String.IsNullOrEmpty(column.Parent))
-					AddReferenceField(col.Key, _solution.FindTable(column.Parent));
+				Field f;
+				if (column.PrimaryKey)
+					f = AddKeyField(col.Key, column.Type, column.Size);
+				else if (column.IsParent)
+					f = AddParentField(col.Key, _solution.FindTable(column.Parent));
+				else if (column.IsReference)
+					f = AddReferenceField(col.Key, _solution.FindTable(column.Reference));
 				else
-					AddField(col.Key, column.Type, column.Size);
+					f = AddField(col.Key, column.Type, column.Size);
+				f.Default = column.Default;
 			}
 		}
 
@@ -68,7 +75,8 @@ namespace A2v10.Data.Generator
 			var f = new Field(this, name, type, size)
 			{
 				Modifier = FieldModifier.Id,
-				Nullable = false
+				Nullable = false,
+				PrimaryKey = true
 			};
 			_fields.Add(f);
 			return f;
@@ -87,7 +95,7 @@ namespace A2v10.Data.Generator
 
 		public Field AddReferenceField(String name, Table refTable)
 		{
-			var f = new Field(this, name, FieldType.Reference)
+			var f = new Field(this, name, refTable.PrimaryKey.Type)
 			{
 				Reference = refTable
 			};
