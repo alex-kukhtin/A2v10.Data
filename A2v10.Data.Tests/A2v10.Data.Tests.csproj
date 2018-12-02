@@ -87,6 +87,10 @@
     <None Include="TestFiles\solution.json" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\A2v10\Shared\A2v10.Infrastructure\A2v10.Infrastructure.csproj">
+      <Project>{8AB56ABE-3894-40EE-A5B7-36B57B70D1BE}</Project>
+      <Name>A2v10.Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\A2v10.Data.Generator\A2v10.Data.Generator.csproj">
       <Project>{78e6da53-9abb-406f-a711-55ff00386029}</Project>
       <Name>A2v10.Data.Generator</Name>

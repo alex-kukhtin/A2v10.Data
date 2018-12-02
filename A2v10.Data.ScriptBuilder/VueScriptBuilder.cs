@@ -5,6 +5,7 @@ using System.Text;
 using Newtonsoft.Json;
 
 using A2v10.Data.Interfaces;
+using System.Threading.Tasks;
 
 namespace A2v10.Data.ScriptBuilder
 {
@@ -13,6 +14,16 @@ namespace A2v10.Data.ScriptBuilder
 		public String CreateDataModelScript(IDataModel model)
 		{
 			return model != null ? model.CreateScript(this) : CreateEmptyStript();
+		}
+
+		public Task<ScriptInfo> GetModelScript(ModelScriptInfo msi)
+		{
+			throw new NotImplementedException();
+		}
+
+		public ScriptInfo GetServerScript(ModelScriptInfo msi)
+		{
+			throw new NotImplementedException();
 		}
 
 		public String CreateScript(IDataHelper helper, IDictionary<String, Object> sys, IDictionary<String, IDataMetadata> meta)

@@ -2,17 +2,19 @@
 
 
 using A2v10.Data.Interfaces;
+using A2v10.Infrastructure;
 
 namespace A2v10.Data.Tests.Configuration
 {
-    public class Starter
-    {
-        public static IDbContext Create()
-        {
-            IDataProfiler profiler = new TestProfiler();
-            IDataConfiguration config = new TestConfig();
-            IDataLocalizer localizer = new TestLocalizer();
-            return new SqlDbContext(profiler, config, localizer);
-        }
-    }
+
+	public class Starter
+	{
+		public static IDbContext Create()
+		{
+			IDataProfiler profiler = new TestProfiler();
+			IDataConfiguration config = new TestConfig();
+			ILocalizer localizer = new TestLocalizer();
+			return new SqlDbContext(profiler, config, localizer as IDataLocalizer);
+		}
+	}
 }

@@ -1,12 +1,13 @@
 ﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
 
 using A2v10.Data.Interfaces;
+using A2v10.Infrastructure;
 using System;
 using System.Collections.Generic;
 
 namespace A2v10.Data.Tests.Configuration
 {
-	public class TestLocalizer : IDataLocalizer
+	public class TestLocalizer : IDataLocalizer, ILocalizer
 	{
 		IDictionary<String, String> _dict;
 
@@ -18,6 +19,11 @@ namespace A2v10.Data.Tests.Configuration
 				{ "@[Item2]", "Item 2" },
 				{ "@[Item3]", "Item 3" },
 			};
+		}
+
+		public String Localize(String locale, String content, Boolean replaceNewLine = true)
+		{
+			return content;
 		}
 
 		public String Localize(String content)
