@@ -11,5 +11,6 @@ namespace A2v10.Data.Interfaces
 	public interface IExternalDataRecord
 	{
 		Object FieldValue(String name);
+		Boolean FieldExists(String name);
 	}
 }

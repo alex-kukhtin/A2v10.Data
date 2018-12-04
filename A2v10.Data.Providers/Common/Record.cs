@@ -32,5 +32,10 @@ namespace A2v10.Data.Providers
 			}
 			throw new ExternalDataException($"Invalid field name: {name}");
 		}
+
+		public Boolean  FieldExists(String name)
+		{
+			return _fieldMap.ContainsKey(name);
+		}
 	}
 }
