@@ -22,6 +22,7 @@ namespace A2v10.Data.Providers
 				format = format.ToLowerInvariant();
 			if (format == "auto")
 			{
+				fileName = fileName.ToLowerInvariant();
 				if (fileName.EndsWith(".dbf"))
 					format = "dbf";
 				else if (fileName.EndsWith(".csv"))
