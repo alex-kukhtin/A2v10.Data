@@ -50,6 +50,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\Starter.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Generator\ComplexModel.cs" />
     <Compile Include="Generator\SimpleModel.cs" />
     <Compile Include="Module\ModuleTest.cs" />
+    <Compile Include="Providers\XmlReader.cs" />
     <Compile Include="Providers\CsvReader.cs" />
     <Compile Include="Providers\ProviderTools.cs" />
     <Compile Include="TestMetadata.cs" />

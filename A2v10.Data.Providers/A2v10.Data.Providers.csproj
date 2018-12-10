@@ -52,6 +52,7 @@
     <Compile Include="ExternalDataContext.cs" />
     <Compile Include="ExternalDataException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Xml\XmlWriter.cs" />
     <Compile Include="Xml\XmlReader.cs" />
   </ItemGroup>
   <ItemGroup>

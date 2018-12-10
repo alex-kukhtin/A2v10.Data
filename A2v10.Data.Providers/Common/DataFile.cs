@@ -41,8 +41,8 @@ namespace A2v10.Data.Providers
 					countASCII += 1;
 					continue;
 				}
-				bool b1251 = false;
-				bool b866 = false;
+				Boolean b1251 = false;
+				Boolean b866 = false;
 				if (ch >= 0xC0 && ch <= 0xFF || Array.IndexOf(byteCodes1251, ch) != -1)
 				{
 					count1251 += 1;
@@ -92,6 +92,18 @@ namespace A2v10.Data.Providers
 				throw new InvalidOperationException();
 			return _fields[index];
 		}
+
+		public Int32 GetOrCreateField(String name)
+		{
+			MapFields();
+			if (_fieldMap.TryGetValue(name, out Int32 index))
+				return index;
+			_fields.Add(new Field() { Name = name, Type = FieldType.Char });
+			Int32 ix = _fields.Count - 1;
+			_fieldMap.Add(name, ix);
+			return ix;
+		}
+
 		public IEnumerable<Field> Fields => _fields;
 
 		private IDictionary<String, Int32> _fieldMap;
@@ -105,6 +117,7 @@ namespace A2v10.Data.Providers
 
 		public Record CreateRecord()
 		{
+			MapFields(); // ensure exists
 			var r = new Record(_fieldMap);
 			_records.Add(r);
 			return r;

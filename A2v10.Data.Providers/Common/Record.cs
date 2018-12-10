@@ -33,6 +33,20 @@ namespace A2v10.Data.Providers
 			throw new ExternalDataException($"Invalid field name: {name}");
 		}
 
+		public String StringFieldValueByIndex(Int32 index)
+		{
+			if (index < DataFields.Count)
+				return DataFields[index].StringValue;
+			return null;
+		}
+
+		public void SetFieldValueString(Int32 index, String value)
+		{
+			while (DataFields.Count <= index)
+				DataFields.Add(new FieldData());
+			DataFields[index].StringValue = value;
+		}
+
 		public Boolean  FieldExists(String name)
 		{
 			return _fieldMap.ContainsKey(name);

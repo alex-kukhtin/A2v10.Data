@@ -6,6 +6,7 @@ using System.Text;
 using A2v10.Data.Interfaces;
 using A2v10.Data.Providers.Csv;
 using A2v10.Data.Providers.Dbf;
+using A2v10.Data.Providers.Xml;
 
 namespace A2v10.Data.Providers
 {
@@ -25,6 +26,8 @@ namespace A2v10.Data.Providers
 					format = "dbf";
 				else if (fileName.EndsWith(".csv"))
 					format = "csv";
+				else if (fileName.EndsWith(".xml"))
+					format = "xml";
 			}
 			switch (format)
 			{
@@ -40,6 +43,9 @@ namespace A2v10.Data.Providers
 						Encoding = enc
 					};
 					return new CsvReader(dataFileCsv);
+				case "xml":
+					var dataFileXml = new DataFile();
+					return new XmlReader(dataFileXml);
 			}
 			return null;
 		}
