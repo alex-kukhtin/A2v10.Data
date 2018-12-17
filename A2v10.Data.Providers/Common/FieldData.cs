@@ -13,7 +13,8 @@ namespace A2v10.Data.Providers
 
 		public FieldType FieldType { get; set; }
 
-		public Object Value { get
+		public Object Value {
+			get
 			{
 				switch (FieldType)
 				{
@@ -28,7 +29,7 @@ namespace A2v10.Data.Providers
 					case FieldType.Date:
 						return DateValue;
 				}
-				throw new ExternalDataException($"Invalid FieldType: {FieldType}");
+				throw new InvalidOperationException($"Invalid FieldType: {FieldType}");
 			}
 		}
 	}

@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace A2v10.Data.Generator
 {
-	public class DataCreatorException : Exception
+	[Serializable]
+	public sealed class DataCreatorException : Exception
 	{
 		public DataCreatorException(String message)
 			: base(message)
