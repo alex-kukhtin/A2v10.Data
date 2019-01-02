@@ -56,6 +56,7 @@ namespace A2v10.Data
 			{
 				"Parent",
 				"Root",
+				"Context",
 				"ParentId",
 				"CurrentyKey",
 				"ParentRowNumber",
