@@ -32,5 +32,26 @@ namespace A2v10.Data.Providers
 				throw new InvalidOperationException($"Invalid FieldType: {FieldType}");
 			}
 		}
+
+		public Boolean IsEmpty
+		{
+			get
+			{
+				switch (FieldType)
+				{
+					case FieldType.Char:
+					case FieldType.Memo:
+						return String.IsNullOrEmpty(StringValue);
+					case FieldType.Numeric:
+					case FieldType.Float:
+						return DecimalValue == 0M;
+					case FieldType.Boolean:
+						return BooleanValue == false;
+					case FieldType.Date:
+						return DateValue == DateTime.MinValue;
+				}
+				return true;
+			}
+		}
 	}
 }

@@ -51,5 +51,26 @@ namespace A2v10.Data.Providers
 		{
 			return _fieldMap.ContainsKey(name);
 		}
+
+		public Boolean IsFieldEmpty(String name)
+		{
+			if (_fieldMap.TryGetValue(name, out Int32 fieldNo))
+			{
+				if (fieldNo >= 0 && fieldNo < DataFields.Count)
+					return DataFields[fieldNo].IsEmpty;
+			}
+			throw new ExternalDataException($"Invalid field name: {name}");
+		}
+
+		public Boolean IsEmpty
+		{
+			get
+			{
+				foreach (var d in DataFields)
+					if (!d.IsEmpty)
+						return false;
+				return true;
+			}
+		}
 	}
 }
