@@ -19,23 +19,40 @@ namespace A2v10.Data.Providers.Xml
 
 		public IExternalDataFile Read(Stream stream)
 		{
-			Boolean level2 = false;
+			Int32 level = 0;
+			Record currentRow = null;
 			using (var rdr = System.Xml.XmlReader.Create(stream))
 			{
 				while (rdr.Read()) {
 					if (rdr.NodeType == XmlNodeType.Element)
 					{
-						if (!level2)
-							level2 = true;
-						else 
-							ReadRow(rdr);
+						level += 1;
+						if (level == 2)
+						{
+							currentRow = ReadRow(rdr);
+						}
+						else if (level == 3)
+						{
+							if (currentRow != null)
+							{
+								var name = rdr.Name;
+								do
+								{
+									rdr.Read(); // text insinde
+								} while (rdr.NodeType != XmlNodeType.Text);
+								var value = rdr.Value;
+								ReadValue(currentRow, name, value);
+							}
+						}
 					}
+					else if (rdr.NodeType == XmlNodeType.EndElement)
+						level--;
 				}
 			}
 			return _file;
 		}
 
-		void ReadRow(System.Xml.XmlReader rdr)
+		Record ReadRow(System.Xml.XmlReader rdr)
 		{
 			var record = _file.CreateRecord();
 			for (Int32 i= 0; i < rdr.AttributeCount; i++)
@@ -43,12 +60,13 @@ namespace A2v10.Data.Providers.Xml
 				rdr.MoveToAttribute(i);
 				ReadValue(record, rdr.Name, rdr.Value);
 			}
+			return record;
 		}
 
 		void ReadValue(Record record, String name, String value)
 		{
 			Int32 ix = _file.GetOrCreateField(name);
-			record.SetFieldValueString(ix, value);
+			record.SetFieldValueString(ix, name, value);
 		}
 	}
 }

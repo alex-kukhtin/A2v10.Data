@@ -25,6 +25,9 @@ namespace A2v10.Data.Providers
 
 		public Object FieldValue(String name)
 		{
+			name = FindFieldName(name);
+			if (name == null)
+				return null;
 			if (_fieldMap.TryGetValue(name, out Int32 fieldNo))
 			{
 				if (fieldNo >= 0 && fieldNo < DataFields.Count)
@@ -40,10 +43,12 @@ namespace A2v10.Data.Providers
 			return null;
 		}
 
-		public void SetFieldValueString(Int32 index, String value)
+		public void SetFieldValueString(Int32 index, String name, String value)
 		{
 			while (DataFields.Count <= index)
 				DataFields.Add(new FieldData());
+			if (!_fieldMap.ContainsKey(name))
+				_fieldMap.Add(name, index);
 			DataFields[index].StringValue = value;
 		}
 
@@ -52,8 +57,25 @@ namespace A2v10.Data.Providers
 			return _fieldMap.ContainsKey(name);
 		}
 
+		public String FindFieldName(String name)
+		{
+			if (!name.Contains("|"))
+				return name;
+			foreach (var f in name.Split('|'))
+			{
+				if (String.IsNullOrWhiteSpace(f))
+					return null;
+				if (_fieldMap.ContainsKey(f))
+					return f;
+			}
+			return name;
+		}
+
 		public Boolean IsFieldEmpty(String name)
 		{
+			name = FindFieldName(name);
+			if (name == null)
+				return true;
 			if (_fieldMap.TryGetValue(name, out Int32 fieldNo))
 			{
 				if (fieldNo >= 0 && fieldNo < DataFields.Count)

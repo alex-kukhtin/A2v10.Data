@@ -130,6 +130,5 @@ namespace A2v10.Data.Providers
 			return _records[index];
 		}
 		public IEnumerable<IExternalDataRecord> Records => _records;
-
 	}
 }
