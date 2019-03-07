@@ -27,10 +27,28 @@ namespace A2v10.Data.Providers
 		public Encoding Encoding { get; set; }
 		public Char Delimiter { get; set; }
 
+		public Boolean IsNormalString(String str)
+		{
+			var arr = str.ToCharArray();
+			Int32 normalCharsCount = 0;
+			foreach (var ch in str.ToCharArray())
+			{
+				if (Char.IsLetterOrDigit(ch) || Char.IsWhiteSpace(ch) || Char.IsPunctuation(ch) || Char.IsSymbol(ch))
+					normalCharsCount += 1;
+				else
+				{
+					int z = 55;
+				}
+			}
+			return normalCharsCount == arr.Length;
+		}
+
 		public Encoding FindDecoding(Byte[] chars)
 		{
 			if (Encoding != null)
 				return Encoding;
+			// TODO: Get BOM bytes
+
 			Int32 countASCII = 0;
 			Int32 count866 = 0;
 			Int32 count1251 = 0;
@@ -67,10 +85,21 @@ namespace A2v10.Data.Providers
 			{
 				this.Encoding = Encoding.GetEncoding(1251);
 				return this.Encoding;
-			} else if (count866 == totalCount && count1251 < totalCount)
+			}
+			else if (count866 == totalCount && count1251 < totalCount)
 			{
 				this.Encoding = Encoding.GetEncoding(866);
 				return this.Encoding;
+			}
+			else
+			{
+				// try UTF-8
+				String str = Encoding.UTF8.GetString(chars);
+				if (IsNormalString(str))
+				{
+					this.Encoding = Encoding.UTF8;
+					return this.Encoding;
+				}
 			}
 
 			return Encoding.ASCII;
