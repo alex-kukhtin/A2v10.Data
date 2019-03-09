@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace A2v10.Data.Interfaces
 {
@@ -15,6 +14,7 @@ namespace A2v10.Data.Interfaces
 		String HasChildren { get; }
 		String Permissions { get; }
 		String Items { get; set; }
+		String MapItemType { get; set; }
 
 		IDictionary<String, IDataFieldMetadata> Fields { get; }
 

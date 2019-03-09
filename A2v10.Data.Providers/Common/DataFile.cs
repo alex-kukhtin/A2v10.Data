@@ -35,10 +35,6 @@ namespace A2v10.Data.Providers
 			{
 				if (Char.IsLetterOrDigit(ch) || Char.IsWhiteSpace(ch) || Char.IsPunctuation(ch) || Char.IsSymbol(ch))
 					normalCharsCount += 1;
-				else
-				{
-					int z = 55;
-				}
 			}
 			return normalCharsCount == arr.Length;
 		}

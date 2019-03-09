@@ -638,6 +638,7 @@ namespace A2v10.Data
 		{
 			var mapType = fieldInfo.TypeName + "Map";
 			var innerElem = GetOrCreateMetadata(mapType);
+			innerElem.MapItemType = fieldInfo.TypeName;
 			foreach (var f in fieldInfo.MapFields)
 				innerElem.AddField(new FieldInfo($"{f}!{fieldInfo.TypeName}"), DataType.Undefined);
 			elem.AddField(new FieldInfo($"{fieldInfo.PropertyName}!{mapType}"), DataType.Undefined);
