@@ -25,6 +25,7 @@ namespace A2v10.Data.Interfaces
 		Boolean IsReadOnly { get; }
 		Boolean IsEmpty { get; }
 		void SetReadOnly();
+		void MakeCopy();
 
 		T Eval<T>(String expression);
 		T Eval<T>(ExpandoObject root, String expression);

@@ -112,6 +112,19 @@ namespace A2v10.Data
 			System.Set("StateReadOnly", true);
 		}
 
+		public void MakeCopy()
+		{
+			if (Root == null)
+				return;
+			foreach (var md in Metadata)
+			{
+				if (!String.IsNullOrEmpty(md.Value.Id))
+				{
+					// TODO
+				}
+			}
+		}
+
 		public Boolean IsReadOnly
 		{
 			get
