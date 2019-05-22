@@ -148,7 +148,10 @@ namespace A2v10.Data.Providers.Csv
 				}
 				else if (ch == '"')
 				{
-					_readString();
+					if (token.Length == 0)
+						_readString();
+					else
+						token.Append(ch); // inside string
 				}
 				else
 				{

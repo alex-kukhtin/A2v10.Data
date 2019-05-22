@@ -425,11 +425,9 @@ namespace A2v10.Data.Tests
 
 			dt = new DataTester(dm, "Document.Category");
 			dt.AreValueEqual("CAT1", "Id");
-			//dt.AreValueEqual("CAT1", "Key");
 			dt.AreValueEqual("Category_1", "Name");
 
 			dt = new DataTester(dm, "Categories.CAT1");
-			//dt.AreValueEqual("CAT1", "Key");
 			dt.AreValueEqual("CAT1", "Id");
 			dt.AreValueEqual("Category_1", "Name");
 
