@@ -11,5 +11,7 @@ namespace A2v10.Data.Interfaces
 		Int32 Length { get; }
 
 		String GetObjectType(String fieldName);
+
+		String TypeForValidate { get; }
 	}
 }

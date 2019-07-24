@@ -29,7 +29,7 @@ namespace A2v10.Data.Providers.Xml
 						level += 1;
 						if (level == 2)
 						{
-							bool bSelfClosing = rdr.IsEmptyElement && !rdr.HasValue;
+							Boolean bSelfClosing = rdr.IsEmptyElement && !rdr.HasValue;
 							currentRow = ReadRow(rdr);
 							if (bSelfClosing)
 								level--;
@@ -41,7 +41,7 @@ namespace A2v10.Data.Providers.Xml
 								var name = rdr.Name;
 								do
 								{
-									bool bReaded = rdr.Read(); // text insinde
+									Boolean bReaded = rdr.Read(); // text insinde
 									if (!bReaded)
 										break;
 								} while (rdr.NodeType != XmlNodeType.Text);

@@ -896,6 +896,23 @@ begin
 end
 go
 ------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'MultipleTypes.Load')
+	drop procedure a2test.[MultipleTypes.Load]
+go
+------------------------------------------------
+create procedure a2test.[MultipleTypes.Load]
+	@TenantId int = null,
+	@UserId bigint = null,
+	@Id bigint = null
+as
+begin
+	set nocount on;
+	select [Model!TModel!Object] = null, [Id!!Id] = 123, [Agent1!TAgent!RefId] = 5, [Agent2!TAgent!RefId] = 7;
+	select [!TAgent!Map] = null, [Id!!Id] = 5, [Name] = N'Five';
+	select [!TAgent!Map] = null, [Id!!Id] = 7, [Name] = N'Seven', Memo=N'Memo for seven';
+end
+go
+------------------------------------------------
 create procedure a2test.[Guid.Metadata]
 as
 begin

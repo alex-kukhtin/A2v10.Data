@@ -67,6 +67,8 @@
     <Compile Include="SqlDbContext.cs" />
     <Compile Include="SqlExtensions.cs" />
     <Compile Include="TableDescription.cs" />
+    <Compile Include="Validator\JsonValidator.cs" />
+    <Compile Include="Validator\ModelForValidate.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\A2v10.Data.Interfaces\A2v10.Data.Interfaces.csproj">

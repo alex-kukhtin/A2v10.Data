@@ -103,5 +103,26 @@ namespace A2v10.Data
 						return DataType.ToString();
 			}
 		}
+
+		public String TypeForValidate
+		{
+			get
+			{
+				switch (ItemType)
+				{
+					case FieldType.Array:
+					case FieldType.Tree:
+					case FieldType.Map:
+					case FieldType.MapObject:
+						return RefObject + "[]";
+					case FieldType.Object:
+					case FieldType.Group:
+						return RefObject;
+					default:
+						return DataType.ToString();
+				}
+			}
+		}
+
 	}
 }

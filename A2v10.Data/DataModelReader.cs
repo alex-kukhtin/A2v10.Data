@@ -64,7 +64,7 @@ namespace A2v10.Data
 
 		Dictionary<String, String> _aliases;
 
-		void ProcessAliasesMetadata(IDataReader rdr)
+		void AddAliasesFromReader(IDataReader rdr)
 		{
 			_aliases = new Dictionary<String, String>();
 			// 1-based
@@ -80,7 +80,7 @@ namespace A2v10.Data
 				return;
 			var objectDef = new FieldInfo(GetAlias(rdr.GetName(0)));
 			if (objectDef.TypeName == ALIASES_TYPE)
-				ProcessAliasesMetadata(rdr);
+				AddAliasesFromReader(rdr);
 		}
 
 		public IDataModel DataModel
@@ -384,7 +384,7 @@ namespace A2v10.Data
 				return; // not needed
 			else if (objectDef.TypeName == ALIASES_TYPE)
 			{
-				ProcessAliasesMetadata(rdr);
+				AddAliasesFromReader(rdr);
 				return;
 			}
 			if (objectDef.FieldType == FieldType.Scalar)
@@ -530,7 +530,7 @@ namespace A2v10.Data
 			/*0-key, 1-Property (optional)*/
 			var key = Tuple.Create(pxa[0], id);
 			if (!_idMap.TryGetValue(key, out ExpandoObject mapObj))
-				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found in map");
+				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found");
 			if (pxa.Length == 1)
 			{
 				// old syntax. Find property name by rootTypeName
@@ -561,7 +561,7 @@ namespace A2v10.Data
 			/*0-key, 1-Property*/
 			var srcKey = Tuple.Create(pxa[0], id);
 			if (!_idMap.TryGetValue(srcKey, out ExpandoObject mapObj))
-				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found in map");
+				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found");
 			var innerObject = mapObj.Get<ExpandoObject>(pxa[1]);
 			if (innerObject == null)
 			{
@@ -579,7 +579,7 @@ namespace A2v10.Data
 			/*0-key, 1-Property*/
 			var key = Tuple.Create(pxa[0], id);
 			if (!_idMap.TryGetValue(key, out ExpandoObject mapObj))
-				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found in map");
+				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found");
 			mapObj.Set(pxa[1], currentRecord);
 		}
 

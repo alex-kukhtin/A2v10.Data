@@ -181,5 +181,13 @@ namespace A2v10.Data
 				trgSystem.AddChecked(sys.Key, sys.Value);
 		}
 
+		public void Validate(IDataModelValidator validator)
+		{
+			foreach (var m in Metadata)
+			{
+				validator.ValidateType(m.Key, m.Value);
+			}
+		}
+
 	}
 }

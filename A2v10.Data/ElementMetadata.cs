@@ -83,7 +83,7 @@ namespace A2v10.Data
 			{
 				fm = ifm as FieldMetadata;
 				if (fm.DataType != dataType)
-					throw new DataLoaderException($"Invalid property '{name}'. Type mismatch.");
+					throw new DataLoaderException($"Invalid property '{name}'. Type mismatch. ({fm.DataType} <> {dataType})");
 				return true;
 			}
 			return false;
