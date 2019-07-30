@@ -542,7 +542,7 @@ namespace A2v10.Data
 				var elemData = GetOrCreateMetadata(oldTypeName);
 				String fieldName = elemData.FindPropertyByType(rootTypeName);
 				if (String.IsNullOrEmpty(fieldName))
-					throw new DataLoaderException($"AddRecordToArray. FieldName for type '{rootTypeName}' not found in '{propName}' object");
+					throw new DataLoaderException($"AddRecordToArray. Field for type '{rootTypeName}' not found in '{propName}' object");
 				mapObj.AddToArray(fieldName, currentRecord);
 			}
 			else if (pxa.Length != 2)
