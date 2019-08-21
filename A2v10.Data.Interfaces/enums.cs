@@ -1,4 +1,4 @@
-﻿// Copyright © 2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2018-2019 Alex Kukhtin. All rights reserved.
 
 using System;
 
@@ -11,6 +11,7 @@ namespace A2v10.Data.Interfaces
 		CanView = 0x01,
 		CanEdit = 0x02,
 		CanDelete = 0x04,
-		CanApply = 0x08
+		CanApply = 0x08,
+		CanUnapply = 0x10
 	}
 }

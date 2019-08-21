@@ -287,11 +287,15 @@ namespace A2v10.Data
 					groupKeys.Add(bVal);
 					continue;
 				}
-				if (fi.IsJson)
+				else if (fi.IsJson)
 				{
 					if (dataVal != null)
 						AddValueToRecord(currentRecord, fi, JsonConvert.DeserializeObject<ExpandoObject>(dataVal.ToString()));
 					continue;
+				}
+				else if (fi.IsPermissions)
+				{
+					fi.CheckPermissionsName();
 				}
 				AddValueToRecord(currentRecord, fi, dataVal);
 				if (fi.IsRowCount)
@@ -415,6 +419,12 @@ namespace A2v10.Data
 				}
 				if (fieldDef.IsRowCount)
 					hasRowCount = true;
+				if (fieldDef.IsPermissions)
+				{
+					fieldDef.CheckPermissionsName();
+					var fm = typeMetadata.AddField(fieldDef, DataType.Number, 0);
+					continue;
+				}
 				if (!fieldDef.IsVisible)
 					continue;
 				DataType dt = rdr.GetFieldType(i).Name.TypeName2DataType();

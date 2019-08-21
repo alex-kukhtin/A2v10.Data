@@ -8,7 +8,7 @@ namespace A2v10.Data
 {
 	public struct FieldInfo
 	{
-		public String PropertyName { get; }
+		public String PropertyName { get; private set; }
 		public String TypeName { get; }
 		public FieldType FieldType { get; }
 		public SpecType SpecType { get; }
@@ -116,6 +116,7 @@ namespace A2v10.Data
 		public Boolean IsItems { get { return SpecType == SpecType.Items; } }
 		public Boolean IsGroupMarker { get { return SpecType == SpecType.GroupMarker; } }
 		public Boolean IsJson { get { return SpecType == SpecType.Json; } }
+		public Boolean IsPermissions { get { return SpecType == SpecType.Permissions; } }
 
 		private static void CheckField(String[] parts)
 		{
@@ -147,6 +148,12 @@ namespace A2v10.Data
 			if (!(dataVal is DateTime dt))
 				throw new DataLoaderException($"The field with the qualifier 'UtcDate' must be of type 'datetime'");
 			return DateTime.SpecifyKind(dt.ToLocalTime(), DateTimeKind.Unspecified);
+		}
+
+		public void CheckPermissionsName()
+		{
+			if (String.IsNullOrEmpty(PropertyName))
+				PropertyName = "__permissions";
 		}
 	}
 }
