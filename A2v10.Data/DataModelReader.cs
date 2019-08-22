@@ -235,6 +235,16 @@ namespace A2v10.Data
 					case SpecType.Copy:
 						_sys.Add("Copy", DataHelpers.SqlToBoolean(dataVal));
 						break;
+					case SpecType.Permissions:
+						if (String.IsNullOrEmpty(fi.TypeName))
+							throw new DataLoaderException("For the Permissions modifier, the field name must be specified");
+						Object perm = dataVal;
+						var xp = fi.TypeName.Split('.');
+						if (xp.Length < 1)
+							throw new DataLoaderException("For the Permissions modifier, the field name must be as ItemProperty");
+						var fmp = _createModelInfo(fi.TypeName);
+						fmp.Set("Permissions", perm);
+						break;
 					default:
 						_sys.Add(fn, dataVal);
 						break;
