@@ -169,7 +169,31 @@ namespace A2v10.Data
 				}
 				if (currentData.TryGetValue(prop, out Object propValue))
 				{
-					if (propValue is IList<Object>)
+					if (propValue is IList<ExpandoObject> expList)
+					{
+						for (Int32 j = 0; j < expList.Count; j++)
+						{
+							var currVal = expList[j];
+							currVal.Set("RowNumber", j + 1);
+							currVal.SetNotNull("ParentId", currentId);
+							currVal.SetNotNull("ParentKey", parentKey);
+							var rowGuid = currVal.GetOrCreate<Guid>("GUID", () => Guid.NewGuid());
+							if (parentIndex != null)
+								currVal.Set("ParentRowNumber", parentIndex.Value + 1);
+							currVal.SetNotNull("ParentGUID", parentGuid);
+							if (bLast)
+								yield return currVal;
+							else
+							{
+								String newPath = String.Empty;
+								for (Int32 k = i + 1; k < x.Length; k++)
+									newPath = newPath.AppendDot(x[k]);
+								foreach (var dx in GetDataForSave(currVal, newPath, parentIndex: j, parentKey: null, parentGuid: rowGuid))
+									yield return dx;
+							}
+						}
+					}
+					else if (propValue is IList<Object>)
 					{
 						var list = propValue as IList<Object>;
 						for (Int32 j = 0; j < list.Count; j++)
@@ -189,7 +213,7 @@ namespace A2v10.Data
 								String newPath = String.Empty;
 								for (Int32 k = i + 1; k < x.Length; k++)
 									newPath = newPath.AppendDot(x[k]);
-								foreach (var dx in GetDataForSave(currVal, newPath, parentIndex:j, parentKey:null, parentGuid:rowGuid))
+								foreach (var dx in GetDataForSave(currVal, newPath, parentIndex: j, parentKey: null, parentGuid: rowGuid))
 									yield return dx;
 							}
 						}
@@ -235,14 +259,14 @@ namespace A2v10.Data
 								foreach (var kv in currValD)
 								{
 									var mapItem = kv.Value as ExpandoObject;
-									foreach (var dx in GetDataForSave(mapItem, newPath, parentIndex:parentIndex, parentKey:kv.Key, parentGuid:currentGuid))
+									foreach (var dx in GetDataForSave(mapItem, newPath, parentIndex: parentIndex, parentKey: kv.Key, parentGuid: currentGuid))
 										yield return dx;
 								}
 							}
 							else
 							{
 								currentGuid = currVal.GetOrCreate<Guid>("GUID", () => Guid.NewGuid());
-								foreach (var dx in GetDataForSave(currVal, newPath, parentIndex:0, parentKey:null, parentGuid:currentGuid))
+								foreach (var dx in GetDataForSave(currVal, newPath, parentIndex: 0, parentKey: null, parentGuid: currentGuid))
 									yield return dx;
 							}
 						}
