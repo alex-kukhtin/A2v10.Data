@@ -14,8 +14,8 @@ namespace A2v10.Data.Interfaces
 		Task<SqlConnection> GetConnectionAsync(String source);
 		SqlConnection GetConnection(String source);
 
-		IDataModel LoadModel(String source, String command, Object prms = null);
-		Task<IDataModel> LoadModelAsync(String source, String command, Object prms = null);
+		IDataModel LoadModel(String source, String command, Object prms = null, Int32 commandTimeout = 0);
+		Task<IDataModel> LoadModelAsync(String source, String command, Object prms = null, Int32 commandTimeout = 0);
 
 		IDataModel SaveModel(String source, String command, Object data, Object prms = null);
 		Task<IDataModel> SaveModelAsync(String source, String command, Object data, Object prms = null, Func<ITableDescription, Object> onSetData = null);

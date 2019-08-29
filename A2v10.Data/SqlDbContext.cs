@@ -245,7 +245,7 @@ namespace A2v10.Data
 			}
 		}
 
-		public IDataModel LoadModel(String source, String command, System.Object prms = null)
+		public IDataModel LoadModel(String source, String command, System.Object prms = null, Int32 commandTimeout = 0)
 		{
 			var modelReader = new DataModelReader(_localizer);
 			using (var p = _profiler.Start(command))
@@ -262,13 +262,14 @@ namespace A2v10.Data
 					(no, rdr) =>
 					{
 						modelReader.ProcessOneMetadata(rdr);
-					});
+					},
+					commandTimeout:commandTimeout);
 			}
 			modelReader.PostProcess();
 			return modelReader.DataModel;
 		}
 
-		public async Task<IDataModel> LoadModelAsync(String source, String command, System.Object prms = null)
+		public async Task<IDataModel> LoadModelAsync(String source, String command, System.Object prms = null, Int32 commandTimeout = 0)
 		{
 			var modelReader = new DataModelReader(_localizer);
 			using (var p = _profiler.Start(command))
@@ -285,7 +286,8 @@ namespace A2v10.Data
 					(no, rdr) =>
 					{
 						modelReader.ProcessOneMetadata(rdr);
-					});
+					},
+					commandTimeout:commandTimeout);
 			}
 			modelReader.PostProcess();
 			return modelReader.DataModel;
@@ -471,13 +473,16 @@ namespace A2v10.Data
 		async Task ReadDataAsync(String source, String command,
 			Action<SqlParameterCollection> setParams,
 			Action<Int32, IDataReader> onRead,
-			Action<Int32, IDataReader> onMetadata)
+			Action<Int32, IDataReader> onMetadata, 
+			Int32 commandTimeout = 0)
 		{
 			using (var cnn = await GetConnectionAsync(source))
 			{
 				Int32 rdrNo = 0;
 				using (var cmd = cnn.CreateCommandSP(command))
 				{
+					if (commandTimeout != 0)
+						cmd.CommandTimeout = commandTimeout;
 					setParams?.Invoke(cmd.Parameters);
 					using (SqlDataReader rdr = await cmd.ExecuteReaderAsync())
 					{
@@ -498,13 +503,16 @@ namespace A2v10.Data
 		void ReadData(String source, String command,
 			Action<SqlParameterCollection> setParams,
 			Action<Int32, IDataReader> onRead,
-			Action<Int32, IDataReader> onMetadata)
+			Action<Int32, IDataReader> onMetadata,
+			Int32 commandTimeout)
 		{
 			using (var cnn = GetConnection(source))
 			{
 				Int32 rdrNo = 0;
 				using (var cmd = cnn.CreateCommandSP(command))
 				{
+					if (commandTimeout != 0)
+						cmd.CommandTimeout = commandTimeout;
 					setParams?.Invoke(cmd.Parameters);
 					using (SqlDataReader rdr = cmd.ExecuteReader())
 					{
