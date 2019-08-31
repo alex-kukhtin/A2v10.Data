@@ -75,6 +75,23 @@ namespace A2v10.Data
 			}
 		}
 
+		public async Task ExecuteExpandoAsync(String source, String command, ExpandoObject element)
+		{
+			using (var p = _profiler.Start(command))
+			{
+				using (var cnn = await GetConnectionAsync(source))
+				{
+					using (var cmd = cnn.CreateCommandSP(command))
+					{
+						var retParam = SetParametersFromExpandoObject(cmd, element);
+						await cmd.ExecuteNonQueryAsync();
+						SetReturnParamResult(retParam, element);
+					}
+				}
+			}
+		}
+
+
 		public TOut ExecuteAndLoad<TIn, TOut>(String source, String command, TIn element) where TIn : class where TOut : class
 		{
 			TOut outValue = null;
@@ -417,6 +434,39 @@ namespace A2v10.Data
 			}
 		}
 		#endregion
+
+		SqlParameter SetParametersFromExpandoObject(SqlCommand cmd, ExpandoObject element)
+		{
+			var elem = element as IDictionary<String, Object>;
+			SqlCommandBuilder.DeriveParameters(cmd);
+			var sqlParams = cmd.Parameters;
+			SqlParameter retParam = null;
+			if (cmd.Parameters.Contains(RET_PARAM_NAME))
+			{
+				retParam = cmd.Parameters[RET_PARAM_NAME];
+				retParam.Value = DBNull.Value;
+			}
+			foreach (var kv in elem)
+			{
+				var paramName = "@" + kv.Key;
+				if (sqlParams.Contains(paramName))
+				{
+					var sqlParam = sqlParams[paramName];
+					var sqlVal = kv.Value;
+					if (sqlParam.SqlDbType == SqlDbType.VarBinary)
+					{
+						if (!(sqlVal is Stream stream))
+							throw new IndexOutOfRangeException("Stream expected");
+						sqlParam.Value = new SqlBytes(stream);
+					}
+					else
+					{
+						sqlParam.Value = SqlExtensions.ConvertTo(sqlVal, sqlParam.SqlDbType.ToType());
+					}
+				}
+			}
+			return retParam;
+		}
 
 		SqlParameter SetParametersFrom<T>(SqlCommand cmd, T element)
 		{

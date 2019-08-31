@@ -1,8 +1,9 @@
-﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2019 Alex Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Dynamic;
 using System.Threading.Tasks;
 
 namespace A2v10.Data.Interfaces
@@ -28,6 +29,7 @@ namespace A2v10.Data.Interfaces
 
 		void Execute<T>(String source, String command, T element) where T : class;
 		Task ExecuteAsync<T>(String source, String command, T element) where T : class;
+		Task ExecuteExpandoAsync(String source, String command, ExpandoObject element);
 
 		TOut ExecuteAndLoad<TIn, TOut>(String source, String command, TIn element) where TIn : class where TOut : class;
 		Task<TOut> ExecuteAndLoadAsync<TIn, TOut>(String source, String command, TIn element) where TIn : class where TOut : class;
