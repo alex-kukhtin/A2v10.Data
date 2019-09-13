@@ -15,6 +15,7 @@ namespace A2v10.Data.Interfaces
 		String Permissions { get; }
 		String Items { get; set; }
 		String MapItemType { get; set; }
+		String MainObject { get; set; }
 
 		IDictionary<String, IDataFieldMetadata> Fields { get; }
 

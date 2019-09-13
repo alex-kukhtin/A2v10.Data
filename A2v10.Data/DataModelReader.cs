@@ -410,7 +410,10 @@ namespace A2v10.Data
 			// other fields = object fields
 			var typeMetadata = GetOrCreateMetadata(objectDef.TypeName);
 			if (objectDef.IsMain && mainElement == null)
+			{
 				mainElement = objectDef;
+				rootMetadata.MainObject = objectDef.PropertyName;
+			}
 			if (objectDef.IsArray || objectDef.IsTree || objectDef.IsMap)
 				typeMetadata.IsArrayType = true;
 			if (objectDef.IsGroup)

@@ -17,6 +17,7 @@ namespace A2v10.Data
 		public String Permissions { get; set; }
 		public String Items { get; set; }
 		public String MapItemType { get; set; }
+		public String MainObject { get; set; }
 
 		public Boolean IsArrayType { get; set; }
 		public Boolean IsRowCount { get; set; }
