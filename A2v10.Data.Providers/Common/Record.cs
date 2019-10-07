@@ -52,7 +52,7 @@ namespace A2v10.Data.Providers
 			DataFields[index].StringValue = value;
 		}
 
-		public Boolean  FieldExists(String name)
+		public Boolean FieldExists(String name)
 		{
 			return _fieldMap.ContainsKey(name);
 		}
@@ -66,9 +66,23 @@ namespace A2v10.Data.Providers
 				if (String.IsNullOrWhiteSpace(f))
 					return null;
 				if (_fieldMap.ContainsKey(f))
-					return f;
+				{
+					// try to get all variants
+					if (!IsFieldEmptyInternal(f))
+						return f;
+				}
 			}
 			return name;
+		}
+
+		public Boolean IsFieldEmptyInternal(String name)
+		{
+			if (_fieldMap.TryGetValue(name, out Int32 fieldNo))
+			{
+				if (fieldNo >= 0 && fieldNo < DataFields.Count)
+					return DataFields[fieldNo].IsEmpty;
+			}
+			return true;
 		}
 
 		public Boolean IsFieldEmpty(String name)
