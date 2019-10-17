@@ -65,7 +65,6 @@ namespace A2v10.Data.DynamicExpression
 			ExclamationDoubleEqual,
 			DoubleAmphersand,
 			LessThanEqual,
-			LessGreater,
 			DoubleEqual,
 			GreaterThanEqual,
 			DoubleBar
@@ -193,7 +192,6 @@ namespace A2v10.Data.DynamicExpression
 			Expression left = ParseAdditive();
 			while (token.id == TokenId.DoubleEqual ||
 				token.id == TokenId.ExclamationEqual || token.id == TokenId.ExclamationDoubleEqual || 
-				token.id == TokenId.LessGreater ||
 				token.id == TokenId.GreaterThan || token.id == TokenId.GreaterThanEqual ||
 				token.id == TokenId.LessThan || token.id == TokenId.LessThanEqual)
 			{
@@ -206,7 +204,6 @@ namespace A2v10.Data.DynamicExpression
 						return Expression.Call(typeof(DynamicRuntimeHelper), "EqualOperation", null, left, right);
 					case TokenId.ExclamationEqual:
 					case TokenId.ExclamationDoubleEqual:
-					case TokenId.LessGreater:
 						return Expression.Call(typeof(DynamicRuntimeHelper), "NotEqualOperation", null, left, right);
 					case TokenId.GreaterThan:
 						return Expression.Call(typeof(DynamicRuntimeHelper), "GreaterThen", null, left, right);
@@ -550,11 +547,6 @@ namespace A2v10.Data.DynamicExpression
 					{
 						NextChar();
 						t = TokenId.LessThanEqual;
-					}
-					else if (ch == '>')
-					{
-						NextChar();
-						t = TokenId.LessGreater;
 					}
 					else
 					{

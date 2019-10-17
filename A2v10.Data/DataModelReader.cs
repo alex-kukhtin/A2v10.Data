@@ -47,7 +47,9 @@ namespace A2v10.Data
 				{
 					var val = e.Value;
 					if (val != null)
-						prms.AddWithValue("@" + e.Key, e.Value);
+					{
+						prms.AddWithValue($"@{e.Key}", val);
+					}
 				}
 			}
 			else
