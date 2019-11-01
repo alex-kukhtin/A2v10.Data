@@ -1,4 +1,4 @@
-﻿// Copyright © 2012-2017 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2012-2019 Alex Kukhtin. All rights reserved.
 
 using System;
 
@@ -7,6 +7,8 @@ namespace A2v10.Data.Interfaces
 	public interface IDataFieldMetadata
 	{
 		Boolean IsLazy { get; }
+		Boolean IsJson { get; }
+
 		String RefObject { get; }
 		Int32 Length { get; }
 

@@ -1,4 +1,4 @@
-﻿// Copyright © 2012-2017 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2012-2019 Alex Kukhtin. All rights reserved.
 
 using A2v10.Data.Interfaces;
 using System;
@@ -61,6 +61,7 @@ namespace A2v10.Data
 		public String RefObject { get; } // for object, array
 		public Boolean IsLazy { get; }
 		public Int32 Length { get; }
+		public Boolean IsJson { get; set; }
 
 		public Boolean IsArrayLike { get { return ItemType == FieldType.Object || ItemType == FieldType.Array || ItemType == FieldType.Map; } }
 
@@ -96,6 +97,8 @@ namespace A2v10.Data
 					return RefObject;
 				case FieldType.MapObject:
 					return RefObject + "Map";
+				case FieldType.Json:
+					return "Json";
 				default:
 					if (DataType == DataType.Undefined)
 						throw new DataLoaderException($"Invalid data type for '{fieldName}'");
