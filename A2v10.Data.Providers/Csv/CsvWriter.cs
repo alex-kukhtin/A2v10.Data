@@ -27,10 +27,11 @@ namespace A2v10.Data.Providers.Csv
 		public void Write(StreamWriter wr)
 		{
 
-			wr.WriteLine(GetHeader());
+			wr.Write(GetHeader());
 			for (var r = 0; r < _file.NumRecords; r++)
 			{
-				wr.WriteLine(GetRecord(_file.GetRecord(r)));
+				wr.WriteLine();
+				wr.Write(GetRecord(_file.GetRecord(r)));
 			}
 		}
 
@@ -60,7 +61,7 @@ namespace A2v10.Data.Providers.Csv
 
 		String EscapeString(String str)
 		{
-			if (str.IndexOfAny(new Char[] { _file.Delimiter, '"' }) != -1)
+			if (str.IndexOfAny(new Char[] { _file.Delimiter, '"', '\n', '\r' }) != -1)
 			{
 				return $"\"{str.Replace("\"", "\"\"")}\"";
 			}

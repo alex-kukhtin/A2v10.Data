@@ -13,6 +13,8 @@ namespace A2v10.Data.Providers.Csv
 	{
 		private readonly DataFile _file;
 
+		const Char QUOTE = '"';
+
 		public CsvReader(DataFile file)
 		{
 			_file = file;
@@ -40,17 +42,70 @@ namespace A2v10.Data.Providers.Csv
 			stream.Seek(0, SeekOrigin.Begin);
 		}
 
-		void ReadHeader (TextReader rdr)
+		void ReadHeader(StreamReader rdr)
 		{
-			String header = rdr.ReadLine();
+			String header = ReadLine(rdr);
 			ParseHeader(header);
+		}
+
+		String ReadLine(StreamReader rdr)
+		{
+			StringBuilder sb = new StringBuilder();
+
+			void readString(Char current)
+			{
+				while (!rdr.EndOfStream)
+				{
+					Char ch = (Char)rdr.Read();
+					if (ch == QUOTE)
+					{
+						sb.Append(ch);
+						Char next = (Char)rdr.Read();
+						if (next == QUOTE)
+						{
+							sb.Append(next);
+						}
+						else
+						{
+							sb.Append(next);
+							break;
+						}
+					}
+					else
+					{
+						sb.Append(ch);
+					}
+				}
+			}
+
+			while (!rdr.EndOfStream)
+			{
+				Char ch = (Char) rdr.Read();
+				if (ch == '\n' || ch == '\r') {
+					Char next = (Char)rdr.Read();
+					if (next != '\n' && next != '\r' && !rdr.EndOfStream)
+						rdr.BaseStream.Seek(-1, SeekOrigin.Current);
+					break;
+				}
+				else if (ch == QUOTE)
+				{
+					sb.Append(ch);
+					readString(ch);
+				}
+				else
+				{
+					sb.Append(ch);
+				}
+				
+			}
+			return sb.ToString();
 		}
 
 		void Read(StreamReader rdr)
 		{
 			while (!rdr.EndOfStream)
 			{
-				String line = rdr.ReadLine();
+				String line = ReadLine(rdr);
 				var items = ParseLine(line);
 				var r = _file.CreateRecord();
 				for (var i = 0; i < items.Count; i++)
@@ -116,17 +171,20 @@ namespace A2v10.Data.Providers.Csv
 				while (true)
 				{
 					sch = _nextChar();
-					if (sch == '"')
+					if (sch == '\0')
+						break;
+					else if (sch == QUOTE)
 					{
 						var nextStrChar = _nextChar();
-						if (nextStrChar == '"')
+						if (nextStrChar == QUOTE)
 							token.Append(nextStrChar);
 						else
 						{
 							_addToken();
 							break;
 						}
-					} else
+					}
+					else
 					{
 						token.Append(sch);
 					}
@@ -146,7 +204,7 @@ namespace A2v10.Data.Providers.Csv
 				{
 					_addToken();
 				}
-				else if (ch == '"')
+				else if (ch == QUOTE)
 				{
 					if (token.Length == 0)
 						_readString();
