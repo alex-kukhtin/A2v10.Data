@@ -52,7 +52,7 @@ namespace A2v10.Data.Providers.Csv
 		{
 			StringBuilder sb = new StringBuilder();
 
-			void readString(Char current)
+			Char readString(Char current)
 			{
 				while (!rdr.EndOfStream)
 				{
@@ -67,8 +67,7 @@ namespace A2v10.Data.Providers.Csv
 						}
 						else
 						{
-							sb.Append(next);
-							break;
+							return next;
 						}
 					}
 					else
@@ -76,21 +75,24 @@ namespace A2v10.Data.Providers.Csv
 						sb.Append(ch);
 					}
 				}
+				return '\0';
 			}
 
 			while (!rdr.EndOfStream)
 			{
 				Char ch = (Char) rdr.Read();
-				if (ch == '\n' || ch == '\r') {
-					Char next = (Char)rdr.Read();
-					if (next != '\n' && next != '\r' && !rdr.EndOfStream)
-						rdr.BaseStream.Seek(-1, SeekOrigin.Current);
-					break;
-				}
-				else if (ch == QUOTE)
+				if (ch == QUOTE)
 				{
 					sb.Append(ch);
-					readString(ch);
+					ch = readString(ch);
+				}
+				// continue
+				if (ch == '\n' || ch == '\r')
+				{
+					Char next = (Char)rdr.Read();
+					if (next != '\n' && next != '\r' && !rdr.EndOfStream)
+						rdr.BaseStream.Seek(-2, SeekOrigin.Current);
+					break;
 				}
 				else
 				{
