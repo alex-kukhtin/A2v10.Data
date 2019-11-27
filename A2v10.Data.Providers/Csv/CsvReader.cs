@@ -15,6 +15,8 @@ namespace A2v10.Data.Providers.Csv
 
 		const Char QUOTE = '"';
 
+		Char _backwardChar = '\0';
+
 		public CsvReader(DataFile file)
 		{
 			_file = file;
@@ -51,6 +53,11 @@ namespace A2v10.Data.Providers.Csv
 		String ReadLine(StreamReader rdr)
 		{
 			StringBuilder sb = new StringBuilder();
+			if (_backwardChar != '\0')
+			{
+				sb.Append(_backwardChar);
+				_backwardChar = '\0';
+			}
 
 			Char readString(Char current)
 			{
@@ -91,7 +98,9 @@ namespace A2v10.Data.Providers.Csv
 				{
 					Char next = (Char)rdr.Read();
 					if (next != '\n' && next != '\r' && !rdr.EndOfStream)
-						rdr.BaseStream.Seek(-2, SeekOrigin.Current);
+					{
+						_backwardChar = next;
+					}
 					break;
 				}
 				else

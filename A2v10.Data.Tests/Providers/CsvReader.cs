@@ -77,5 +77,25 @@ namespace A2v10.Data.Providers
 				}
 			}
 		}
+
+
+		[TestMethod]
+		public void CsvReadExternalFile()
+		{
+			/*
+			var f = new DataFile();
+			var rdr = new CsvReader(f);
+
+			using (var file = File.Open("../../testfiles/external.csv", FileMode.Open))
+			{
+				rdr.Read(file);
+			}
+			var wrt = new CsvWriter(f);
+			using (var file = File.Create("../../testfiles/extenral_output.csv"))
+			{
+				wrt.Write(file);
+			}
+			*/
+		}
 	}
 }
