@@ -48,7 +48,7 @@ namespace A2v10.Data
 			return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
 		}
 
-		public Object ToObject()
+		public ExpandoObject ToObject()
 		{
 			var eo = new ExpandoObject();
 			eo.Set("Rows", _list);

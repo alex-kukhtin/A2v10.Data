@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace A2v10.Data
 {
@@ -72,6 +73,17 @@ namespace A2v10.Data
 			}
 		}
 
+		static Regex _ider = new Regex(@"^[a-z_\$][a-z0-9_\$]*$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
+		public void CheckTypeName()
+		{
+			if (String.IsNullOrEmpty(TypeName))
+				return;
+			if (!_ider.IsMatch(TypeName))
+				throw new DataLoaderException($"TypeName '{TypeName}' must be an identifier");
+		}
+
+
 		public void CheckValid()
 		{
 			if (!String.IsNullOrEmpty(PropertyName))
@@ -129,25 +141,6 @@ namespace A2v10.Data
 					throw new DataLoaderException($"Invalid field name '{String.Join("!", parts)}'");
 				}
 			}
-		}
-
-		public Object ConvertToSpecType(Object dataVal)
-		{
-			if (dataVal == null)
-				return null;
-			switch (SpecType)
-			{
-				case SpecType.UtcDate:
-					return ConvertToUtcDate(dataVal);
-			}
-			return dataVal;
-		}
-
-		public DateTime ConvertToUtcDate(Object dataVal)
-		{
-			if (!(dataVal is DateTime dt))
-				throw new DataLoaderException($"The field with the qualifier 'UtcDate' must be of type 'datetime'");
-			return DateTime.SpecifyKind(dt.ToLocalTime(), DateTimeKind.Unspecified);
 		}
 
 		public void CheckPermissionsName()

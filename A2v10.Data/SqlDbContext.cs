@@ -344,7 +344,7 @@ namespace A2v10.Data
 			}
 		}
 
-		public IDataModel SaveModel(String source, String command, System.Object data, System.Object prms = null)
+		public IDataModel SaveModel(String source, String command, ExpandoObject data, Object prms = null)
 		{
 			var dataReader = new DataModelReader(_localizer);
 			var dataWriter = new DataModelWriter();
@@ -388,7 +388,7 @@ namespace A2v10.Data
 			}
 		}
 
-		public async Task<IDataModel> SaveModelAsync(String source, String command, System.Object data, System.Object prms = null, Func<ITableDescription, Object> onSetData = null)
+		public async Task<IDataModel> SaveModelAsync(String source, String command, ExpandoObject data, Object prms = null, Func<ITableDescription, ExpandoObject> onSetData = null)
 		{
 			var dataReader = new DataModelReader(_localizer);
 			var dataWriter = new DataModelWriter();

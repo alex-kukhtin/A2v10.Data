@@ -59,7 +59,7 @@ create procedure a2test.ComplexModel
 as
 begin
 	set nocount on;
-	select [Document!TDocument!Object] = null, [Id!!Id] = 123, [No]='DocNo', [Date]=getutcdate(),
+	select [Document!TDocument!Object] = null, [Id!!Id] = 123, [No]='DocNo', [Date]=a2sys.fn_getCurrentDate(),
 		[Agent!TAgent!RefId] = 512, [Company!TAgent!RefId] = 512,
 		[Rows1!TRow!Array] = null, [Rows2!TRow!Array] = null;
 

@@ -11,11 +11,11 @@ using System.Linq;
 
 namespace A2v10.Data
 {
+
 	internal class DataModelWriter
 	{
 		IDictionary<String, Tuple<DataTable, String>> _tables = new Dictionary<String, Tuple<DataTable, String>>();
 		IDictionary<String, String> _jsonParams = new Dictionary<String, String>();
-
 
 		internal void ProcessOneMetadata(IDataReader rdr)
 		{
@@ -40,7 +40,14 @@ namespace A2v10.Data
 				for (Int32 c = 1; c < rdr.FieldCount; c++)
 				{
 					var ftp = rdr.GetFieldType(c);
-					var fieldColumn = new DataColumn(rdr.GetName(c), ftp);
+					var fn = rdr.GetName(c);
+					if (fn.Contains("!!"))
+					{
+						var fx = fn.Split('!');
+						if (fx.Length != 3)
+							throw new DataWriterException($"Field name '{rsName}' is invalid. 'Name!!Modifier' expected.");
+					}
+					var fieldColumn = new DataColumn(fn, ftp);
 					if (ftp == typeof(String))
 						fieldColumn.MaxLength = Convert.ToInt32(schemaTable.Rows[c]["ColumnSize"]);
 					table.Columns.Add(fieldColumn);
@@ -49,7 +56,7 @@ namespace A2v10.Data
 			}
 		}
 
-		internal void SetTableParameters(SqlCommand cmd, Object data, Object prms)
+		internal void SetTableParameters(SqlCommand cmd, ExpandoObject data, Object prms)
 		{
 			IDictionary<String, Object> scalarParams = SqlExtensions.GetParametersDictionary(prms);
 			for (Int32 i = 0; i < cmd.Parameters.Count; i++)
@@ -61,7 +68,7 @@ namespace A2v10.Data
 					if (_tables.TryGetValue(prm.ParameterName, out Tuple<DataTable, String>  table))
 					{
 						// table parameters (binging by object name)
-						FillDataTable(table.Item1, GetDataForSave(data as ExpandoObject, table.Item2 /*path*/));
+						FillDataTable(table.Item1, GetDataForSave(data, table.Item2 /*path*/));
 						prm.Value = table.Item1;
 						prm.RemoveDbName(); // remove first segment (database name)
 					}
@@ -76,7 +83,7 @@ namespace A2v10.Data
 				}
 				else if (_jsonParams.TryGetValue(prm.ParameterName, out String tablePath))
 				{
-					var dataForSave = (data as ExpandoObject).Eval<ExpandoObject>(tablePath);
+					var dataForSave = data.Eval<ExpandoObject>(tablePath);
 					prm.Value = JsonConvert.SerializeObject(dataForSave);
 				}
 				else

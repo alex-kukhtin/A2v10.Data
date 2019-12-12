@@ -8,6 +8,6 @@ namespace A2v10.Data.Interfaces
 	{
 		ExpandoObject NewRow();
 		void SetValue(ExpandoObject obj, String propName, Object value);
-		Object ToObject();
+		ExpandoObject ToObject();
 	}
 }

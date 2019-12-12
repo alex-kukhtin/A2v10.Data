@@ -129,6 +129,7 @@ namespace A2v10.Data
 		void ProcessJsonRecord(FieldInfo fi, IDataReader rdr)
 		{
 			var val = rdr.GetString(0);
+			val = _localizer.Localize(val);
 			_root.Add(fi.PropertyName, JsonConvert.DeserializeObject<ExpandoObject>(val));
 
 		}
@@ -290,7 +291,6 @@ namespace A2v10.Data
 					dataVal = null;
 				var fn = GetAlias(rdr.GetName(i));
 				FieldInfo fi = new FieldInfo(fn);
-				dataVal = fi.ConvertToSpecType(dataVal);
 				if (fi.IsGroupMarker)
 				{
 					if (groupKeys == null)
@@ -302,7 +302,7 @@ namespace A2v10.Data
 				else if (fi.IsJson)
 				{
 					if (dataVal != null)
-						AddValueToRecord(currentRecord, fi, JsonConvert.DeserializeObject<ExpandoObject>(dataVal.ToString()));
+						AddValueToRecord(currentRecord, fi, JsonConvert.DeserializeObject<ExpandoObject>(_localizer.Localize(dataVal.ToString())));
 					continue;
 				}
 				else if (fi.IsPermissions)
@@ -396,6 +396,7 @@ namespace A2v10.Data
 			var schemaTable = rdr.GetSchemaTable();
 			var firstFieldName = GetAlias(rdr.GetName(0));
 			var objectDef = new FieldInfo(firstFieldName);
+			objectDef.CheckTypeName(); // for first field only
 			if (objectDef.TypeName == SYSTEM_TYPE)
 				return; // not needed
 			else if (objectDef.TypeName == ALIASES_TYPE)
