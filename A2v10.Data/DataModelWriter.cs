@@ -46,6 +46,7 @@ namespace A2v10.Data
 						var fx = fn.Split('!');
 						if (fx.Length != 3)
 							throw new DataWriterException($"Field name '{rsName}' is invalid. 'Name!!Modifier' expected.");
+						fn = fx[0];
 					}
 					var fieldColumn = new DataColumn(fn, ftp);
 					if (ftp == typeof(String))
