@@ -26,6 +26,7 @@ namespace A2v10.Data
 		IDataLocalizer _localizer;
 		IdMapper _idMap = new IdMapper();
 		RefMapper _refMap = new RefMapper();
+		CrossMapper _crossMap = new CrossMapper();
 		ExpandoObject _root = new ExpandoObject();
 		IDictionary<String, Object> _sys = new ExpandoObject() as IDictionary<String, Object>;
 		FieldInfo? mainElement;
@@ -369,7 +370,7 @@ namespace A2v10.Data
 					}
 					else if (rootFI.IsCross)
 					{
-						AddRecordToCross(fi.TypeName, dataVal, currentRecord, rootFI.TypeName);
+						AddRecordToCross(fi.TypeName, dataVal, currentRecord, key);
 					}
 				}
 			}
@@ -460,14 +461,14 @@ namespace A2v10.Data
 				else
 				{
 					var fm = typeMetadata.AddField(fieldDef, dt, fieldLength);
-					if (fieldDef.IsRefId || fieldDef.IsArray)
+					if (fieldDef.IsRefId || fieldDef.IsArray || fieldDef.IsCross)
 					{
 						// create metadata for nested object or array
 						String nestedTypeName = fieldDef.TypeName;
 						if (String.IsNullOrEmpty(nestedTypeName))
 							throw new DataLoaderException($"Type name for '{fieldName}' is required");
 						var tm = GetOrCreateMetadata(nestedTypeName);
-						if (fieldDef.IsArray)
+						if (fieldDef.IsArray || fieldDef.IsCross)
 							tm.IsArrayType = true;
 					}
 					if (fieldDef.IsJson)
@@ -556,17 +557,17 @@ namespace A2v10.Data
 			}
 		}
 
-		void AddRecordToCross(String propName, Object id, ExpandoObject currentRecord, String rootTypeName = null)
+		void AddRecordToCross(String propName, Object id, ExpandoObject currentRecord, Object keyProp)
 		{
+			if (keyProp == null)
+				throw new DataLoaderException("Key not found in cross object");
 			var pxa = propName.Split('.'); // <Type>.PropName
 										   /*0-key, 1-Property (optional)*/
 			var key = Tuple.Create(pxa[0], id);
 			if (!_idMap.TryGetValue(key, out ExpandoObject mapObj))
 				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found");
-			throw new NotImplementedException();
-			/*
-			mapObj.AddToArray(pxa[1], currentRecord);
-			*/
+			mapObj.AddToCross(pxa[1], currentRecord, keyProp?.ToString());
+			_crossMap.Add(propName, pxa[1], mapObj, keyProp.ToString());
 		}
 
 
@@ -692,7 +693,7 @@ namespace A2v10.Data
 
 		public void PostProcess()
 		{
-
+			_crossMap.Transform();
 		}
 	}
 }

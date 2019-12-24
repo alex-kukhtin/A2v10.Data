@@ -92,6 +92,7 @@ namespace A2v10.Data
 				case FieldType.Array:
 				case FieldType.Tree:
 				case FieldType.Map:
+				case FieldType.Cross:
 					return RefObject + "Array";
 				case FieldType.Object:
 				case FieldType.Group:

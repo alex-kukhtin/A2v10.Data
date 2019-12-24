@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CrossMapper.cs" />
     <Compile Include="DataExceptions.cs" />
     <Compile Include="DataHelpers.cs" />
     <Compile Include="DataModelReader.cs" />

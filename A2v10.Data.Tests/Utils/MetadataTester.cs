@@ -42,6 +42,12 @@ namespace A2v10.Data.Tests
 			Assert.AreEqual(data.Id, prop);
 		}
 
+		public void IsKey(String key, String prop)
+		{
+			var data = _meta[key] as ElementMetadata;
+			Assert.AreEqual(data.Key, prop);
+		}
+
 		public void IsName(String key, String prop)
 		{
 			var data = _meta[key] as ElementMetadata;

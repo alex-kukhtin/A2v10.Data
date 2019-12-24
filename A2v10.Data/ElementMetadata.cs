@@ -1,4 +1,4 @@
-﻿// Copyright © 2012-2017 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2012-2019 Alex Kukhtin. All rights reserved.
 
 using A2v10.Data.Interfaces;
 using System;
@@ -11,6 +11,7 @@ namespace A2v10.Data
 		IDictionary<String, IDataFieldMetadata> _fields = new Dictionary<String, IDataFieldMetadata>();
 
 		public String Id { get; private set; }
+		public String Key { get; private set; }
 		public String Name { get; private set; }
 		public String RowNumber { get; private set; }
 		public String HasChildren { get; private set; }
@@ -47,6 +48,9 @@ namespace A2v10.Data
 			{
 				case SpecType.Id:
 					Id = field.PropertyName;
+					break;
+				case SpecType.Key:
+					Key = field.PropertyName;
 					break;
 				case SpecType.Name:
 					Name = field.PropertyName;

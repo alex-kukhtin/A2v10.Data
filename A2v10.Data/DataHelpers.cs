@@ -134,6 +134,17 @@ namespace A2v10.Data
 			val.Set(keyProp, value);
 		}
 
+		public static void AddToCross(this ExpandoObject eo, String key, ExpandoObject value, String keyProp)
+		{
+			var d = eo as IDictionary<String, Object>;
+			var val = d[key] as ExpandoObject;
+			if (val == null) {
+				val = new ExpandoObject();
+				eo.Set(key, val);
+			}
+			val.Set(keyProp, value);
+		}
+
 		public static void CopyFrom(this ExpandoObject target, ExpandoObject source)
 		{
 			var dTarget = target as IDictionary<String, Object>;
