@@ -24,7 +24,8 @@ namespace A2v10.Data
 		Tree,
 		Group,
 		MapObject,
-		Json
+		Json,
+		Cross
 	}
 
 	public enum SpecType

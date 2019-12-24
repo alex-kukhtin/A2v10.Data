@@ -117,8 +117,9 @@ namespace A2v10.Data
 		public Boolean IsMapObject { get { return FieldType == FieldType.MapObject; } }
 		public Boolean IsTree { get { return FieldType == FieldType.Tree; } }
 		public Boolean IsGroup { get { return FieldType == FieldType.Group; } }
+		public Boolean IsCross { get { return FieldType == FieldType.Cross; } }
 
-		public Boolean IsObjectLike { get { return IsArray || IsObject || IsTree || IsGroup || IsMap || IsMapObject; } }
+		public Boolean IsObjectLike { get { return IsArray || IsObject || IsTree || IsGroup || IsMap || IsMapObject || IsCross; } }
 
 		public Boolean IsRefId { get { return SpecType == SpecType.RefId; } }
 		public Boolean IsParentId { get { return SpecType == SpecType.ParentId; } }

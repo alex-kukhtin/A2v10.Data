@@ -367,6 +367,10 @@ namespace A2v10.Data
 							id = dataVal;
 						}
 					}
+					else if (rootFI.IsCross)
+					{
+						AddRecordToCross(fi.TypeName, dataVal, currentRecord, rootFI.TypeName);
+					}
 				}
 			}
 			if (bAddMap)
@@ -551,6 +555,20 @@ namespace A2v10.Data
 					groupMeta.CacheElement(keys.Item1, currentRecord); // current
 			}
 		}
+
+		void AddRecordToCross(String propName, Object id, ExpandoObject currentRecord, String rootTypeName = null)
+		{
+			var pxa = propName.Split('.'); // <Type>.PropName
+										   /*0-key, 1-Property (optional)*/
+			var key = Tuple.Create(pxa[0], id);
+			if (!_idMap.TryGetValue(key, out ExpandoObject mapObj))
+				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found");
+			throw new NotImplementedException();
+			/*
+			mapObj.AddToArray(pxa[1], currentRecord);
+			*/
+		}
+
 
 		void AddRecordToArray(String propName, Object id, ExpandoObject currentRecord, String rootTypeName = null)
 		{
