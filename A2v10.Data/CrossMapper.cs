@@ -10,12 +10,15 @@ namespace A2v10.Data
 	{
 		List<ExpandoObject> _list = new List<ExpandoObject>();
 		Dictionary<String, Int32> _keys = new Dictionary<String, Int32>();
-		String _targetProp;
+		public String TargetProp { get; }
+
+
 
 		public CrossItem(String targetProp)
 		{
-			_targetProp = targetProp;
+			TargetProp = targetProp;
 		}
+
 		public void Add(String propName, ExpandoObject target)
 		{
 			_list.Add(target);
@@ -25,19 +28,29 @@ namespace A2v10.Data
 			}
 		}
 
+		public List<String> GetCross()
+		{
+			var l = new List<String>();
+			for (Int32 i = 0; i < _keys.Count; i++)
+				l.Add(null);
+			foreach (var x in _keys)
+				l[x.Value] = x.Key;
+			return l;
+		}
+
 		public void Transform()
 		{
 			int _keyCount = _keys.Count;
 			foreach (var eo in _list)
 			{
 				var arr = CreateArray(_keyCount);
-				ExpandoObject targetVal = eo.Get<ExpandoObject>(_targetProp);
+				ExpandoObject targetVal = eo.Get<ExpandoObject>(TargetProp);
 				foreach (var key in _keys)
 				{
 					Int32 index = key.Value;
 					arr[index] = targetVal.Get<ExpandoObject>(key.Key);
 				}
-				eo.Set(_targetProp, arr);
+				eo.Set(TargetProp, arr);
 			}
 		}
 

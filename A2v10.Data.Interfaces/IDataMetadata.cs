@@ -18,8 +18,10 @@ namespace A2v10.Data.Interfaces
 		String MainObject { get; set; }
 
 		IDictionary<String, IDataFieldMetadata> Fields { get; }
+		IDictionary<String, IList<String>> Cross { get; }
 
 		Boolean IsArrayType { get; }
 		Boolean IsGroup { get; }
+		Boolean HasCross { get; }
 	}
 }

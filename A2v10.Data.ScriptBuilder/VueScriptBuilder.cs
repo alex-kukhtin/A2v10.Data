@@ -157,6 +157,21 @@ namespace A2v10.Data.ScriptBuilder
 			return sb;
 		}
 
+		String GetCrossProperties(IDataMetadata meta)
+		{
+			var sb = new StringBuilder("{");
+			foreach (var c in meta.Cross)
+			{
+				sb.Append($"{c.Key}: [");
+				foreach (var s in c.Value)
+					sb.Append($"'{s}',");
+				sb.RemoveTailComma();
+				sb.Append("]");
+			}
+			sb.AppendLine("}");
+			return sb.ToString();
+		}
+
 		String GetSpecialProperties(IDataMetadata meta)
 		{
 			StringBuilder sb = new StringBuilder();
@@ -176,6 +191,8 @@ namespace A2v10.Data.ScriptBuilder
 				sb.Append($"$items: '{meta.Items}',");
 			if (meta.IsGroup)
 				sb.Append($"$group: true,");
+			if (meta.HasCross)
+				sb.Append($"$cross: {GetCrossProperties(meta)},");
 			StringBuilder lazyFields = new StringBuilder();
 			foreach (var f in meta.Fields)
 			{

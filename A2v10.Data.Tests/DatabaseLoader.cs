@@ -493,6 +493,10 @@ namespace A2v10.Data.Tests
 			dt.IsArray(2);
 			dt.AreArrayValueEqual("K2", 1, "Key");
 			dt.AreArrayValueEqual(22, 1, "Val");
+			// check for script creation
+			var scripter = new VueScriptBuilder();
+			var script = dm.CreateScript(scripter);
+			Assert.IsFalse(String.IsNullOrEmpty(script));
 		}
 	}
 }

@@ -10,6 +10,8 @@ namespace A2v10.Data
 	{
 		IDictionary<String, IDataFieldMetadata> _fields = new Dictionary<String, IDataFieldMetadata>();
 
+		public IDictionary<String, IList<String>> _cross = null;
+
 		public String Id { get; private set; }
 		public String Key { get; private set; }
 		public String Name { get; private set; }
@@ -23,10 +25,12 @@ namespace A2v10.Data
 		public Boolean IsArrayType { get; set; }
 		public Boolean IsRowCount { get; set; }
 		public Boolean IsGroup { get; set; }
+		public Boolean HasCross => _cross != null;
 
 		public SortedList<String, Tuple<Int32, String>> Groups { get; private set; }
 
-		public IDictionary<String, IDataFieldMetadata> Fields { get { return _fields; } }
+		public IDictionary<String, IDataFieldMetadata> Fields => _fields;
+		public IDictionary<String, IList<String>> Cross => _cross;
 
 		public String FindPropertyByType(String typeName)
 		{
@@ -72,6 +76,13 @@ namespace A2v10.Data
 					break;
 			}
 			return fm;
+		}
+
+		public void AddCross(String key, IList<String> cross)
+		{
+			if (_cross == null)
+				_cross = new Dictionary<String, IList<String>>();
+			_cross.Add(key, cross);
 		}
 
 		public Int32 FieldCount { get { return _fields.Count; } }

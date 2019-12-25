@@ -482,6 +482,14 @@ namespace A2v10.Data
 		IDictionary<String, GroupMetadata> _groupMetadata;
 		IDictionary<String, IDataMetadata> _metadata;
 
+
+		ElementMetadata GetMetadata(String typeName)
+		{
+			if (_metadata != null && _metadata.TryGetValue(typeName, out IDataMetadata elemMeta))
+				return elemMeta as ElementMetadata;
+			return null;
+		}
+
 		ElementMetadata GetOrCreateMetadata(String typeName)
 		{
 			if (_metadata == null)
@@ -694,6 +702,17 @@ namespace A2v10.Data
 		public void PostProcess()
 		{
 			_crossMap.Transform();
+			foreach (var cmi in _crossMap)
+			{
+				int pos = cmi.Key.IndexOf('.');
+				String typeName = cmi.Key.Substring(0, pos);
+				var typeMeta = GetMetadata(typeName);
+				if (typeMeta == null)
+					throw new DataLoaderException($"Invalid type name {typeMeta}");
+				var cross = cmi.Value.GetCross();
+				var prop = cmi.Value.TargetProp;
+				typeMeta.AddCross(prop, cross);
+			}
 		}
 	}
 }
