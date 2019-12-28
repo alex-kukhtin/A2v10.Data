@@ -59,8 +59,10 @@ namespace A2v10.Data
 					return FieldType.Array;
 				case "Group":
 					return FieldType.Group;
-				case "Cross":
-					return FieldType.Cross;
+				case "CrossArray":
+					return FieldType.CrossArray;
+				case "CrossObject":
+					return FieldType.CrossObject;
 				case "Json":
 					return FieldType.Json;
 			}

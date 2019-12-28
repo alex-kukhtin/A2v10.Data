@@ -965,11 +965,11 @@ create procedure a2test.[CrossModel.Load]
 as
 begin
 	set nocount on;
-	select [RepData!TData!Array] = null, [Id!!Id] = 10, [S1]=N'S1', N1 = 100, [Cross1!TCross!Cross] = null
+	select [RepData!TData!Array] = null, [Id!!Id] = 10, [S1]=N'S1', N1 = 100, [Cross1!TCross!CrossArray] = null
 	union all
 	select null, 20, N'S2', 200, null;
 
-	select [!TCross!Cross] = null, [Key!!Key] = N'K1', Val = 11, [!TData.Cross1!ParentId] = 10
+	select [!TCross!CrossArray] = null, [Key!!Key] = N'K1', Val = 11, [!TData.Cross1!ParentId] = 10
 	union all
 	select null, N'K2', 22, 20;
 end

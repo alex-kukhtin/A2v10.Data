@@ -111,25 +111,27 @@ namespace A2v10.Data
 
 		public Boolean IsVisible { get { return !String.IsNullOrEmpty(PropertyName); } }
 
-		public Boolean IsArray { get { return FieldType == FieldType.Array; } }
-		public Boolean IsObject { get { return FieldType == FieldType.Object; } }
-		public Boolean IsMap { get { return FieldType == FieldType.Map; } }
-		public Boolean IsMapObject { get { return FieldType == FieldType.MapObject; } }
-		public Boolean IsTree { get { return FieldType == FieldType.Tree; } }
-		public Boolean IsGroup { get { return FieldType == FieldType.Group; } }
-		public Boolean IsCross { get { return FieldType == FieldType.Cross; } }
+		public Boolean IsArray =>  FieldType == FieldType.Array; 
+		public Boolean IsObject =>  FieldType == FieldType.Object; 
+		public Boolean IsMap => FieldType == FieldType.Map; 
+		public Boolean IsMapObject => FieldType == FieldType.MapObject; 
+		public Boolean IsTree => FieldType == FieldType.Tree; 
+		public Boolean IsGroup =>  FieldType == FieldType.Group;
+		public Boolean IsCrossArray => FieldType == FieldType.CrossArray; 
+		public Boolean IsCrossObject => FieldType == FieldType.CrossObject;
+		public Boolean IsCross => IsCrossArray || IsCrossObject;
 
-		public Boolean IsObjectLike { get { return IsArray || IsObject || IsTree || IsGroup || IsMap || IsMapObject || IsCross; } }
-
-		public Boolean IsRefId { get { return SpecType == SpecType.RefId; } }
-		public Boolean IsParentId { get { return SpecType == SpecType.ParentId; } }
-		public Boolean IsId { get { return SpecType == SpecType.Id; } }
-		public Boolean IsKey { get { return SpecType == SpecType.Key; } }
-		public Boolean IsRowCount { get { return SpecType == SpecType.RowCount; } }
-		public Boolean IsItems { get { return SpecType == SpecType.Items; } }
-		public Boolean IsGroupMarker { get { return SpecType == SpecType.GroupMarker; } }
-		public Boolean IsJson { get { return SpecType == SpecType.Json; } }
-		public Boolean IsPermissions { get { return SpecType == SpecType.Permissions; } }
+		public Boolean IsObjectLike =>  IsArray || IsObject || IsTree || IsGroup || IsMap || IsMapObject || IsCrossArray || IsCrossObject;
+		public Boolean IsNestedType => IsRefId || IsArray || IsCrossArray || IsCrossObject;
+		public Boolean IsRefId =>  SpecType == SpecType.RefId; 
+		public Boolean IsParentId =>  SpecType == SpecType.ParentId; 
+		public Boolean IsId =>  SpecType == SpecType.Id; 
+		public Boolean IsKey =>  SpecType == SpecType.Key; 
+		public Boolean IsRowCount =>  SpecType == SpecType.RowCount; 
+		public Boolean IsItems =>  SpecType == SpecType.Items; 
+		public Boolean IsGroupMarker => SpecType == SpecType.GroupMarker; 
+		public Boolean IsJson =>  SpecType == SpecType.Json; 
+		public Boolean IsPermissions =>  SpecType == SpecType.Permissions; 
 
 		private static void CheckField(String[] parts)
 		{

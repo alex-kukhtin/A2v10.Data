@@ -25,7 +25,8 @@ namespace A2v10.Data
 		Group,
 		MapObject,
 		Json,
-		Cross
+		CrossArray,
+		CrossObject
 	}
 
 	public enum SpecType
@@ -92,9 +93,10 @@ namespace A2v10.Data
 				case FieldType.Array:
 				case FieldType.Tree:
 				case FieldType.Map:
-				case FieldType.Cross:
+				case FieldType.CrossArray:
 					return RefObject + "Array";
 				case FieldType.Object:
+				case FieldType.CrossObject:
 				case FieldType.Group:
 					return RefObject;
 				case FieldType.MapObject:

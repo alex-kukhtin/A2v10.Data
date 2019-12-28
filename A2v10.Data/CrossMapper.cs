@@ -11,12 +11,13 @@ namespace A2v10.Data
 		List<ExpandoObject> _list = new List<ExpandoObject>();
 		Dictionary<String, Int32> _keys = new Dictionary<String, Int32>();
 		public String TargetProp { get; }
+		public Boolean IsArray { get; }
 
 
-
-		public CrossItem(String targetProp)
+		public CrossItem(String targetProp, Boolean isArray)
 		{
 			TargetProp = targetProp;
+			IsArray = isArray;
 		}
 
 		public void Add(String propName, ExpandoObject target)
@@ -40,6 +41,8 @@ namespace A2v10.Data
 
 		public void Transform()
 		{
+			if (!IsArray)
+				return;
 			int _keyCount = _keys.Count;
 			foreach (var eo in _list)
 			{
@@ -68,12 +71,12 @@ namespace A2v10.Data
 
 	internal class CrossMapper : Dictionary<String, CrossItem>
 	{
-		public void Add(String key, String targetProp, ExpandoObject target, String propName)
+		public void Add(String key, String targetProp, ExpandoObject target, String propName, Boolean isArray)
 		{
 			CrossItem crossItem = null;
 			if (!TryGetValue(key, out crossItem))
 			{
-				crossItem = new CrossItem(targetProp);
+				crossItem = new CrossItem(targetProp, isArray);
 				Add(key, crossItem);
 			}
 			// all source elements

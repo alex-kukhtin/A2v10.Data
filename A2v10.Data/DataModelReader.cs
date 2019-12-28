@@ -368,9 +368,9 @@ namespace A2v10.Data
 							id = dataVal;
 						}
 					}
-					else if (rootFI.IsCross)
+					else if (rootFI.IsCrossArray || rootFI.IsCrossObject)
 					{
-						AddRecordToCross(fi.TypeName, dataVal, currentRecord, key);
+						AddRecordToCross(fi.TypeName, dataVal, currentRecord, key, rootFI.IsCrossArray);
 					}
 				}
 			}
@@ -461,14 +461,14 @@ namespace A2v10.Data
 				else
 				{
 					var fm = typeMetadata.AddField(fieldDef, dt, fieldLength);
-					if (fieldDef.IsRefId || fieldDef.IsArray || fieldDef.IsCross)
+					if (fieldDef.IsNestedType)
 					{
 						// create metadata for nested object or array
 						String nestedTypeName = fieldDef.TypeName;
 						if (String.IsNullOrEmpty(nestedTypeName))
 							throw new DataLoaderException($"Type name for '{fieldName}' is required");
 						var tm = GetOrCreateMetadata(nestedTypeName);
-						if (fieldDef.IsArray || fieldDef.IsCross)
+						if (fieldDef.IsArray || fieldDef.IsCrossArray)
 							tm.IsArrayType = true;
 					}
 					if (fieldDef.IsJson)
@@ -565,7 +565,7 @@ namespace A2v10.Data
 			}
 		}
 
-		void AddRecordToCross(String propName, Object id, ExpandoObject currentRecord, Object keyProp)
+		void AddRecordToCross(String propName, Object id, ExpandoObject currentRecord, Object keyProp, Boolean isArray)
 		{
 			if (keyProp == null)
 				throw new DataLoaderException("Key not found in cross object");
@@ -575,7 +575,7 @@ namespace A2v10.Data
 			if (!_idMap.TryGetValue(key, out ExpandoObject mapObj))
 				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found");
 			mapObj.AddToCross(pxa[1], currentRecord, keyProp?.ToString());
-			_crossMap.Add(propName, pxa[1], mapObj, keyProp.ToString());
+			_crossMap.Add(propName, pxa[1], mapObj, keyProp.ToString(), isArray);
 		}
 
 
