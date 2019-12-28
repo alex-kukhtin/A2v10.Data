@@ -60,7 +60,7 @@ namespace A2v10.Data
 	{
 		public DataType DataType { get; }
 		public FieldType ItemType { get; } // for object, array
-		public String RefObject { get; } // for object, array
+		public String RefObject { get; private set; } // for object, array
 		public Boolean IsLazy { get; }
 		public Int32 Length { get; }
 		public Boolean IsJson { get; set; }
@@ -109,6 +109,11 @@ namespace A2v10.Data
 					else
 						return DataType.ToString();
 			}
+		}
+
+		public void SetType(String type)
+		{
+			RefObject = type;
 		}
 
 		public String TypeForValidate

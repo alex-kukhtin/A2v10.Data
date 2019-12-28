@@ -66,7 +66,7 @@ namespace A2v10.Data.Models
 			var dm = await _dbContext.LoadModelAsync(null, "a2test.[CrossModelObj.Load]");
 
 			var md = new MetadataTester(dm);
-			md.IsAllKeys("TRoot,TData,TCross");
+			md.IsAllKeys("TRoot,TData,TCross,TCrossObject");
 			md.HasAllProperties("TRoot", "RepData");
 			md.HasAllProperties("TData", "Id,S1,N1,Cross1");
 			md.IsId("TData", "Id");

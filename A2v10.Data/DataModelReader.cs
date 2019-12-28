@@ -370,7 +370,7 @@ namespace A2v10.Data
 					}
 					else if (rootFI.IsCrossArray || rootFI.IsCrossObject)
 					{
-						AddRecordToCross(fi.TypeName, dataVal, currentRecord, key, rootFI.IsCrossArray);
+						AddRecordToCross(fi.TypeName, dataVal, currentRecord, key, rootFI);
 					}
 				}
 			}
@@ -565,7 +565,7 @@ namespace A2v10.Data
 			}
 		}
 
-		void AddRecordToCross(String propName, Object id, ExpandoObject currentRecord, Object keyProp, Boolean isArray)
+		void AddRecordToCross(String propName, Object id, ExpandoObject currentRecord, Object keyProp, FieldInfo rootFI)
 		{
 			if (keyProp == null)
 				throw new DataLoaderException("Key not found in cross object");
@@ -575,7 +575,7 @@ namespace A2v10.Data
 			if (!_idMap.TryGetValue(key, out ExpandoObject mapObj))
 				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found");
 			mapObj.AddToCross(pxa[1], currentRecord, keyProp?.ToString());
-			_crossMap.Add(propName, pxa[1], mapObj, keyProp.ToString(), isArray);
+			_crossMap.Add(propName, pxa[1], mapObj, keyProp.ToString(), rootFI);
 		}
 
 
@@ -709,9 +709,26 @@ namespace A2v10.Data
 				var typeMeta = GetMetadata(typeName);
 				if (typeMeta == null)
 					throw new DataLoaderException($"Invalid type name {typeMeta}");
-				var cross = cmi.Value.GetCross();
+				var crossKeys = cmi.Value.GetCross();
 				var prop = cmi.Value.TargetProp;
-				typeMeta.AddCross(prop, cross);
+
+				if (cmi.Value.IsArray)
+				{
+					typeMeta.AddCross(prop, crossKeys);
+				}
+				else
+				{
+					// CrossObject. TCross.props = Keys with TCross type
+					var crossObjType = $"{cmi.Value.CrossType}Object";
+					var crossMeta = GetOrCreateMetadata(crossObjType);
+					foreach (var key in crossKeys)
+					{
+						var fi = new FieldInfo(key, cmi.Value.CrossType);
+						crossMeta.AddField(fi, DataType.String);
+					}
+					typeMeta.SetCrossObject(prop, crossObjType);
+					typeMeta.AddCross(prop, crossKeys);
+				}
 			}
 		}
 	}

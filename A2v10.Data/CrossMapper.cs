@@ -12,12 +12,14 @@ namespace A2v10.Data
 		Dictionary<String, Int32> _keys = new Dictionary<String, Int32>();
 		public String TargetProp { get; }
 		public Boolean IsArray { get; }
+		public String CrossType { get; }
 
 
-		public CrossItem(String targetProp, Boolean isArray)
+		public CrossItem(String targetProp, Boolean isArray, String crossType)
 		{
 			TargetProp = targetProp;
 			IsArray = isArray;
+			CrossType = crossType;
 		}
 
 		public void Add(String propName, ExpandoObject target)
@@ -71,12 +73,12 @@ namespace A2v10.Data
 
 	internal class CrossMapper : Dictionary<String, CrossItem>
 	{
-		public void Add(String key, String targetProp, ExpandoObject target, String propName, Boolean isArray)
+		public void Add(String key, String targetProp, ExpandoObject target, String propName, FieldInfo rootFI)
 		{
 			CrossItem crossItem = null;
 			if (!TryGetValue(key, out crossItem))
 			{
-				crossItem = new CrossItem(targetProp, isArray);
+				crossItem = new CrossItem(targetProp, rootFI.IsCrossArray, rootFI.TypeName);
 				Add(key, crossItem);
 			}
 			// all source elements

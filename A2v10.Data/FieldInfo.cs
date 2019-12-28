@@ -53,6 +53,18 @@ namespace A2v10.Data
 			CheckReservedWords();
 		}
 
+		public FieldInfo(String name, String targetType)
+		{
+			PropertyName = name;
+			TypeName = targetType;
+			FieldType = FieldType.Object;
+			SpecType = SpecType.Unknown;
+			IsLazy = false;
+			IsMain = false;
+			MapFields = null;
+			IsComplexField = false;
+		}
+
 		static HashSet<String> _reservedWords = new HashSet<String>()
 			{
 				"Parent",

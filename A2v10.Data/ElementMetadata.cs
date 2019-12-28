@@ -78,6 +78,15 @@ namespace A2v10.Data
 			return fm;
 		}
 
+		public void SetCrossObject(String key, String typeName)
+		{
+			if (_fields.TryGetValue(key, out IDataFieldMetadata iFM))
+			{
+				var fm = iFM as FieldMetadata;
+				fm.SetType(typeName);
+			}
+		}
+
 		public void AddCross(String key, IList<String> cross)
 		{
 			if (_cross == null)
