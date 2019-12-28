@@ -146,7 +146,7 @@ begin
 		[Agent!!GroupMarker] = grouping(Agent),
 		[Items!TModel!Items]=null	 -- array for nested elements
 	from @Table
-	group by rollup(Company, Agent)--, d.D_LONG1)
+	group by rollup(Company, Agent)
 	order by grouping(Company) desc, grouping(Agent) desc, Company, Agent;
 end
 go
@@ -972,6 +972,64 @@ begin
 	select [!TCross!CrossArray] = null, [Key!!Key] = N'K1', Val = 11, [!TData.Cross1!ParentId] = 10
 	union all
 	select null, N'K2', 22, 20;
+end
+go
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'CrossModelObj.Load')
+	drop procedure a2test.[CrossModelObj.Load]
+go
+------------------------------------------------
+create procedure a2test.[CrossModelObj.Load]
+	@TenantId int = null,
+	@UserId bigint = null
+as
+begin
+	set nocount on;
+	select [RepData!TData!Array] = null, [Id!!Id] = 10, [S1]=N'S1', N1 = 100, [Cross1!TCross!CrossObject] = null
+	union all
+	select null, 20, N'S2', 200, null;
+
+	select [!TCross!CrossObject] = null, [Key!!Key] = N'K1', Val = 11, [!TData.Cross1!ParentId] = 10
+	union all
+	select null, N'K2', 22, 20;
+end
+go
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'GroupWithCross.Load')
+	drop procedure a2test.[GroupWithCross.Load]
+go
+------------------------------------------------
+create procedure a2test.[GroupWithCross.Load]
+	@TenantId int = null,
+	@UserId bigint = null
+as
+begin
+	set nocount on;
+
+	declare @Table table(Company nvarchar(255), Agent nvarchar(255), Amount money, Id int);
+	insert into @Table (Company, Agent, Amount, Id)
+	values
+		(N'Company1', N'Agent1', 400, 10),
+		(N'Company1', N'Agent2', 100, 11),
+		(N'Company2', N'Agent1', 40, 12),
+		(N'Company2', N'Agent2', 10, 13);
+
+	select [Model!TModel!Group] = null, 
+		[Id!!Id] = N'[' + Company + N':' + Agent + N']',
+		Company,
+		Agent,
+		Amount = sum(Amount),
+		[Company!!GroupMarker] = grouping(Company),
+		[Agent!!GroupMarker] = grouping(Agent),
+		[Items!TModel!Items]=null,	 -- array for nested elements
+		[Cross1!TCross!CrossArray] = null
+	from @Table
+	group by rollup(Company, Agent)
+	order by grouping(Company) desc, grouping(Agent) desc, Company, Agent;
+
+	select [!TCross!CrossArray] = null, [Key!!Key] = N'K1', Val = 11, [!TModel.Cross1!ParentId] = N'[Company1:Agent1]'
+	union all
+	select null, N'K2', 22, N'[Company2:Agent2]';
 end
 go
 ------------------------------------------------

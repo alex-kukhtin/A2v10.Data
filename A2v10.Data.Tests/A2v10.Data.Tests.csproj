@@ -65,6 +65,7 @@
     <Compile Include="Expressions\DynamicExpression.cs" />
     <Compile Include="Generator\ComplexModel.cs" />
     <Compile Include="Generator\SimpleModel.cs" />
+    <Compile Include="Models\CrossModels.cs" />
     <Compile Include="Module\ModuleTest.cs" />
     <Compile Include="Providers\XmlReader.cs" />
     <Compile Include="Providers\CsvReader.cs" />
