@@ -75,6 +75,15 @@ namespace A2v10.Data
 			return false;
 		}
 
+		public static void RemoveKey(this ExpandoObject obj, String name)
+		{
+			if (!(obj is IDictionary<String, Object> d))
+				return;
+			if (d.ContainsKey(name))
+				d.Remove(name);
+		}
+
+
 		public static void Set(this ExpandoObject obj, String name, Object value)
 		{
 			if (!(obj is IDictionary<String, Object> d))

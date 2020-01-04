@@ -262,9 +262,37 @@ namespace A2v10.Data
 			}
 		}
 
+		String ResolveSource(String source, Object prms, DataModelReader rdr)
+		{
+			if (source == null)
+				return null;
+			source = source.Trim();
+			if (source.StartsWith("{{") && source.EndsWith("}}"))
+			{
+				String key = source.Substring(2, source.Length - 4).Trim();
+				String def = null;
+				if (key.Contains("??"))
+				{
+					int pos = key.IndexOf("??");
+					def = key.Substring(pos + 2).Trim();
+					key = key.Substring(0, pos).Trim();
+				}
+				if (prms is ExpandoObject exp)
+				{
+					source = exp.Get<String>(key);
+					if (String.IsNullOrEmpty(source))
+						source = def;
+				}
+				else
+					throw new NotImplementedException("Resolve source without ExpandoObject");
+			}
+			return source;
+		}
+
 		public IDataModel LoadModel(String source, String command, System.Object prms = null, Int32 commandTimeout = 0)
 		{
 			var modelReader = new DataModelReader(_localizer);
+			source = ResolveSource(source, prms, modelReader);
 			using (var p = _profiler.Start(command))
 			{
 				ReadData(source, command,
@@ -286,9 +314,10 @@ namespace A2v10.Data
 			return modelReader.DataModel;
 		}
 
-		public async Task<IDataModel> LoadModelAsync(String source, String command, System.Object prms = null, Int32 commandTimeout = 0)
+		public async Task<IDataModel> LoadModelAsync(String source, String command, Object prms = null, Int32 commandTimeout = 0)
 		{
 			var modelReader = new DataModelReader(_localizer);
+			source = ResolveSource(source, prms, modelReader);
 			using (var p = _profiler.Start(command))
 			{
 				await ReadDataAsync(source, command,

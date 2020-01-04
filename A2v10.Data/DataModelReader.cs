@@ -60,7 +60,7 @@ namespace A2v10.Data
 				{
 					var val = prop.GetValue(values);
 					if (val != null)
-						prms.AddWithValue("@" + prop.Name, val);
+						prms.AddWithValue($"@{prop.Name}", val);
 				}
 			}
 		}
