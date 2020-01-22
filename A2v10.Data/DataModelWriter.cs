@@ -80,7 +80,7 @@ namespace A2v10.Data
 				}
 				else if (prm.SqlDbType == SqlDbType.VarBinary)
 				{
-					throw new NotImplementedException();
+					throw new NotImplementedException(nameof(SqlDbType.VarBinary));
 				}
 				else if (_jsonParams.TryGetValue(prm.ParameterName, out String tablePath))
 				{

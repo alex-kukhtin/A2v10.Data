@@ -18,12 +18,12 @@ namespace A2v10.Data.ScriptBuilder
 
 		public Task<ScriptInfo> GetModelScript(ModelScriptInfo msi)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException(nameof(GetModelScript));
 		}
 
 		public ScriptInfo GetServerScript(ModelScriptInfo msi)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException(nameof(GetServerScript));
 		}
 
 		public String CreateScript(IDataHelper helper, IDictionary<String, Object> sys, IDictionary<String, IDataMetadata> meta)
