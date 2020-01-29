@@ -273,7 +273,7 @@ namespace A2v10.Data
 				String def = null;
 				if (key.Contains("??"))
 				{
-					int pos = key.IndexOf("??");
+					Int32 pos = key.IndexOf("??");
 					def = key.Substring(pos + 2).Trim();
 					key = key.Substring(0, pos).Trim();
 				}
