@@ -1,4 +1,4 @@
-﻿// Copyright © 2012-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2012-2020 Alex Kukhtin. All rights reserved.
 
 
 using System;
@@ -136,11 +136,15 @@ namespace A2v10.Data
 			val.Set(keyProp, value);
 		}
 
+
 		public static void AddToCross(this ExpandoObject eo, String key, ExpandoObject value, String keyProp)
 		{
 			var d = eo as IDictionary<String, Object>;
-			var val = d[key] as ExpandoObject;
-			if (val == null) {
+#pragma warning disable IDE0019 // Use pattern matching
+			ExpandoObject val = d[key] as ExpandoObject;
+#pragma warning restore IDE0019 // Use pattern matching
+			if (val == null)
+			{
 				val = new ExpandoObject();
 				eo.Set(key, val);
 			}

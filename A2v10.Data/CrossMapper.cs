@@ -1,4 +1,4 @@
-﻿// Copyright © 2019 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2019-2020 Alex Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -45,7 +45,7 @@ namespace A2v10.Data
 		{
 			if (!IsArray)
 				return;
-			int _keyCount = _keys.Count;
+			Int32 _keyCount = _keys.Count;
 			foreach (var eo in _list)
 			{
 				var arr = CreateArray(_keyCount);
@@ -75,8 +75,7 @@ namespace A2v10.Data
 	{
 		public void Add(String key, String targetProp, ExpandoObject target, String propName, FieldInfo rootFI)
 		{
-			CrossItem crossItem = null;
-			if (!TryGetValue(key, out crossItem))
+			if (!TryGetValue(key, out CrossItem crossItem))
 			{
 				crossItem = new CrossItem(targetProp, rootFI.IsCrossArray, rootFI.TypeName);
 				Add(key, crossItem);

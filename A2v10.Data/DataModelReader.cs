@@ -704,7 +704,7 @@ namespace A2v10.Data
 			_crossMap.Transform();
 			foreach (var cmi in _crossMap)
 			{
-				int pos = cmi.Key.IndexOf('.');
+				Int32 pos = cmi.Key.IndexOf('.');
 				String typeName = cmi.Key.Substring(0, pos);
 				var typeMeta = GetMetadata(typeName);
 				if (typeMeta == null)
