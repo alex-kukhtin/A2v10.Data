@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Copyright © 2015-2020 Alex Kukhtin. All rights reserved.
+
+using System;
 
 namespace A2v10.Data.DynamicExpression
 {
 	public static class TypeHelpers
 	{
-		public static bool IsNullableType(this Type type)
+		public static Boolean IsNullableType(this Type type)
 		{
 			return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 		}
