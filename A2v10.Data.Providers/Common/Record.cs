@@ -61,18 +61,20 @@ namespace A2v10.Data.Providers
 		{
 			if (!name.Contains("|"))
 				return name;
+			String retName = name;
 			foreach (var f in name.Split('|'))
 			{
 				if (String.IsNullOrWhiteSpace(f))
 					return null;
 				if (_fieldMap.ContainsKey(f))
 				{
+					retName = f;
 					// try to get all variants
 					if (!IsFieldEmptyInternal(f))
 						return f;
 				}
 			}
-			return name;
+			return retName;
 		}
 
 		public Boolean IsFieldEmptyInternal(String name)
