@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace A2v10.Data.Tests
 {
-	public class StringTools
+	public static class StringTools
 	{
 		public static String StringDiff(String s1, String s2)
 		{

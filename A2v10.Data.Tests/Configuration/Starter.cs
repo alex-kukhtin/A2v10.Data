@@ -6,7 +6,7 @@ using A2v10.Data.Interfaces;
 namespace A2v10.Data.Tests.Configuration
 {
 
-	public class Starter
+	public static class Starter
 	{
 		public static IDbContext Create()
 		{

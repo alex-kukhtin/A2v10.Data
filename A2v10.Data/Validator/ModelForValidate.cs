@@ -11,6 +11,7 @@ using A2v10.Data.Interfaces;
 namespace A2v10.Data.Validator
 {
 	[JsonDictionary]
+	[Serializable]
 	public class TType : Dictionary<String, String>
 	{
 		// self: fieldName:type
@@ -117,6 +118,7 @@ namespace A2v10.Data.Validator
 	}
 
 	[JsonDictionary]
+	[Serializable]
 	public class TypeDictionary : Dictionary<String, TType>, IDataModelValidator
 	{
 		[JsonIgnore]
@@ -153,6 +155,7 @@ namespace A2v10.Data.Validator
 	}
 
 	[JsonDictionary]
+	[Serializable]
 	public class AllModels : Dictionary<String, TypeDictionary>
 	{
 		TypeDictionary _shared;

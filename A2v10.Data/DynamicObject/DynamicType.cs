@@ -37,8 +37,8 @@ namespace A2v10.Data
 
 		public DynamicProperty(String name, Type type)
 		{
-			_name = name ?? throw new ArgumentNullException("name");
-			_type = type ?? throw new ArgumentNullException("type");
+			_name = name ?? throw new ArgumentNullException(nameof(name));
+			_type = type ?? throw new ArgumentNullException(nameof(type));
 		}
 
 		public String Name => _name;

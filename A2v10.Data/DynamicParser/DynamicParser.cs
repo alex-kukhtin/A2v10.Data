@@ -88,7 +88,7 @@ namespace A2v10.Data.DynamicExpression
 
 		public ExpressionParser(ParameterExpression[] parameters, String expression)
 		{
-			text = expression ?? throw new ArgumentNullException("expression");
+			text = expression ?? throw new ArgumentNullException(nameof(expression));
 			if (keywords == null)
 				keywords = CreateKeywords();
 			symbols = new Dictionary<String, Object>();
