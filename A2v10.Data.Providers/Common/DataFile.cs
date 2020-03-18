@@ -12,7 +12,7 @@ namespace A2v10.Data.Providers
 		IList<Field> _fields;
 		IList<Record> _records;
 
-		private readonly Byte[] byteCodes1251 = new Byte[] { 0x81, 0x83, 0xA1, 0xA2, 0xA5, 0xA8, 0xAA, 0xAF, 0xB2, 0xB3, 0xB4, 0xB9, 0xBA, 0xBF };
+		private readonly Byte[] byteCodes1251 = new Byte[] { 0x81, 0x83, 0xA0, 0xA1, 0xA2, 0xA5, 0xA8, 0xAA, 0xAF, 0xB2, 0xB3, 0xB4, 0xB9, 0xBA, 0xBF, 0xBB, 0xAB };
 
 		public DateTime LastModifedDate { get; set; }
 
@@ -69,11 +69,21 @@ namespace A2v10.Data.Providers
 				}
 				if (!b1251 && !b866)
 				{
-					// invalid symbol
+					// invalid symbol ?
 				}
+				/*
+				if (!b1251)
+				{
+				}
+				if (!b866) {
+				}
+				*/
 			}
 			if (countASCII == chars.Length)
-				return Encoding.ASCII;
+			{
+				this.Encoding = Encoding.ASCII;
+				return this.Encoding;
+			}
 			count1251 += countASCII;
 			count866 += countASCII;
 			var totalCount = chars.Length;
@@ -98,7 +108,8 @@ namespace A2v10.Data.Providers
 				}
 			}
 
-			return Encoding.ASCII;
+			this.Encoding = Encoding.ASCII;
+			return this.Encoding;
 		}
 
 		public Int32 FieldCount => _fields.Count;
