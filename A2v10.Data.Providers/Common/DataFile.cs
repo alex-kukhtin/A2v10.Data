@@ -81,8 +81,8 @@ namespace A2v10.Data.Providers
 			}
 			if (countASCII == chars.Length)
 			{
-				this.Encoding = Encoding.ASCII;
-				return this.Encoding;
+				// do not save!
+				return Encoding.ASCII;
 			}
 			count1251 += countASCII;
 			count866 += countASCII;
