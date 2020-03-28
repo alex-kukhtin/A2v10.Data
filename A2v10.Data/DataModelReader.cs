@@ -537,6 +537,8 @@ namespace A2v10.Data
 			}
 			else if (value is String)
 				record.Add(field.PropertyName, _localizer.Localize(value?.ToString()));
+			else if (field.IsUtc && value is DateTime dt)
+				record.Add(field.PropertyName, DateTime.SpecifyKind(dt.ToLocalTime(), DateTimeKind.Unspecified));
 			else
 				record.Add(field.PropertyName, value);
 		}

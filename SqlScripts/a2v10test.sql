@@ -1032,6 +1032,23 @@ begin
 	select null, N'K2', 22, N'[Company2:Agent2]';
 end
 go
+
+------------------------------------------------
+if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'UtcDate.Load')
+	drop procedure a2test.[UtcDate.Load]
+go
+------------------------------------------------
+create procedure a2test.[UtcDate.Load]
+	@TenantId int = null,
+	@UserId bigint = null,
+	@Id bigint = null
+as
+begin
+	set nocount on;
+	select [Model!TModel!Object] = null, [Date] = getdate(), [UtcDate!!Utc] = getutcdate();
+end
+go
+
 ------------------------------------------------
 exec a2test.[Workflow.Clear.All]
 go

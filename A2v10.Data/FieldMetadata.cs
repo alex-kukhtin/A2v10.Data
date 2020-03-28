@@ -53,7 +53,8 @@ namespace A2v10.Data
 		GroupBy,
 		Filter,
 		HasRows,
-		Json
+		Json,
+		Utc
 	}
 
 	public class FieldMetadata : IDataFieldMetadata

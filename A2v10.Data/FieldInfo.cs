@@ -143,7 +143,8 @@ namespace A2v10.Data
 		public Boolean IsItems =>  SpecType == SpecType.Items; 
 		public Boolean IsGroupMarker => SpecType == SpecType.GroupMarker; 
 		public Boolean IsJson =>  SpecType == SpecType.Json; 
-		public Boolean IsPermissions =>  SpecType == SpecType.Permissions; 
+		public Boolean IsPermissions =>  SpecType == SpecType.Permissions;
+		public Boolean IsUtc => SpecType == SpecType.Utc;
 
 		private static void CheckField(String[] parts)
 		{
