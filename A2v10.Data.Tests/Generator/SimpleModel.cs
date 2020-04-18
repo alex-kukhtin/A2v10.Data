@@ -29,8 +29,10 @@ namespace A2v10.Data.Generator
 @"if not exists(select * from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA=N'a2demo' and TABLE_NAME=N'Tables')
 create table [a2demo].[Tables] (
 	[Key] nvarchar(20) not null,
-	UserCreated bigint not null constraint FK_Tables_UserCreated_Users foreign key references a2security.Users(Id),
-	UserModified bigint not null constraint FK_Tables_UserModified_Users foreign key references a2security.Users(Id),
+	UserCreated bigint not null constraint FK_Tables_UserCreated_Users
+		foreign key references a2security.Users(Id),
+	UserModified bigint not null constraint FK_Tables_UserModified_Users
+		foreign key references a2security.Users(Id),
 	DateCreated datetime not null constraint DF_Tables_DateCreated default(getutcdate()),
 	DateModified datetime not null constraint DF_Tables_DateModified default(getutcdate())
 );
@@ -126,7 +128,7 @@ go
 @RetId nvarchar(20) = null output
 as begin
 	set nocount on
-	set transaction isolation level serializable;
+	set transaction isolation level read committed;
 	set xact_abort on;
 
 	declare @output table(op sysname, id nvarchar(20));

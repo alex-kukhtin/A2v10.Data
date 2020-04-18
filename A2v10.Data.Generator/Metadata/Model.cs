@@ -45,13 +45,16 @@ namespace A2v10.Data.Generator
 			sb.AppendLine($"create procedure [{Schema}].[{Name}.Index]");
 			modelBuilder.BuildTenantParam();
 			sb.Append("@UserId bigint,");
+			
 			// create index parameters
 			sb.RemoveTailCommma();
 			sb.AppendLine();
-			sb.AppendLine("as begin");
-			sb.AppendLine("\tset nocount on;");
-			sb.AppendLine("\tset transaction isolation level read uncommitted;");
-			sb.AppendLine();
+
+			sb.AppendLine("as begin")
+			.AppendLine("\tset nocount on;")
+			.AppendLine("\tset transaction isolation level read uncommitted;")
+			.AppendLine();
+
 			BuildRefTables(sb);
 			sb.Append($"\tselect [{Name.Plural()}!T{Name}!Array] = null, ");
 			BuildFields(sb, BasedOn, String.Empty);
@@ -60,8 +63,9 @@ namespace A2v10.Data.Generator
 			BuildRefRefTableIds(sb, refTables);
 			sb.AppendLine();
 			BuildReferences(sb, false);
-			sb.AppendLine("end");
-			sb.AppendLine("go");
+
+			sb.AppendLine("end")
+			.AppendLine("go");
 		}
 
 		IEnumerable<Field> FieldsForReferences(Table t)
@@ -284,7 +288,7 @@ namespace A2v10.Data.Generator
 			sb.AppendLine($"@RetId {idKey.TypeAsString} = null output");
 			sb.AppendLine("as begin");
 			sb.AppendLine("\tset nocount on");
-			sb.AppendLine("\tset transaction isolation level serializable;");
+			sb.AppendLine("\tset transaction isolation level read committed;");
 			sb.AppendLine("\tset xact_abort on;");
 			sb.AppendLine();
 			sb.AppendLine($"\tdeclare @output table(op sysname, id {idKey.TypeAsString});");

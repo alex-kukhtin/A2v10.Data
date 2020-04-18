@@ -140,14 +140,19 @@ namespace A2v10.Data.Generator
 
 		void BuildStdFields(StringBuilder sb)
 		{
-			sb.Append("\tUserCreated bigint not null");
-			sb.AppendLine($" constraint FK_{TableName}_UserCreated_Users foreign key references a2security.Users(Id),");
-			sb.Append("\tUserModified bigint not null");
-			sb.AppendLine($" constraint FK_{TableName}_UserModified_Users foreign key references a2security.Users(Id),");
-			sb.Append("\tDateCreated datetime not null");
-			sb.AppendLine($" constraint DF_{TableName}_DateCreated default(getutcdate()),");
-			sb.Append("\tDateModified datetime not null");
-			sb.AppendLine($" constraint DF_{TableName}_DateModified default(getutcdate())");
+			sb.Append("\tUserCreated bigint not null")
+			.AppendLine($" constraint FK_{TableName}_UserCreated_Users")
+			.AppendLine("\t\tforeign key references a2security.Users(Id),");
+
+			sb.Append("\tUserModified bigint not null")
+			.AppendLine($" constraint FK_{TableName}_UserModified_Users")
+			.AppendLine("\t\tforeign key references a2security.Users(Id),");
+
+			sb.Append("\tDateCreated datetime not null")
+			.AppendLine($" constraint DF_{TableName}_DateCreated default(getutcdate()),");
+
+			sb.Append("\tDateModified datetime not null")
+			.AppendLine($" constraint DF_{TableName}_DateModified default(getutcdate())");
 		}
 
 		public void BuildFields(StringBuilder sb, String prefix)
