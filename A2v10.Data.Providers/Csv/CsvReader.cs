@@ -1,7 +1,8 @@
-﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2020 Alex Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,6 +33,18 @@ namespace A2v10.Data.Providers.Csv
 				Read(rdr);
 			}
 			return _file; 
+		}
+
+		public ExpandoObject ParseFile(Stream stream, ITableDescription table)
+		{
+			// extension
+			return this.ParseFlatFile(stream, table);
+		}
+
+		public ExpandoObject CreateDataModel(Stream stream)
+		{
+			// extension
+			return this.CreateExpandoObject(stream);
 		}
 
 		void FindEncoding(Stream stream)

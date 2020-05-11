@@ -1,4 +1,4 @@
-﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2020 Alex Kukhtin. All rights reserved.
 
 using A2v10.Data.Interfaces;
 using System;
@@ -127,6 +127,11 @@ namespace A2v10.Data.Providers
 			if (index < 0 || index >= _fields.Count)
 				throw new InvalidOperationException();
 			return _fields[index];
+		}
+
+		public String FieldName(Int32 index)
+		{
+			return GetField(index).Name;
 		}
 
 		public Int32 GetOrCreateField(String name)

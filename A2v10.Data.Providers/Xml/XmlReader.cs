@@ -1,6 +1,7 @@
-﻿// Copyright © 2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2018-2020 Alex Kukhtin. All rights reserved.
 
 using System;
+using System.Dynamic;
 using System.IO;
 using System.Xml;
 
@@ -55,6 +56,18 @@ namespace A2v10.Data.Providers.Xml
 				}
 			}
 			return _file;
+		}
+
+		public ExpandoObject ParseFile(Stream stream, ITableDescription table)
+		{
+			// extension
+			return this.ParseFlatFile(stream, table);
+		}
+
+		public ExpandoObject CreateDataModel(Stream stream)
+		{
+			// extension
+			return this.CreateExpandoObject(stream);
 		}
 
 		Record ReadRow(System.Xml.XmlReader rdr)

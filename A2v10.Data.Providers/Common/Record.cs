@@ -1,4 +1,4 @@
-﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2020 Alex Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -33,7 +33,14 @@ namespace A2v10.Data.Providers
 				if (fieldNo >= 0 && fieldNo < DataFields.Count)
 					return DataFields[fieldNo].Value;
 			}
-			throw new ExternalDataException($"Invalid field name: {name}");
+			throw new ExternalDataException($"Invalid field name: '{name}'");
+		}
+
+		public Object FieldValue(Int32 index)
+		{
+			if (index >= 0 && index < DataFields.Count)
+				return DataFields[index].Value;
+			throw new ExternalDataException($"Invalid field index: {index}");
 		}
 
 		public String StringFieldValueByIndex(Int32 index)

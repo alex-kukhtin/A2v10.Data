@@ -47,6 +47,8 @@
     <Compile Include="Dbf\DbfWriter.cs" />
     <Compile Include="ExternalDataContext.cs" />
     <Compile Include="ExternalDataException.cs" />
+    <Compile Include="ExternalDataExtensions.cs" />
+    <Compile Include="FlatTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Xml\XmlWriter.cs" />
     <Compile Include="Xml\XmlReader.cs" />
