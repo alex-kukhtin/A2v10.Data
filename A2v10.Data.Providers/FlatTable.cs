@@ -1,9 +1,8 @@
-﻿using System;
+﻿// Copyright © 2020 Alex Kukhtin. All rights reserved.
+
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using A2v10.Data.Interfaces;
 
 namespace A2v10.Data.Providers
