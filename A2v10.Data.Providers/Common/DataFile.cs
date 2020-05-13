@@ -151,9 +151,20 @@ namespace A2v10.Data.Providers
 
 		internal void MapFields()
 		{
+			if (_fieldMap != null)
+				return;
 			_fieldMap = new Dictionary<String, Int32>();
 			for (Int32 f = 0; f < _fields.Count; f++)
-				_fieldMap.Add(_fields[f].Name, f);
+			{
+				var name = _fields[f].Name;
+				int md = 1;
+				while (_fieldMap.ContainsKey(name))
+				{
+					name += $"_{md++}";
+				}
+				_fields[f].Name = name; // maybe changed
+				_fieldMap.Add(name, f);
+			}
 		}
 
 		public Record CreateRecord()
