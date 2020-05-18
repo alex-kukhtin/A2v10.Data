@@ -59,6 +59,7 @@ namespace A2v10.Data.Providers.Dbf
 			{
 				ReadHeader(rdr);
 			}
+			_file.MapFields();
 			if (rdr.BaseStream.CanRead)
 			{
 				// if possible
@@ -123,7 +124,6 @@ namespace A2v10.Data.Providers.Dbf
 			rdr.ReadInt16(); // reserved
 			Byte flag = rdr.ReadByte();
 			rdr.ReadBytes(8); // tail
-			_file.MapFields();
 		}
 
 		void ReadRecord(BinaryReader rdr, Int16 recordSize)
