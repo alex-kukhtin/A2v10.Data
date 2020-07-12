@@ -8,7 +8,7 @@ namespace A2v10.Data
 {
 	internal class CrossItem
 	{
-		List<ExpandoObject> _list = new List<ExpandoObject>();
+		Dictionary<Object, ExpandoObject> _items = new Dictionary<Object, ExpandoObject>();
 		Dictionary<String, Int32> _keys = new Dictionary<String, Int32>();
 		public String TargetProp { get; }
 		public Boolean IsArray { get; }
@@ -24,7 +24,9 @@ namespace A2v10.Data
 
 		public void Add(String propName, ExpandoObject target)
 		{
-			_list.Add(target);
+			var id = target.Get<Object>("Id");
+			if (!_items.ContainsKey(id))
+				_items.Add(id, target);
 			if (!_keys.ContainsKey(propName))
 			{
 				_keys.Add(propName, _keys.Count);
@@ -46,10 +48,13 @@ namespace A2v10.Data
 			if (!IsArray)
 				return;
 			Int32 _keyCount = _keys.Count;
-			foreach (var eo in _list)
+			foreach (var itm in _items)
 			{
+				var eo = itm.Value;
 				var arr = CreateArray(_keyCount);
 				ExpandoObject targetVal = eo.Get<ExpandoObject>(TargetProp);
+				if (targetVal == null)
+					continue; // already array?
 				foreach (var key in _keys)
 				{
 					Int32 index = key.Value;
