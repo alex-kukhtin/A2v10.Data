@@ -1,4 +1,4 @@
-﻿// Copyright © 2012-2019 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2012-2020 Alex Kukhtin. All rights reserved.
 
 using A2v10.Data.Interfaces;
 using System;
@@ -65,12 +65,14 @@ namespace A2v10.Data
 		public Boolean IsLazy { get; }
 		public Int32 Length { get; }
 		public Boolean IsJson { get; set; }
+		public SqlDataType SqlDataType { get; }
 
 		public Boolean IsArrayLike { get { return ItemType == FieldType.Object || ItemType == FieldType.Array || ItemType == FieldType.Map; } }
 
-		public FieldMetadata(FieldInfo fi, DataType type, Int32 length)
+		public FieldMetadata(FieldInfo fi, DataType type, SqlDataType sqlDataType, Int32 length)
 		{
 			DataType = type;
+			SqlDataType = sqlDataType;
 			Length = length;
 			IsLazy = fi.IsLazy;
 			ItemType = FieldType.Scalar;
