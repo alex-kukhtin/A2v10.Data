@@ -75,6 +75,35 @@ namespace A2v10.Data
 			}
 		}
 
+		public ExpandoObject ExecuteAndLoadExpando(String source, String command, ExpandoObject element)
+		{
+			var rv = new ExpandoObject();
+			using (var p = _profiler.Start(command))
+			{
+				using (var cnn = GetConnection(source))
+				{
+					using (var cmd = cnn.CreateCommandSP(command))
+					{
+						var retParam = SetParametersFromExpandoObject(cmd, element);
+						using (var rdr = cmd.ExecuteReader())
+						{
+							if (rdr.Read())
+							{
+								for (Int32 c = 0; c < rdr.FieldCount; c++)
+								{
+									var name = rdr.GetName(c);
+									var val = rdr.GetValue(c);
+									rv.Add(name, val);
+								}
+							}
+						}
+						SetReturnParamResult(retParam, element);
+					}
+				}
+			}
+			return rv;
+		}
+
 		public async Task ExecuteExpandoAsync(String source, String command, ExpandoObject element)
 		{
 			using (var p = _profiler.Start(command))
