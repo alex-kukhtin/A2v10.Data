@@ -430,8 +430,7 @@ namespace A2v10.Data
 						{
 							do
 							{
-								// metadata is not needed (exclude aliases)
-								dataReader.ProcessMetadataAliases(rdr);
+								dataReader.ProcessOneMetadata(rdr);
 								while (rdr.Read())
 								{
 									dataReader.ProcessOneRecord(rdr);
@@ -476,8 +475,7 @@ namespace A2v10.Data
 						{
 							do
 							{
-								// metadata is not needed (exclude aliases)
-								dataReader.ProcessMetadataAliases(rdr);
+								dataReader.ProcessOneMetadata(rdr);
 								while (await rdr.ReadAsync())
 								{
 									dataReader.ProcessOneRecord(rdr);
