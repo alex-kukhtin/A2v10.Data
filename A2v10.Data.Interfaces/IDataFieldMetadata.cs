@@ -35,5 +35,6 @@ namespace A2v10.Data.Interfaces
 		String GetObjectType(String fieldName);
 
 		String TypeForValidate { get; }
+		String TypeScriptName { get; }
 	}
 }
