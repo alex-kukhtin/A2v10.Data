@@ -46,6 +46,7 @@
     <Compile Include="IExternalDataProvider.cs" />
     <Compile Include="IDataScripter.cs" />
     <Compile Include="IExternalDataReader.cs" />
+    <Compile Include="IExternalDataWriter.cs" />
     <Compile Include="ILocalizer.cs" />
     <Compile Include="IExternalDataFile.cs" />
     <Compile Include="IExternalDataRecord.cs" />

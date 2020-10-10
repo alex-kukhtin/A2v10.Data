@@ -2,12 +2,14 @@
 // Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using A2v10.Data.Interfaces;
 
 namespace A2v10.Data.Providers.Csv
 {
-	public class CsvWriter
+	public class CsvWriter : IExternalDataWriter
 	{
 		private readonly DataFile _file;
 
@@ -18,7 +20,7 @@ namespace A2v10.Data.Providers.Csv
 
 		public void Write(Stream stream)
 		{
-			using (var sw = new StreamWriter(stream))
+			using (var sw = new StreamWriter(stream, _file.Encoding))
 			{
 				Write(sw);
 			}
@@ -49,18 +51,18 @@ namespace A2v10.Data.Providers.Csv
 
 		String GetRecord(Record record)
 		{
-			var sb = new StringBuilder();
+			var sa = new List<String>();
 			foreach (var df in record.DataFields)
 			{
-				if (sb.Length > 0)
-					sb.Append(_file.Delimiter);
-				sb.Append(EscapeString(df.StringValue));
+				sa.Add(EscapeString(df.StringValue));
 			}
-			return sb.ToString();
+			return String.Join(_file.Delimiter.ToString(), sa);
 		}
 
 		String EscapeString(String str)
 		{
+			if (str == null)
+				return String.Empty;
 			if (str.IndexOfAny(new Char[] { _file.Delimiter, '"', '\n', '\r' }) != -1)
 			{
 				return $"\"{str.Replace("\"", "\"\"")}\"";
