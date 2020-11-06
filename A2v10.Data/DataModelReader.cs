@@ -22,8 +22,11 @@ namespace A2v10.Data
 		const String SYSTEM_TYPE = "$System";
 		const String ALIASES_TYPE = "$Aliases";
 
+		private readonly IDataLocalizer _localizer;
+		private readonly ITokenProvider _tokenProvider;
+
 		IDataModel _dataModel;
-		IDataLocalizer _localizer;
+
 		IdMapper _idMap = new IdMapper();
 		RefMapper _refMap = new RefMapper();
 		CrossMapper _crossMap = new CrossMapper();
@@ -31,9 +34,10 @@ namespace A2v10.Data
 		IDictionary<String, Object> _sys = new ExpandoObject() as IDictionary<String, Object>;
 		FieldInfo? mainElement;
 
-		public DataModelReader(IDataLocalizer localizer)
+		public DataModelReader(IDataLocalizer localizer, ITokenProvider tokenProvider)
 		{
 			_localizer = localizer;
+			_tokenProvider = tokenProvider;
 			if (localizer == null)
 				throw new ArgumentNullException(nameof(localizer));
 		}
@@ -301,6 +305,17 @@ namespace A2v10.Data
 				{
 					fi.CheckPermissionsName();
 				}
+
+				if (fi.IsToken)
+				{
+					if (_tokenProvider == null)
+						throw new DataLoaderException("There is no TokenProvider service");
+					if (dataVal is Guid dataGuid)
+						dataVal = _tokenProvider.GenerateToken(dataGuid);
+					else
+						throw new DataLoaderException("Token must be an guid");
+				}
+
 				AddValueToRecord(currentRecord, fi, dataVal);
 				if (fi.IsRowCount)
 				{

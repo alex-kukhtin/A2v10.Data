@@ -22,13 +22,15 @@ namespace A2v10.Data
 		IDataConfiguration _config;
 		ITenantManager _tenantManager;
 		readonly IDataLocalizer _localizer;
+		private readonly ITokenProvider _tokenProvider;
 
-		public SqlDbContext(IDataProfiler profiler, IDataConfiguration config, IDataLocalizer localizer, ITenantManager tenantManager = null)
+		public SqlDbContext(IDataProfiler profiler, IDataConfiguration config, IDataLocalizer localizer, ITenantManager tenantManager = null, ITokenProvider tokenProvider = null)
 		{
 			_profiler = profiler;
 			_config = config;
 			_localizer = localizer;
 			_tenantManager = tenantManager;
+			_tokenProvider = tokenProvider;
 			if (_profiler == null)
 				throw new ArgumentNullException(nameof(profiler));
 			if (_config == null)
@@ -320,7 +322,7 @@ namespace A2v10.Data
 
 		public IDataModel LoadModel(String source, String command, System.Object prms = null, Int32 commandTimeout = 0)
 		{
-			var modelReader = new DataModelReader(_localizer);
+			var modelReader = new DataModelReader(_localizer, _tokenProvider);
 			source = ResolveSource(source, prms, modelReader);
 			using (var p = _profiler.Start(command))
 			{
@@ -345,7 +347,7 @@ namespace A2v10.Data
 
 		public async Task<IDataModel> LoadModelAsync(String source, String command, Object prms = null, Int32 commandTimeout = 0)
 		{
-			var modelReader = new DataModelReader(_localizer);
+			var modelReader = new DataModelReader(_localizer, _tokenProvider);
 			source = ResolveSource(source, prms, modelReader);
 			using (var p = _profiler.Start(command))
 			{
@@ -404,7 +406,7 @@ namespace A2v10.Data
 
 		public IDataModel SaveModel(String source, String command, ExpandoObject data, Object prms = null)
 		{
-			var dataReader = new DataModelReader(_localizer);
+			var dataReader = new DataModelReader(_localizer, _tokenProvider);
 			var dataWriter = new DataModelWriter();
 			using (var p = _profiler.Start(command))
 			{
@@ -447,7 +449,7 @@ namespace A2v10.Data
 
 		public async Task<IDataModel> SaveModelAsync(String source, String command, ExpandoObject data, Object prms = null, Func<ITableDescription, ExpandoObject> onSetData = null)
 		{
-			var dataReader = new DataModelReader(_localizer);
+			var dataReader = new DataModelReader(_localizer, _tokenProvider);
 			var dataWriter = new DataModelWriter();
 			using (var p = _profiler.Start(command))
 			{

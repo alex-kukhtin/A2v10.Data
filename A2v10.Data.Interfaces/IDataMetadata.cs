@@ -16,6 +16,7 @@ namespace A2v10.Data.Interfaces
 		String Items { get; set; }
 		String MapItemType { get; set; }
 		String MainObject { get; set; }
+		String Token { get; set; }
 
 		IDictionary<String, IDataFieldMetadata> Fields { get; }
 		IDictionary<String, IList<String>> Cross { get; }

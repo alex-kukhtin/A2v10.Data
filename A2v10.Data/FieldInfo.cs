@@ -138,7 +138,8 @@ namespace A2v10.Data
 		public Boolean IsRefId =>  SpecType == SpecType.RefId; 
 		public Boolean IsParentId =>  SpecType == SpecType.ParentId; 
 		public Boolean IsId =>  SpecType == SpecType.Id; 
-		public Boolean IsKey =>  SpecType == SpecType.Key; 
+		public Boolean IsKey =>  SpecType == SpecType.Key;
+		public Boolean IsToken => SpecType == SpecType.Token;
 		public Boolean IsRowCount =>  SpecType == SpecType.RowCount; 
 		public Boolean IsItems =>  SpecType == SpecType.Items; 
 		public Boolean IsGroupMarker => SpecType == SpecType.GroupMarker; 

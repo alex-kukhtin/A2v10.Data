@@ -189,6 +189,8 @@ namespace A2v10.Data.ScriptBuilder
 				sb.Append($"$permissions: '{meta.Permissions}',");
 			if (!String.IsNullOrEmpty(meta.Items))
 				sb.Append($"$items: '{meta.Items}',");
+			if (!String.IsNullOrEmpty(meta.Token))
+				sb.Append($"$token: '{meta.Token}',");
 			if (meta.IsGroup)
 				sb.Append($"$group: true,");
 			if (meta.HasCross)
