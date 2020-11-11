@@ -312,7 +312,7 @@ namespace A2v10.Data
 						throw new DataLoaderException("There is no TokenProvider service");
 					if (dataVal is Guid dataGuid)
 						dataVal = _tokenProvider.GenerateToken(dataGuid);
-					else
+					else if (dataVal != null)
 						throw new DataLoaderException("Token must be an guid");
 				}
 
