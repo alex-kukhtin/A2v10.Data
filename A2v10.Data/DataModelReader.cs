@@ -309,7 +309,7 @@ namespace A2v10.Data
 				if (fi.IsToken)
 				{
 					if (_tokenProvider == null)
-						throw new DataLoaderException("There is no TokenProvider service");
+						dataVal = null;
 					if (dataVal is Guid dataGuid)
 						dataVal = _tokenProvider.GenerateToken(dataGuid);
 					else if (dataVal != null)
