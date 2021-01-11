@@ -547,9 +547,14 @@ namespace A2v10.Data
 					var sqlVal = p.GetValue(element);
 					if (sqlParam.SqlDbType == SqlDbType.VarBinary)
 					{
-						if (!(sqlVal is Stream stream))
-							throw new IndexOutOfRangeException("Stream expected");
-						sqlParam.Value = new SqlBytes(stream);
+						if (sqlVal == null)
+							sqlParam.Value = DBNull.Value;
+						else
+						{
+							if (!(sqlVal is Stream stream))
+								throw new IndexOutOfRangeException("Stream expected");
+							sqlParam.Value = new SqlBytes(stream);
+						}
 					}
 					else
 					{
