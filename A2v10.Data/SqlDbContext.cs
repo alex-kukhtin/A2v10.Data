@@ -106,6 +106,35 @@ namespace A2v10.Data
 			return rv;
 		}
 
+		public async Task<ExpandoObject> ExecuteAndLoadExpandoAsync(String source, String command, ExpandoObject element, Int32 commandTimeout = 0)
+		{
+			var rv = new ExpandoObject();
+			using (var p = _profiler.Start(command))
+			{
+				using (var cnn = await GetConnectionAsync(source))
+				{
+					using (var cmd = cnn.CreateCommandSP(command))
+					{
+						var retParam = SetParametersFromExpandoObject(cmd, element);
+						using (var rdr = await cmd.ExecuteReaderAsync())
+						{
+							if (rdr.Read())
+							{
+								for (Int32 c = 0; c < rdr.FieldCount; c++)
+								{
+									var name = rdr.GetName(c);
+									var val = rdr.GetValue(c);
+									rv.Add(name, val);
+								}
+							}
+						}
+						SetReturnParamResult(retParam, element);
+					}
+				}
+			}
+			return rv;
+		}
+
 		public async Task ExecuteExpandoAsync(String source, String command, ExpandoObject element)
 		{
 			using (var p = _profiler.Start(command))
