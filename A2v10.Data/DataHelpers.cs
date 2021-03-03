@@ -18,6 +18,8 @@ namespace A2v10.Data
 			{
 				case "DateTime":
 					return DataType.Date;
+				case "TimeSpan":
+					return DataType.Date;
 				case "String":
 					return DataType.String;
 				case "Int64":

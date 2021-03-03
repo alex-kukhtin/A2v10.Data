@@ -52,7 +52,12 @@ namespace A2v10.Data
 				case SqlDbType.NVarChar:
 				case SqlDbType.NText:
 				case SqlDbType.NChar:
+				case SqlDbType.VarChar:
+				case SqlDbType.Text:
+				case SqlDbType.Char:
 					return typeof(String);
+				case SqlDbType.VarBinary:
+					return typeof(Byte[]);
 				case SqlDbType.UniqueIdentifier:
 					return typeof(Guid);
 			}
@@ -63,14 +68,16 @@ namespace A2v10.Data
 		{
 			if (value == null)
 				return DBNull.Value;
-			else if (value is ExpandoObject)
+			if (value.GetType() == to)
+				return value;
+			if (value is ExpandoObject)
 			{
 				var id = (value as ExpandoObject).GetObject("Id");
 				if (DataHelpers.IsIdIsNull(id))
 					return DBNull.Value;
 				return Convert.ChangeType(id, to, CultureInfo.InvariantCulture);
 			}
-			else if (value is String)
+			if (value is String)
 			{
 				var str = value.ToString();
 				if (String.IsNullOrEmpty(str))
@@ -79,10 +86,7 @@ namespace A2v10.Data
 					return Guid.Parse(value.ToString());
 				return value;
 			}
-			else
-			{
-				return Convert.ChangeType(value, to, CultureInfo.InvariantCulture);
-			}
+			return Convert.ChangeType(value, to, CultureInfo.InvariantCulture);
 		}
 
 		public static Object Value2SqlValue(Object value)
