@@ -11,6 +11,8 @@ namespace A2v10.Data.Providers
 	{
 		private readonly List<Object> _list;
 
+		public IFormatProvider FormatProvider { get; set; }
+
 		public FlatTable()
 		{
 			_list = new List<Object>();

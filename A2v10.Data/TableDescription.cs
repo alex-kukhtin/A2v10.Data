@@ -14,6 +14,7 @@ namespace A2v10.Data
 
 		DataTable _table;
 		List<Object> _list;
+		public IFormatProvider FormatProvider { get; set; }
 
 		public TableDescription(DataTable table)
 		{
@@ -45,7 +46,8 @@ namespace A2v10.Data
 				return null;
 			if (type == value.GetType())
 				return value;
-			return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+			var fp = FormatProvider ?? CultureInfo.InvariantCulture;
+			return Convert.ChangeType(value, type, fp);
 		}
 
 		public ExpandoObject ToObject()
