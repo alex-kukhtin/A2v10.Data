@@ -476,7 +476,7 @@ namespace A2v10.Data
 			}
 		}
 
-		public async Task<IDataModel> SaveModelAsync(String source, String command, ExpandoObject data, Object prms = null, Func<ITableDescription, ExpandoObject> onSetData = null)
+		public async Task<IDataModel> SaveModelAsync(String source, String command, ExpandoObject data, Object prms = null, Func<ITableDescription, ExpandoObject> onSetData = null, Int32 commandTimeout = 0)
 		{
 			var dataReader = new DataModelReader(_localizer, _tokenProvider);
 			var dataWriter = new DataModelWriter();
@@ -487,6 +487,8 @@ namespace A2v10.Data
 				{
 					using (var cmd = cnn.CreateCommandSP(metadataCommand))
 					{
+						if (commandTimeout != 0)
+							cmd.CommandTimeout = commandTimeout;
 						using (var rdr = await cmd.ExecuteReaderAsync())
 						{
 							do

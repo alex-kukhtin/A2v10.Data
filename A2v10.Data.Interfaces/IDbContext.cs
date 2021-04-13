@@ -19,7 +19,7 @@ namespace A2v10.Data.Interfaces
 		Task<IDataModel> LoadModelAsync(String source, String command, Object prms = null, Int32 commandTimeout = 0);
 
 		IDataModel SaveModel(String source, String command, ExpandoObject data, Object prms = null);
-		Task<IDataModel> SaveModelAsync(String source, String command, ExpandoObject data, Object prms = null, Func<ITableDescription, ExpandoObject> onSetData = null);
+		Task<IDataModel> SaveModelAsync(String source, String command, ExpandoObject data, Object prms = null, Func<ITableDescription, ExpandoObject> onSetData = null, Int32 commandTimeout = 0);
 
 		T Load<T>(String source, String command, Object prms = null) where T : class;
 		Task<T> LoadAsync<T>(String source, String command, Object prms = null) where T : class;
