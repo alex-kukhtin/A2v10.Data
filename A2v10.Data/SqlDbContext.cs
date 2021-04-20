@@ -544,9 +544,14 @@ namespace A2v10.Data
 					var sqlVal = kv.Value;
 					if (sqlParam.SqlDbType == SqlDbType.VarBinary)
 					{
-						if (!(sqlVal is Stream stream))
-							throw new IndexOutOfRangeException("Stream expected");
-						sqlParam.Value = new SqlBytes(stream);
+						if (sqlVal == null)
+							sqlParam.Value = DBNull.Value;
+						else if (sqlVal is Stream stream)
+							sqlParam.Value = new SqlBytes(stream);
+						else if (sqlVal is Byte[] byteArray)
+							sqlParam.Value = new SqlBytes(byteArray);
+						else
+							throw new IndexOutOfRangeException("Stream or byte array expected");
 					}
 					else
 					{
