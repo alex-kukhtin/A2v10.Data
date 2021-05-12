@@ -1,4 +1,4 @@
-﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2021 Alex Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -502,6 +502,8 @@ namespace A2v10.Data
 						data = onSetData(dataWriter.GetTableDescription());
 					using (var cmd = cnn.CreateCommandSP(command))
 					{
+						if (commandTimeout != 0)
+							cmd.CommandTimeout = commandTimeout;
 						SqlCommandBuilder.DeriveParameters(cmd);
 						dataWriter.SetTableParameters(cmd, data, prms);
 						using (var rdr = await cmd.ExecuteReaderAsync())
