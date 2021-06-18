@@ -147,6 +147,11 @@ namespace A2v10.Data
 		public Boolean IsPermissions =>  SpecType == SpecType.Permissions;
 		public Boolean IsUtc => SpecType == SpecType.Utc;
 
+		public Boolean IsParentIdSelf(FieldInfo root)
+		{
+			return IsParentId && TypeName.StartsWith(root.TypeName);
+		}
+
 		private static void CheckField(String[] parts)
 		{
 			if (parts.Length == 2)

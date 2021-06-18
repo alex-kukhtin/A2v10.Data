@@ -1,6 +1,9 @@
-﻿-- Copyright © 2008-2018 Alex Kukhtin
+﻿-- Copyright © 2008-2021 Alex Kukhtin
 
-/* 20180618-7133 */
+/* OLD VERSION */
+
+/*!!!!!
+/*ATTENTION!  DO NOT USE! Use D:\Git\A2v10.Data.Core\SqlScripts/a2v10test.sql insead !*/
 
 /*
 Depends on Windows Workflow Foundation scripts.
@@ -245,12 +248,10 @@ if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2te
 	drop procedure a2test.[Document.RowsMethods.Update]
 go
 ------------------------------------------------
-if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'Guid.Metadata')
-	drop procedure a2test.[Guid.Metadata]
-go
-------------------------------------------------
-if exists (select * from INFORMATION_SCHEMA.ROUTINES where ROUTINE_SCHEMA=N'a2test' and ROUTINE_NAME=N'Guid.Update')
-	drop procedure a2test.[Guid.Update]
+drop procedure if exists a2test.[Guid.Metadata];
+drop procedure if exists a2test.[Guid.Update];
+drop procedure if exists a2test.[Fallback.Update];
+drop procedure if exists a2test.[Nullable.SaveModel.Update];
 go
 ------------------------------------------------
 if exists (select * from sys.types st join sys.schemas ss ON st.schema_id = ss.schema_id where st.name = N'NestedMain.TableType' AND ss.name = N'a2test')
