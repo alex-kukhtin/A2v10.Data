@@ -352,7 +352,10 @@ namespace A2v10.Data
 						if (fi.IsParentIdSelf(rootFI))
 						{
 							if (dataVal == null)
-								_root.AddToArray(rootFI.PropertyName, currentRecord);
+							{
+								if (!String.IsNullOrEmpty(rootFI.PropertyName))
+									_root.AddToArray(rootFI.PropertyName, currentRecord);
+							}
 							else
 								AddRecordToArray(fi.TypeName, dataVal, currentRecord);
 							bAdded = true;
@@ -361,7 +364,9 @@ namespace A2v10.Data
 						{
 							// Add Record to parent
 							if (dataVal != null)
-								AddObjectToRecord(fi.TypeName, dataVal, currentRecord);
+							{
+								AddRecordToArray(fi.TypeName, dataVal, currentRecord);
+							}
 						}
 					}
 					else if (rootFI.IsObject)
