@@ -22,6 +22,7 @@ namespace A2v10.Data.Interfaces
 
 		public String RootId;
 		public Boolean IsDialog;
+        public Boolean IsIndex;
 		public String RawData;
 	}
 
