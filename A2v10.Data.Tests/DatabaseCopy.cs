@@ -14,7 +14,7 @@ namespace A2v10.Data.Tests
 	[TestClass]
 	public class DatabaseCopy
 	{
-		IDbContext _dbContext;
+		private readonly IDbContext _dbContext;
 		public DatabaseCopy()
 		{
 			_dbContext = Starter.Create();

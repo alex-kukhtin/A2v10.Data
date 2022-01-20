@@ -1,4 +1,4 @@
-﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2022 Alex Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -33,13 +33,13 @@ namespace A2v10.Data
 
 		public T Eval<T>(String expression)
 		{
-			T fallback = default(T);
+			T fallback = default;
 			return (this.Root).Eval<T>(expression, fallback);
 		}
 
 		public T Eval<T>(ExpandoObject root, String expression)
 		{
-			T fallback = default(T);
+			T fallback = default;
 			return (root).Eval<T>(expression, fallback);
 		}
 
@@ -69,7 +69,7 @@ namespace A2v10.Data
 				result = expr.DynamicInvoke(root);
 			}
 			if (result == null)
-				return default(T);
+				return default;
 			if (result is T resultT)
 				return resultT;
 			var tp = typeof(T);

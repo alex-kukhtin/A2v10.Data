@@ -1,4 +1,4 @@
-﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2022 Alex Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -95,7 +95,7 @@ namespace A2v10.Data
 
 		public override Boolean Equals(Object obj)
 		{
-			return obj is Signature ? Equals((Signature)obj) : false;
+			return obj is Signature && Equals((Signature)obj);
 		}
 
 		public Boolean Equals(Signature other)
@@ -113,8 +113,8 @@ namespace A2v10.Data
 	{
 		public static readonly ClassFactory Instance = new ClassFactory();
 
-		ReaderWriterLock rwLock;
-		Dictionary<Signature, Type> classes;
+		private readonly ReaderWriterLock rwLock;
+		private readonly Dictionary<Signature, Type> classes;
 		Int32 classCount;
 		readonly ModuleBuilder module;
 		static ClassFactory() { }  // Trigger lazy initialization of static fields

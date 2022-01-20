@@ -1,6 +1,6 @@
 ﻿
 // Copyright © Microsoft Corporation.  All rights reserved.
-// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+// Copyright © 2015-2022 Alex Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -77,10 +77,11 @@ namespace A2v10.Data.DynamicExpression
 
 		static Dictionary<String, Object> keywords;
 
-		Dictionary<String, Object> symbols;
-		Dictionary<Expression, String> literals;
+		private readonly Dictionary<String, Object> symbols;
+		private readonly Dictionary<Expression, String> literals;
+		private readonly String text;
+
 		ParameterExpression it;
-		String text;
 		Int32 textPos;
 		readonly Int32 textLen;
 		Char ch;

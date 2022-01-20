@@ -17,8 +17,8 @@ namespace A2v10.Data.Providers
 
 	public class DataFile : IExternalDataFile
 	{
-		IList<Field> _fields;
-		IList<Record> _records;
+		private readonly IList<Field> _fields;
+		private readonly IList<Record> _records;
 
 		private readonly Byte[] byteCodes1251 = new Byte[] { 0x81, 0x83, 0xA0, 0xA1, 0xA2, 0xA5, 0xA8, 0xAA, 0xAF, 0xB2, 0xB3, 0xB4, 0xB9, 0xBA, 0xBF, 0xBB, 0xAB };
 

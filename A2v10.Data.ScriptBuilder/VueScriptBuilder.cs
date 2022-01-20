@@ -204,7 +204,7 @@ namespace A2v10.Data.ScriptBuilder
 			if (lazyFields.Length != 0)
 			{
 				lazyFields.RemoveTailComma();
-				sb.Append($"$lazy: [{lazyFields.ToString()}]");
+				sb.Append($"$lazy: [{lazyFields}]");
 			}
 			if (sb.Length == 0)
 				return null;

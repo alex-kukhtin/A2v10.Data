@@ -1,4 +1,4 @@
-﻿// Copyright © 2012-2020 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2012-2022 Alex Kukhtin. All rights reserved.
 
 using A2v10.Data.Interfaces;
 using System;
@@ -8,7 +8,7 @@ namespace A2v10.Data
 {
 	public class ElementMetadata : IDataMetadata
 	{
-		IDictionary<String, IDataFieldMetadata> _fields = new Dictionary<String, IDataFieldMetadata>();
+		private readonly IDictionary<String, IDataFieldMetadata> _fields = new Dictionary<String, IDataFieldMetadata>();
 
 		public IDictionary<String, IList<String>> _cross = null;
 

@@ -1,4 +1,4 @@
-﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2022 Alex Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -14,8 +14,8 @@ namespace A2v10.Data
 
 	internal class DataModelWriter
 	{
-		IDictionary<String, Tuple<DataTable, String>> _tables = new Dictionary<String, Tuple<DataTable, String>>();
-		IDictionary<String, String> _jsonParams = new Dictionary<String, String>();
+		private readonly IDictionary<String, Tuple<DataTable, String>> _tables = new Dictionary<String, Tuple<DataTable, String>>();
+		private readonly IDictionary<String, String> _jsonParams = new Dictionary<String, String>();
 
 		internal void ProcessOneMetadata(IDataReader rdr)
 		{

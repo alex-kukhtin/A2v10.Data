@@ -1,4 +1,4 @@
-﻿// Copyright © 2015-2020 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2022 Alex Kukhtin. All rights reserved.
 
 using A2v10.Data.Interfaces;
 using Newtonsoft.Json;
@@ -27,11 +27,11 @@ namespace A2v10.Data
 
 		IDataModel _dataModel;
 
-		IdMapper _idMap = new IdMapper();
-		RefMapper _refMap = new RefMapper();
-		CrossMapper _crossMap = new CrossMapper();
-		ExpandoObject _root = new ExpandoObject();
-		IDictionary<String, Object> _sys = new ExpandoObject() as IDictionary<String, Object>;
+		private readonly IdMapper _idMap = new IdMapper();
+		private readonly RefMapper _refMap = new RefMapper();
+		private readonly CrossMapper _crossMap = new CrossMapper();
+		private readonly ExpandoObject _root = new ExpandoObject();
+		private readonly IDictionary<String, Object> _sys = new ExpandoObject() as IDictionary<String, Object>;
 		FieldInfo? mainElement;
 
 		public DataModelReader(IDataLocalizer localizer, ITokenProvider tokenProvider)
@@ -291,7 +291,7 @@ namespace A2v10.Data
 				{
 					if (groupKeys == null)
 						groupKeys = new List<Boolean>();
-					Boolean bVal = (dataVal != null) ? (dataVal.ToString() == "1") : false;
+					Boolean bVal = (dataVal != null) && (dataVal.ToString() == "1");
 					groupKeys.Add(bVal);
 					continue;
 				}
@@ -319,8 +319,8 @@ namespace A2v10.Data
 				AddValueToRecord(currentRecord, fi, dataVal);
 				if (fi.IsRowCount)
 				{
-					if (dataVal is Int32)
-						rowCount = (Int32)dataVal;
+					if (dataVal is Int32 int32Val)
+						rowCount = int32Val;
 					else
 						throw new DataLoaderException("Invalid field type for !!RowCount");
 					bHasRowCount = true;
