@@ -1,4 +1,4 @@
-﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2022 Alex Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -13,23 +13,23 @@ namespace A2v10.Data
 		public static T Get<T>(this ExpandoObject obj, String name)
 		{
 			if (!(obj is IDictionary<String, Object> d))
-				return default(T);
+				return default;
 			if (d.TryGetValue(name, out Object result))
 			{
-				if (result is T)
-					return (T)result;
+				if (result is T tResult)
+					return tResult;
 			}
-			return default(T);
+			return default;
 		}
 
 		public static T GetOrCreate<T>(this ExpandoObject obj, String name) where T: new()
 		{
 			if (!(obj is IDictionary<String, Object> d))
-				return default(T);
+				return default;
 			if (d.TryGetValue(name, out Object result))
 			{
-				if (result is T)
-					return (T)result;
+				if (result is T tResult)
+					return tResult;
 				else
 					throw new InvalidCastException();
 			}
@@ -41,11 +41,11 @@ namespace A2v10.Data
 		public static T GetOrCreate<T>(this ExpandoObject obj, String name, Func<T> create) where T : new()
 		{
 			if (!(obj is IDictionary<String, Object> d))
-				return default(T);
+				return default;
 			if (d.TryGetValue(name, out Object result))
 			{
-				if (result is T)
-					return (T)result;
+				if (result is T tResult)
+					return tResult;
 				else
 					throw new InvalidCastException();
 			}
@@ -101,15 +101,15 @@ namespace A2v10.Data
 			obj.Set(name, value);
 		}
 
-		public static T Eval<T>(this ExpandoObject root, String expression, T fallback = default(T), Boolean throwIfError = false)
+		public static T Eval<T>(this ExpandoObject root, String expression, T fallback = default, Boolean throwIfError = false)
 		{
 			if (expression == null)
 				return fallback;
 			Object result = root.EvalExpression(expression, throwIfError);
 			if (result == null)
 				return fallback;
-			if (result is T)
-				return (T)result;
+			if (result is T tResult)
+				return tResult;
 			return fallback;
 		}
 
