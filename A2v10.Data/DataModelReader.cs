@@ -275,6 +275,7 @@ namespace A2v10.Data
 			Boolean bAddMap = false;
 			Object id = null;
 			Object key = null;
+			String keyName = null;
 			Int32 rowCount = 0;
 			Boolean bHasRowCount = false;
 			List<Boolean> groupKeys = null;
@@ -317,6 +318,10 @@ namespace A2v10.Data
 				}
 
 				AddValueToRecord(currentRecord, fi, dataVal);
+				if (fi.IsCrossArray)
+                {
+                    _crossMap.AddParentRecord(rootFI.TypeName, fi.PropertyName, currentRecord);
+                }
 				if (fi.IsRowCount)
 				{
 					if (dataVal is Int32 int32Val)
@@ -337,6 +342,7 @@ namespace A2v10.Data
 				}
 				else if (fi.IsKey)
 				{
+					keyName = fi.PropertyName;
 					key = dataVal;
 				}
 				if (fi.IsParentId)
@@ -389,7 +395,7 @@ namespace A2v10.Data
 					}
 					else if (rootFI.IsCrossArray || rootFI.IsCrossObject)
 					{
-						AddRecordToCross(fi.TypeName, dataVal, currentRecord, key, rootFI);
+						AddRecordToCross(fi.TypeName, dataVal, currentRecord, key, keyName, rootFI);
 					}
 				}
 			}
@@ -570,10 +576,10 @@ namespace A2v10.Data
 		void AddRecordToGroup(ExpandoObject currentRecord, FieldInfo field, List<Boolean> groupKeys)
 		{
 			if (groupKeys == null)
-				throw new DataLoaderException($"There is no groups property for '{field.TypeName}");
+				throw new DataLoaderException($"There is no groups property for '{field.TypeName}'");
 			ElementMetadata elemMeta = GetOrCreateMetadata(field.TypeName);
 			if (String.IsNullOrEmpty(elemMeta.Items))
-				throw new DataLoaderException($"There is no 'Items' property for '{field.TypeName}");
+				throw new DataLoaderException($"There is no 'Items' property for '{field.TypeName}'");
 			GroupMetadata groupMeta = GetOrCreateGroupMetadata(field.TypeName);
 			if (groupMeta.IsRoot(groupKeys))
 			{
@@ -591,7 +597,7 @@ namespace A2v10.Data
 			}
 		}
 
-		void AddRecordToCross(String propName, Object id, ExpandoObject currentRecord, Object keyProp, FieldInfo rootFI)
+		void AddRecordToCross(String propName, Object id, ExpandoObject currentRecord, Object keyProp, String keyName, FieldInfo rootFI)
 		{
 			if (keyProp == null)
 				throw new DataLoaderException("Key not found in cross object");
@@ -601,7 +607,7 @@ namespace A2v10.Data
 			if (!_idMap.TryGetValue(key, out ExpandoObject mapObj))
 				throw new DataLoaderException($"Property '{propName}'. Object {pxa[0]} (Id={id}) not found");
 			mapObj.AddToCross(pxa[1], currentRecord, keyProp?.ToString());
-			_crossMap.Add(propName, pxa[1], mapObj, keyProp.ToString(), rootFI);
+			_crossMap.Add(propName, pxa[1], mapObj, keyProp.ToString(), keyName, rootFI);
 		}
 
 

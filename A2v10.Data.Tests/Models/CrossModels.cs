@@ -13,9 +13,10 @@ using A2v10.Data.Tests;
 namespace A2v10.Data.Models
 {
 	[TestClass]
+	[TestCategory("Models.Cross")]
 	public class CrossModels
 	{
-		IDbContext _dbContext;
+		private readonly IDbContext _dbContext;
 		public CrossModels()
 		{
 			_dbContext = Starter.Create();
@@ -35,6 +36,9 @@ namespace A2v10.Data.Models
 			md.IsKey("TCross", "Key");
 			md.IsItemType("TData", "Cross1", FieldType.CrossArray);
 
+			var json = JsonConvert.SerializeObject(dm.Root);
+			Console.WriteLine(json);
+
 			var dt = new DataTester(dm, "RepData");
 			dt.IsArray(2);
 			dt.AreArrayValueEqual(10, 0, "Id");
@@ -44,8 +48,6 @@ namespace A2v10.Data.Models
 
 			dt = new DataTester(dm, "RepData[0].Cross1");
 			dt.IsArray(2);
-			dt = new DataTester(dm, "RepData[0].Cross1");
-			dt.IsArray(2);
 			dt.AreArrayValueEqual("K1", 0, "Key");
 			dt.AreArrayValueEqual(11, 0, "Val");
 
@@ -53,6 +55,58 @@ namespace A2v10.Data.Models
 			dt.IsArray(2);
 			dt.AreArrayValueEqual("K2", 1, "Key");
 			dt.AreArrayValueEqual(22, 1, "Val");
+
+			// check for script creation
+			var scripter = new VueScriptBuilder();
+			var script = dm.CreateScript(scripter);
+			Assert.IsFalse(String.IsNullOrEmpty(script));
+		}
+
+		[TestMethod]
+		public async Task LoadCrossArrayMulti()
+		{
+			var dm = await _dbContext.LoadModelAsync(null, "a2test.[CrossModelMulti.Load]");
+
+			var md = new MetadataTester(dm);
+			md.IsAllKeys("TRoot,TData,TCross");
+			md.HasAllProperties("TRoot", "RepData");
+			md.HasAllProperties("TData", "Id,Sum,CrossDt,CrossCt,Items");
+			md.IsId("TData", "Id");
+			md.HasAllProperties("TCross", "Acc,Sum");
+			md.IsKey("TCross", "Acc");
+			md.IsItemType("TData", "CrossDt", FieldType.CrossArray);
+			md.IsItemType("TData", "CrossCt", FieldType.CrossArray);
+
+			var json = JsonConvert.SerializeObject(dm.Root, Formatting.Indented);
+			Console.WriteLine(json);
+
+
+			var dt = new DataTester(dm, "RepData.Items");
+			dt.IsArray(3);
+			dt.AreArrayValueEqual(10, 0, "Id");
+			dt.AreArrayValueEqual(20, 1, "Id");
+			dt.AreArrayValueEqual(30, 2, "Id");
+			dt.AreArrayValueEqual(100, 0, "Sum");
+			dt.AreArrayValueEqual(200, 1, "Sum");
+			dt.AreArrayValueEqual(300, 2, "Sum");
+
+			int dtSize = 2;
+			dt = new DataTester(dm, "RepData.Items[0].CrossDt");
+			dt.IsArray(dtSize);
+			dt.AreArrayValueEqual("A1", 0, "Acc");
+			dt.AreArrayValueEqual(11, 0, "Sum");
+			dt.AreArrayValueEqual("A2", 1, "Acc");
+			dt.AreArrayValueEqual(22, 1, "Sum");
+			dt = new DataTester(dm, "RepData.Items[1].CrossDt");
+			dt.IsArray(dtSize);
+			dt = new DataTester(dm, "RepData.Items[2].CrossDt");
+			dt.IsArray(dtSize);
+
+			var ctSize = 2;
+			dt = new DataTester(dm, "RepData.Items[0].CrossCt");
+			dt.IsArray(ctSize);
+			dt.AreArrayValueEqual("A2", 0, "Acc");
+			dt.AreArrayValueEqual(44, 0, "Sum");
 
 			// check for script creation
 			var scripter = new VueScriptBuilder();

@@ -9,7 +9,7 @@ namespace A2v10.Data.Providers
 	public class Record : IExternalDataRecord
 	{
 		public List<FieldData> DataFields;
-		private IDictionary<String, Int32> _fieldMap;
+		private readonly IDictionary<String, Int32> _fieldMap;
 
 		public Record(IDictionary<String, Int32> fields)
 		{
