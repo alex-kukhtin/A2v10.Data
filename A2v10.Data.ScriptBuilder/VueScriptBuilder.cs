@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright © 2015-2022 Alex Kukhtin. All rights reserved.
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -166,8 +168,9 @@ namespace A2v10.Data.ScriptBuilder
 				foreach (var s in c.Value)
 					sb.Append($"'{s}',");
 				sb.RemoveTailComma();
-				sb.Append("]");
+				sb.Append("],");
 			}
+			sb.RemoveTailComma();
 			sb.AppendLine("}");
 			return sb.ToString();
 		}

@@ -97,5 +97,22 @@ namespace A2v10.Data.Providers
 			}
 			*/
 		}
+
+		[TestMethod]
+		public void CsvReadLargeFile()
+		{
+			/*
+			var f = new DataFile();
+			var rdr = new CsvReader(f);
+
+			using (var file = File.Open("", FileMode.Open))
+			{
+				var dm = rdr.CreateDataModel(file);
+				int z = 55;
+			}
+
+			var x = f.FieldCount;
+			*/
+		}
 	}
 }
