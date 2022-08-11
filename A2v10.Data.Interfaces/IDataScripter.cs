@@ -12,7 +12,7 @@ namespace A2v10.Data.Interfaces
 		public String DataScript;
 	}
 
-	public class ModelScriptInfo
+	public struct ModelScriptInfo
 	{
 		public Boolean Admin;
 		public String Template;
@@ -23,6 +23,7 @@ namespace A2v10.Data.Interfaces
 		public String RootId;
 		public Boolean IsDialog;
         public Boolean IsIndex;
+		public Boolean IsSkipDataStack;
 		public String RawData;
 	}
 
