@@ -19,18 +19,18 @@ namespace A2v10.Data.Providers
 			var f = new DataFile();
 			var rdr = new CsvReader(f);
 
-			using (var file = File.Open("../../testfiles/simple.csv", FileMode.Open))
+			using (var file = File.Open("../../../testfiles/simple.csv", FileMode.Open))
 			{
 				rdr.Read(file);
 			}
 
 			var wrt = new CsvWriter(f);
-			using (var file = File.Create("../../testfiles/output.csv"))
+			using (var file = File.Create("../../../testfiles/output.csv"))
 			{
 				wrt.Write(file);
 			}
 
-			ProviderTools.CompareFiles("../../testfiles/simple.csv", "../../testfiles/output.csv");
+			ProviderTools.CompareFiles("../../../testfiles/simple.csv", "../../../testfiles/output.csv");
 		}
 
 		[TestMethod]
@@ -39,20 +39,20 @@ namespace A2v10.Data.Providers
 			var f = new DataFile();
 			var rdr = new CsvReader(f);
 
-			using (var file = File.Open("../../testfiles/records.csv", FileMode.Open))
+			using (var file = File.Open("../../../testfiles/records.csv", FileMode.Open))
 			{
 				rdr.Read(file);
 			}
 
 			var wrt = new CsvWriter(f);
-			using (var file = File.Create("../../testfiles/recordsout.csv"))
+			using (var file = File.Create("../../../testfiles/recordsout.csv"))
 			{
 				wrt.Write(file);
 			}
 
 			var nf = new DataFile();
 			var nrdr = new CsvReader(nf);
-			using (var file = File.Open("../../testfiles/recordsout.csv", FileMode.Open))
+			using (var file = File.Open("../../../testfiles/recordsout.csv", FileMode.Open))
 			{
 				nrdr.Read(file);
 			}
@@ -86,12 +86,12 @@ namespace A2v10.Data.Providers
 			var f = new DataFile();
 			var rdr = new CsvReader(f);
 
-			using (var file = File.Open("../../testfiles/external.csv", FileMode.Open))
+			using (var file = File.Open("../../../testfiles/external.csv", FileMode.Open))
 			{
 				rdr.Read(file);
 			}
 			var wrt = new CsvWriter(f);
-			using (var file = File.Create("../../testfiles/extenral_output.csv"))
+			using (var file = File.Create("../../../testfiles/extenral_output.csv"))
 			{
 				wrt.Write(file);
 			}

@@ -1,85 +1,38 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3CEFBA76-9ED3-40B4-A844-CC17D960202F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>A2v10.Data</RootNamespace>
-    <AssemblyName>A2v10.Data</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CrossMapper.cs" />
-    <Compile Include="DataExceptions.cs" />
-    <Compile Include="DataHelpers.cs" />
-    <Compile Include="DataModelReader.cs" />
-    <Compile Include="DataModelWriter.cs" />
-    <Compile Include="DynamicDataModel.cs" />
-    <Compile Include="DynamicExtensions.cs" />
-    <Compile Include="DynamicObject\DynamicType.cs" />
-    <Compile Include="DynamicObject\ObjectBuilder.cs" />
-    <Compile Include="DynamicParser\DynamicParser.cs" />
-    <Compile Include="DynamicParser\DynamicRuntimeHelper.cs" />
-    <Compile Include="DynamicParser\ParseException.cs" />
-    <Compile Include="DynamicParser\SimpleTypes.cs" />
-    <Compile Include="DynamicParser\TypeHelpers.cs" />
-    <Compile Include="ElementMetadata.cs" />
-    <Compile Include="FieldInfo.cs" />
-    <Compile Include="FieldMetadata.cs" />
-    <Compile Include="GroupMetadata.cs" />
-    <Compile Include="IdMapper.cs" />
-    <Compile Include="ListLoader.cs" />
-    <Compile Include="LoadHelper.cs" />
-    <Compile Include="PathHelpers.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlDbContext.cs" />
-    <Compile Include="SqlExtensions.cs" />
-    <Compile Include="TableDescription.cs" />
-    <Compile Include="Validator\JsonValidator.cs" />
-    <Compile Include="Validator\ModelForValidate.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\A2v10.Data.Interfaces\A2v10.Data.Interfaces.csproj">
-      <Project>{1C5A0097-29A8-4157-80C0-B865CEAFCCCE}</Project>
-      <Name>A2v10.Data.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\A2v10.Data.Providers\A2v10.Data.Providers.csproj">
-      <Project>{1562EE09-1FD2-41F6-B575-5BE0343196A4}</Project>
-      <Name>A2v10.Data.Providers</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.1</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netframework4.8</TargetFramework>
+		<LangVersion>10.0</LangVersion>
+		<Nullable>disable</Nullable>
+		<Version>10.0.7309</Version>
+		<Product>A2v10</Product>
+		<Authors>Oleksandr Kukthin</Authors>
+		<Copyright>Copyright © 2015-2022 Oleksandr Kukhtin. All rights reserved.</Copyright>
+		<Description>A2v10 Platform Data Layer</Description>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<RepositoryUrl>https://github.com/alex-kukhtin/A2v10.Data</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>A2v10</PackageTags>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Folder Include="Properties\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\A2v10.Data.Interfaces\A2v10.Data.Interfaces.csproj" />
+	</ItemGroup>
 </Project>
+

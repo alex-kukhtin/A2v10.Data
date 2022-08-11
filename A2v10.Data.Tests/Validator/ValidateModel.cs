@@ -25,7 +25,7 @@ namespace A2v10.Data.Validator
 		public async Task ValidateComplexModel()
 		{
 			IDataModel dm = await _dbContext.LoadModelAsync(null, "a2test.ComplexModel");
-			String fileName = "../../testfiles/_data.defs.json";
+			String fileName = "../../../testfiles/_data.defs.json";
 			var validator = JsonValidator.FromFile(fileName);
 			dm.Validate(validator.CreateValidator("ComplexModel"));
 		}

@@ -4,18 +4,17 @@ using A2v10.Data.Interfaces;
 using System;
 using System.Configuration;
 
-namespace A2v10.Data.Tests.Configuration
+namespace A2v10.Data.Tests.Configuration;
+
+public class TestConfig : IDataConfiguration
 {
-    public class TestConfig : IDataConfiguration
+    public String ConnectionString(String source)
     {
-        public String ConnectionString(String source)
-        {
-            if (String.IsNullOrEmpty(source))
-                source = "Default";
-            var cnnStr = ConfigurationManager.ConnectionStrings[source];
-            if (cnnStr == null)
-                throw new ConfigurationErrorsException($"Connection string '{source}' not found");
-            return cnnStr.ConnectionString;
-        }
+        if (String.IsNullOrEmpty(source))
+            source = "Default";
+        var cnnStr = ConfigurationManager.ConnectionStrings[source];
+        if (cnnStr == null)
+            throw new ConfigurationErrorsException($"Connection string '{source}' not found");
+        return cnnStr.ConnectionString;
     }
 }

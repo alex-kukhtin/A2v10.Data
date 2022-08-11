@@ -1,135 +1,39 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\A2v10\packages\MSTest.TestAdapter.2.2.8\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\..\A2v10\packages\MSTest.TestAdapter.2.2.8\build\net45\MSTest.TestAdapter.props')" />
-  <Import Project="..\packages\MSTest.TestAdapter.2.2.1\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\packages\MSTest.TestAdapter.2.2.1\build\net45\MSTest.TestAdapter.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{92474E5E-6FBA-4746-900C-55F68977E500}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>A2v10.Data.Tests</RootNamespace>
-    <AssemblyName>A2v10.Data.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Configuration\Starter.cs" />
-    <Compile Include="Configuration\TestConfig.cs" />
-    <Compile Include="Configuration\TestLocalizer.cs" />
-    <Compile Include="Configuration\TestProfiler.cs" />
-    <Compile Include="DatabaseCopy.cs" />
-    <Compile Include="Models\MultiplyTrees.cs" />
-    <Compile Include="ParamTypes.cs" />
-    <Compile Include="UtcDate.cs" />
-    <Compile Include="DatabaseTypeCheck.cs" />
-    <Compile Include="DatabaseDataTypes.cs" />
-    <Compile Include="DatabaseAliases.cs" />
-    <Compile Include="DatabaseModels.cs" />
-    <Compile Include="Expressions\DynamicExpression.cs" />
-    <Compile Include="Generator\ComplexModel.cs" />
-    <Compile Include="Generator\SimpleModel.cs" />
-    <Compile Include="Models\CrossModels.cs" />
-    <Compile Include="Module\ModuleTest.cs" />
-    <Compile Include="Providers\XmlReader.cs" />
-    <Compile Include="Providers\CsvReader.cs" />
-    <Compile Include="Providers\ProviderTools.cs" />
-    <Compile Include="TestMetadata.cs" />
-    <Compile Include="DatabasePager.cs" />
-    <Compile Include="DatabaseLoader.cs" />
-    <Compile Include="DatabaseLoaderSync.cs" />
-    <Compile Include="DatabaseWriter.cs" />
-    <Compile Include="DatabaseLocalization.cs" />
-    <Compile Include="Providers\DbfReader.cs" />
-    <Compile Include="Utils\DataTester.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\MetadataTester.cs" />
-    <Compile Include="Utils\TextDiff.cs" />
-    <Compile Include="Validator\ValidateModel.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="TestFiles\ENCODING.DBF" />
-    <None Include="TestFiles\output.dbf" />
-    <None Include="TestFiles\simple.csv" />
-    <None Include="TestFiles\simple.dbf" />
-    <None Include="TestFiles\solution.json" />
-    <None Include="TestFiles\_data.defs.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\A2v10.Data.Generator\A2v10.Data.Generator.csproj">
-      <Project>{78e6da53-9abb-406f-a711-55ff00386029}</Project>
-      <Name>A2v10.Data.Generator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\A2v10.Data.Interfaces\A2v10.Data.Interfaces.csproj">
-      <Project>{1C5A0097-29A8-4157-80C0-B865CEAFCCCE}</Project>
-      <Name>A2v10.Data.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\A2v10.Data.Providers\A2v10.Data.Providers.csproj">
-      <Project>{1562EE09-1FD2-41F6-B575-5BE0343196A4}</Project>
-      <Name>A2v10.Data.Providers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\A2v10.Data.ScriptBuilder\A2v10.Data.ScriptBuilder.csproj">
-      <Project>{83c23f97-4f17-44fd-9933-fc8cac1b589c}</Project>
-      <Name>A2v10.Data.ScriptBuilder</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\A2v10.Data\A2v10.Data.csproj">
-      <Project>{3cefba76-9ed3-40b4-a844-cc17d960202f}</Project>
-      <Name>A2v10.Data</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="TestFiles\Test.accdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="MSTest.TestAdapter">
-      <Version>2.2.10</Version>
-    </PackageReference>
-    <PackageReference Include="MSTest.TestFramework">
-      <Version>2.2.10</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.1</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-  </Target>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netframework4.8</TargetFramework>
+		<LangVersion>10.0</LangVersion>
+		<Nullable>disable</Nullable>
+		<Version>10.0.7309</Version>
+		<Product>A2v10</Product>
+		<Authors>Oleksandr Kukthin</Authors>
+		<Copyright>Copyright © 2015-2022 Oleksandr Kukhtin. All rights reserved.</Copyright>
+		<Description>A2v10 Platform Data Layer</Description>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<RepositoryUrl>https://github.com/alex-kukhtin/A2v10.Data</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>A2v10</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MSTest.TestAdapter" Version="2.2.9" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.2.9" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\A2v10.Data.Generator\A2v10.Data.Generator.csproj" />
+	  <ProjectReference Include="..\A2v10.Data.Interfaces\A2v10.Data.Interfaces.csproj" />
+	  <ProjectReference Include="..\A2v10.Data.Providers\A2v10.Data.Providers.csproj" />
+	  <ProjectReference Include="..\A2v10.Data.ScriptBuilder\A2v10.Data.ScriptBuilder.csproj" />
+	  <ProjectReference Include="..\A2v10.Data\A2v10.Data.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Properties\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="System.Configuration" />
+	</ItemGroup>
 </Project>
+
