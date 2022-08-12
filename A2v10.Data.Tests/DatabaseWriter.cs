@@ -39,6 +39,7 @@ namespace A2v10.Data.Tests
 				    SubObject : {
 					    Id: 55,
 					    Name: 'SubObjectName',
+						GuidValue: '',
 					    SubArray: [
 						    {X: 5, Y:6, D:5.1 },
 						    {X: 8, Y:9, D:7.23 }
@@ -61,6 +62,8 @@ namespace A2v10.Data.Tests
 			dt.AreValueEqual(45L, "Id");
 			dt.AreValueEqual("MainObjectName", "Name");
 			var guid = dt.GetValue<Guid>("GUID");
+			var guidVal = dt.GetValue<Guid>("GuidValue");
+			Assert.AreEqual(Guid.Parse("0db82076-0bec-4c5c-adbf-73A056FCCB04"), guidVal);
 
 			var tdsub = new DataTester(dm, "MainObject.SubObject");
 			tdsub.AreValueEqual(55L, "Id");
