@@ -35,6 +35,7 @@ namespace A2v10.Data.Tests
 				    Name: 'MainObjectName',
 				    NumValue : 531.55,
 				    BitValue : true,
+					GuidValue: '0db82076-0bec-4c5c-adbf-73A056FCCB04',
 				    SubObject : {
 					    Id: 55,
 					    Name: 'SubObjectName',
