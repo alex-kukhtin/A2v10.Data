@@ -19,6 +19,7 @@ namespace A2v10.Data
 		public String HasChildren { get; private set; }
 		public String Permissions { get; set; }
 		public String Items { get; set; }
+		public String Expanded { get; set; }
 		public String MapItemType { get; set; }
 		public String MainObject { get; set; }
 		public String Token { get; set; }
@@ -74,6 +75,9 @@ namespace A2v10.Data
 					break;
 				case SpecType.Items:
 					Items = field.PropertyName;
+					break;
+				case SpecType.Expanded:
+					Expanded = field.PropertyName;
 					break;
 				case SpecType.Token:
 					Token = field.PropertyName;

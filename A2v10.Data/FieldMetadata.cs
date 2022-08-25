@@ -42,6 +42,7 @@ namespace A2v10.Data
 		RowNumber,
 		HasChildren,
 		Items,
+		Expanded,
 		Permissions,
 		GroupMarker,
 		ReadOnly,

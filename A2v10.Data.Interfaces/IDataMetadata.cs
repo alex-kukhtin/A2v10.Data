@@ -1,4 +1,4 @@
-﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2022 Alex Kukhtin. All rights reserved.
 
 
 using System;
@@ -14,6 +14,7 @@ namespace A2v10.Data.Interfaces
 		String HasChildren { get; }
 		String Permissions { get; }
 		String Items { get; set; }
+		String Expanded { get; set; }
 		String MapItemType { get; set; }
 		String MainObject { get; set; }
 		String Token { get; set; }
