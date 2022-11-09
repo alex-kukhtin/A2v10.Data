@@ -31,8 +31,7 @@ namespace A2v10.Data
 
 		public void AddToList(ExpandoObject eo)
 		{
-			if (List == null)
-				List = new List<ExpandoObject>();
+			List ??= new List<ExpandoObject>();
 			List.Add(eo);
 		}
 	}
@@ -78,6 +77,16 @@ namespace A2v10.Data
 				};
 				Add(key, item);
 			}
+		}
+
+		public void Correct(Tuple<String, Object> key)
+		{
+			if (!TryGetValue(key, out RefMapperItem item))
+				return;
+			if (item == null)
+				return;
+			foreach (var target in item.List)
+				target.CopyFromUnconditional(item.Source);
 		}
 	}
 }

@@ -215,6 +215,16 @@ namespace A2v10.Data
 			}
 		}
 
+		public static void CopyFromUnconditional(this ExpandoObject target, ExpandoObject source)
+		{
+			var dTarget = target as IDictionary<String, Object>;
+			var dSource = source as IDictionary<String, Object>;
+			foreach (var itm in dSource)
+			{
+				dTarget[itm.Key] = itm.Value;
+			}
+		}
+
 		public static IDictionary<String, Object> GetOrCreate(this IDictionary<String, Object> dict, String key)
 		{
 			if (dict.TryGetValue(key, out Object obj))
