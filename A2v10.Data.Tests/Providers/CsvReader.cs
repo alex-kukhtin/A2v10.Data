@@ -86,7 +86,7 @@ namespace A2v10.Data.Providers
 			var f = new DataFile();
 			var rdr = new CsvReader(f);
 
-			using (var file = File.Open("../../../testfiles/external.csv", FileMode.Open))
+			using (var file = File.Open("../../../testfiles/export.csv", FileMode.Open))
 			{
 				rdr.Read(file);
 			}
