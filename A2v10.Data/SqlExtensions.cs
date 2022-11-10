@@ -73,6 +73,8 @@ namespace A2v10.Data
 				var id = eo.GetObject("Id");
 				if (DataHelpers.IsIdIsNull(id))
 					return DBNull.Value;
+				if (to == typeof(Guid))
+					return Guid.Parse(id.ToString());
 				return Convert.ChangeType(id, to, CultureInfo.InvariantCulture);
 			}
 			if (value is String str)
