@@ -85,6 +85,8 @@ namespace A2v10.Data
 				return;
 			if (item == null)
 				return;
+			if (item.List == null)
+				return;
 			foreach (var target in item.List)
 				target.CopyFromUnconditional(item.Source);
 		}
