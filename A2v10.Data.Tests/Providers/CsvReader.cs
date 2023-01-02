@@ -114,5 +114,19 @@ namespace A2v10.Data.Providers
 			var x = f.FieldCount;
 			*/
 		}
+
+		[TestMethod]
+		public void CsvReadUquoted()
+		{
+			var f = new DataFile();
+			var rdr = new CsvReader(f);
+
+			using (var file = File.Open("../../../testfiles/uquoted.csv", FileMode.Open))
+			{
+				var df = rdr.Read(file);
+
+				int z = 55;
+			}
+		}
 	}
 }
