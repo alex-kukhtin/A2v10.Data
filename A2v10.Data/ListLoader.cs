@@ -1,51 +1,49 @@
-﻿using System;
+﻿// Copyright © 2015-2023 Oleksandr Kukhtin. All rights reserved.
+
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace A2v10.Data
+namespace A2v10.Data;
+
+public class ListLoader<T> where T : class
 {
-	public class ListLoader<T> where T : class
+	readonly Type _retType;
+	readonly PropertyInfo[] _props;
+	Dictionary<String, Int32> _keyMap;
+
+	public List<T> Result;
+
+	public ListLoader()
 	{
-		Type _retType;
-		readonly PropertyInfo[] _props;
-		Dictionary<String, Int32> _keyMap;
+		_retType = typeof(T);
+		_props = _retType.GetProperties();
+		Result = new List<T>();
+	}
 
-		public List<T> Result;
-
-		public ListLoader()
+	public void ProcessFields(IDataReader rdr)
+	{
+		_keyMap = new Dictionary<String, Int32>();
+		for (Int32 c = 0; c < rdr.FieldCount; c++)
 		{
-			_retType = typeof(T);
-			_props = _retType.GetProperties();
-			Result = new List<T>();
+			_keyMap.Add(rdr.GetName(c), c);
 		}
+	}
 
-		public void ProcessFields(IDataReader rdr)
+	public void ProcessRecord(IDataReader rdr)
+	{
+		T item = System.Activator.CreateInstance(_retType) as T;
+		foreach (var p in _props)
 		{
-			_keyMap = new Dictionary<String, Int32>();
-			for (Int32 c = 0; c < rdr.FieldCount; c++)
+			if (_keyMap.TryGetValue(p.Name, out Int32 fieldIndex))
 			{
-				_keyMap.Add(rdr.GetName(c), c);
+				var dbVal = rdr.GetValue(fieldIndex);
+				if (dbVal == DBNull.Value)
+					dbVal = null;
+				p.SetValue(item, dbVal);
 			}
 		}
-
-		public void ProcessRecord(IDataReader rdr)
-		{
-			T item = System.Activator.CreateInstance(_retType) as T;
-			foreach (var p in _props)
-			{
-				if (_keyMap.TryGetValue(p.Name, out Int32 fieldIndex))
-				{
-					var dbVal = rdr.GetValue(fieldIndex);
-					if (dbVal == DBNull.Value)
-						dbVal = null;
-					p.SetValue(item, dbVal);
-				}
-			}
-			Result.Add(item);
-		}
+		Result.Add(item);
 	}
 }

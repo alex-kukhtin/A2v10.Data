@@ -27,10 +27,10 @@ namespace A2v10.Data
 
 		IDataModel _dataModel;
 
-		private readonly IdMapper _idMap = new IdMapper();
-		private readonly RefMapper _refMap = new RefMapper();
-		private readonly CrossMapper _crossMap = new CrossMapper();
-		private readonly ExpandoObject _root = new ExpandoObject();
+		private readonly IdMapper _idMap = new();
+		private readonly RefMapper _refMap = new();
+		private readonly CrossMapper _crossMap = new();
+		private readonly ExpandoObject _root = new();
 		private readonly IDictionary<String, Object> _sys = new ExpandoObject() as IDictionary<String, Object>;
 		FieldInfo? mainElement;
 
@@ -99,7 +99,7 @@ namespace A2v10.Data
 
 		DataElementInfo GetMainElement()
 		{
-			DataElementInfo dei = new DataElementInfo();
+			DataElementInfo dei = new();
 			if (mainElement == null)
 				return dei;
 			if (!_metadata.TryGetValue(mainElement.Value.TypeName, out IDataMetadata meta))
@@ -287,11 +287,10 @@ namespace A2v10.Data
 				if (dataVal == DBNull.Value)
 					dataVal = null;
 				var fn = GetAlias(rdr.GetName(i));
-				FieldInfo fi = new FieldInfo(fn);
+				FieldInfo fi = new(fn);
 				if (fi.IsGroupMarker)
 				{
-					if (groupKeys == null)
-						groupKeys = new List<Boolean>();
+					groupKeys ??= new List<Boolean>();
 					Boolean bVal = (dataVal != null) && (dataVal.ToString() == "1");
 					groupKeys.Add(bVal);
 					continue;
@@ -451,7 +450,7 @@ namespace A2v10.Data
 				typeMetadata.IsArrayType = true;
 			if (objectDef.IsGroup)
 				typeMetadata.IsGroup = true;
-			if (objectDef.IsArray && objectDef.IsVisible)
+			if ((objectDef.IsArray || objectDef.IsTree) && objectDef.IsVisible)
 				_root.AddToArray(objectDef.PropertyName, null); // empty record
 			Boolean hasRowCount = false;
 			for (Int32 i = 1; i < rdr.FieldCount; i++)
@@ -522,8 +521,7 @@ namespace A2v10.Data
 
 		ElementMetadata GetOrCreateMetadata(String typeName)
 		{
-			if (_metadata == null)
-				_metadata = new Dictionary<String, IDataMetadata>();
+			_metadata ??= new Dictionary<String, IDataMetadata>();
 			if (_metadata.TryGetValue(typeName, out IDataMetadata elemMeta))
 				return elemMeta as ElementMetadata;
 			var newMeta = new ElementMetadata();
@@ -533,8 +531,7 @@ namespace A2v10.Data
 
 		GroupMetadata GetOrCreateGroupMetadata(String typeName)
 		{
-			if (_groupMetadata == null)
-				_groupMetadata = new Dictionary<String, GroupMetadata>();
+			_groupMetadata ??= new Dictionary<String, GroupMetadata>();
 			if (_groupMetadata.TryGetValue(typeName, out GroupMetadata groupMeta))
 				return groupMeta;
 			groupMeta = new GroupMetadata();

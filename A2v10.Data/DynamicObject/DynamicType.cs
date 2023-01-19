@@ -1,4 +1,4 @@
-﻿// Copyright © 2015-2022 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2023 Oleksandr Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -9,196 +9,195 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading;
 
-namespace A2v10.Data
+namespace A2v10.Data;
+
+public abstract class DynamicClass
 {
-	public abstract class DynamicClass
+	public override String ToString()
 	{
-		public override String ToString()
+		PropertyInfo[] props = this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+		StringBuilder sb = new();
+		sb.Append("{");
+		for (Int32 i = 0; i < props.Length; i++)
 		{
-			PropertyInfo[] props = this.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
-			StringBuilder sb = new StringBuilder();
-			sb.Append("{");
-			for (Int32 i = 0; i < props.Length; i++)
-			{
-				if (i > 0) sb.Append(", ");
-				sb.Append(props[i].Name);
-				sb.Append("=");
-				sb.Append(props[i].GetValue(this, null));
-			}
-			sb.Append("}");
-			return sb.ToString();
+			if (i > 0) sb.Append(", ");
+			sb.Append(props[i].Name);
+			sb.Append("=");
+			sb.Append(props[i].GetValue(this, null));
+		}
+		sb.Append("}");
+		return sb.ToString();
+	}
+}
+
+public class DynamicProperty
+{
+	readonly String _name;
+	readonly Type _type;
+
+	public DynamicProperty(String name, Type type)
+	{
+		_name = name ?? throw new ArgumentNullException(nameof(name));
+		_type = type ?? throw new ArgumentNullException(nameof(type));
+	}
+
+	public String Name => _name;
+	public Type Type => _type;
+}
+
+internal class Signature : IEquatable<Signature>
+{
+	public DynamicProperty[] properties;
+	public Int32 hashCode;
+
+	public Signature(Object obj)
+	{
+		Init(GetProperties(obj));
+	}
+
+	public Signature(IEnumerable<DynamicProperty> properties)
+	{
+		Init(properties);
+	}
+
+	void Init(IEnumerable<DynamicProperty> properties)
+	{
+		this.properties = properties.ToArray();
+		hashCode = 0;
+		foreach (DynamicProperty p in properties)
+		{
+			hashCode ^= p.Name.GetHashCode() ^ p.Type.GetHashCode();
 		}
 	}
 
-	public class DynamicProperty
+	List<DynamicProperty> GetProperties(Object obj)
 	{
-		readonly String _name;
-		readonly Type _type;
-
-		public DynamicProperty(String name, Type type)
+		var props = new List<DynamicProperty>();
+		var d = obj as IDictionary<String, Object>;
+		foreach (var itm in d)
 		{
-			_name = name ?? throw new ArgumentNullException(nameof(name));
-			_type = type ?? throw new ArgumentNullException(nameof(type));
+			if (itm.Value is IList<ExpandoObject>)
+				props.Add(new DynamicProperty(itm.Key, typeof(IList<Object>)));
+			else if (itm.Value is ExpandoObject)
+				props.Add(new DynamicProperty(itm.Key, typeof(Object)));
+			else if (itm.Value == null)
+				props.Add(new DynamicProperty(itm.Key, typeof(Object)));
+			else
+				props.Add(new DynamicProperty(itm.Key, itm.Value.GetType()));
 		}
-
-		public String Name => _name;
-		public Type Type => _type;
+		return props;
 	}
 
-	internal class Signature : IEquatable<Signature>
+	public override Int32 GetHashCode()
 	{
-		public DynamicProperty[] properties;
-		public Int32 hashCode;
+		return hashCode;
+	}
 
-		public Signature(Object obj)
+	public override Boolean Equals(Object obj)
+	{
+		return obj is Signature signature && Equals(signature);
+	}
+
+	public Boolean Equals(Signature other)
+	{
+		if (properties.Length != other.properties.Length) return false;
+		for (Int32 i = 0; i < properties.Length; i++)
 		{
-			Init(GetProperties(obj));
+			if (properties[i].Name != other.properties[i].Name ||
+				properties[i].Type != other.properties[i].Type) return false;
 		}
+		return true;
+	}
+}
+public class ClassFactory
+{
+	public static readonly ClassFactory Instance = new();
 
-		public Signature(IEnumerable<DynamicProperty> properties)
-		{
-			Init(properties);
-		}
+	private readonly ReaderWriterLock rwLock;
+	private readonly Dictionary<Signature, Type> classes;
+	Int32 classCount;
+	readonly ModuleBuilder module;
+	static ClassFactory() { }  // Trigger lazy initialization of static fields
 
-		void Init(IEnumerable<DynamicProperty> properties)
+	private ClassFactory()
+	{
+		AssemblyName name = new("DynamicClasses");
+		AssemblyBuilder assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
+		module = assembly.DefineDynamicModule("Module");
+		classes = new Dictionary<Signature, Type>();
+		rwLock = new ReaderWriterLock();
+	}
+
+	public Type GetDynamicClass(IEnumerable<DynamicProperty> properties)
+	{
+		rwLock.AcquireReaderLock(Timeout.Infinite);
+		try
 		{
-			this.properties = properties.ToArray();
-			hashCode = 0;
-			foreach (DynamicProperty p in properties)
+			Signature signature = new(properties);
+			if (!classes.TryGetValue(signature, out Type type))
 			{
-				hashCode ^= p.Name.GetHashCode() ^ p.Type.GetHashCode();
+				type = CreateDynamicClass(signature.properties);
+				classes.Add(signature, type);
 			}
+			return type;
 		}
-
-		List<DynamicProperty> GetProperties(Object obj)
+		finally
 		{
-			var props = new List<DynamicProperty>();
-			var d = obj as IDictionary<String, Object>;
-			foreach (var itm in d)
-			{
-				if (itm.Value is IList<ExpandoObject>)
-					props.Add(new DynamicProperty(itm.Key, typeof(IList<Object>)));
-				else if (itm.Value is ExpandoObject)
-					props.Add(new DynamicProperty(itm.Key, typeof(Object)));
-				else if (itm.Value == null)
-					props.Add(new DynamicProperty(itm.Key, typeof(Object)));
-				else
-					props.Add(new DynamicProperty(itm.Key, itm.Value.GetType()));
-			}
-			return props;
-		}
-
-		public override Int32 GetHashCode()
-		{
-			return hashCode;
-		}
-
-		public override Boolean Equals(Object obj)
-		{
-			return obj is Signature && Equals((Signature)obj);
-		}
-
-		public Boolean Equals(Signature other)
-		{
-			if (properties.Length != other.properties.Length) return false;
-			for (Int32 i = 0; i < properties.Length; i++)
-			{
-				if (properties[i].Name != other.properties[i].Name ||
-					properties[i].Type != other.properties[i].Type) return false;
-			}
-			return true;
+			rwLock.ReleaseReaderLock();
 		}
 	}
-	public class ClassFactory
+
+	Type CreateDynamicClass(DynamicProperty[] properties)
 	{
-		public static readonly ClassFactory Instance = new ClassFactory();
-
-		private readonly ReaderWriterLock rwLock;
-		private readonly Dictionary<Signature, Type> classes;
-		Int32 classCount;
-		readonly ModuleBuilder module;
-		static ClassFactory() { }  // Trigger lazy initialization of static fields
-
-		private ClassFactory()
+		LockCookie cookie = rwLock.UpgradeToWriterLock(Timeout.Infinite);
+		try
 		{
-			AssemblyName name = new AssemblyName("DynamicClasses");
-			AssemblyBuilder assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
-			module = assembly.DefineDynamicModule("Module");
-			classes = new Dictionary<Signature, Type>();
-			rwLock = new ReaderWriterLock();
+			String typeName = "DynamicClass" + (classCount + 1);
+			TypeBuilder tb = this.module.DefineType(typeName, TypeAttributes.Class |
+				TypeAttributes.Public, typeof(DynamicClass));
+			System.Reflection.FieldInfo[] fields = GenerateProperties(tb, properties);
+			Type result = tb.CreateType();
+			classCount++;
+			return result;
 		}
-
-		public Type GetDynamicClass(IEnumerable<DynamicProperty> properties)
+		finally
 		{
-			rwLock.AcquireReaderLock(Timeout.Infinite);
-			try
-			{
-				Signature signature = new Signature(properties);
-				if (!classes.TryGetValue(signature, out Type type))
-				{
-					type = CreateDynamicClass(signature.properties);
-					classes.Add(signature, type);
-				}
-				return type;
-			}
-			finally
-			{
-				rwLock.ReleaseReaderLock();
-			}
+			rwLock.DowngradeFromWriterLock(ref cookie);
 		}
+	}
 
-		Type CreateDynamicClass(DynamicProperty[] properties)
+	System.Reflection.FieldInfo[] GenerateProperties(TypeBuilder tb, DynamicProperty[] properties)
+	{
+		System.Reflection.FieldInfo[] fields = new FieldBuilder[properties.Length];
+		for (Int32 i = 0; i < properties.Length; i++)
 		{
-			LockCookie cookie = rwLock.UpgradeToWriterLock(Timeout.Infinite);
-			try
-			{
-				String typeName = "DynamicClass" + (classCount + 1);
-				TypeBuilder tb = this.module.DefineType(typeName, TypeAttributes.Class |
-					TypeAttributes.Public, typeof(DynamicClass));
-				System.Reflection.FieldInfo[] fields = GenerateProperties(tb, properties);
-				Type result = tb.CreateType();
-				classCount++;
-				return result;
-			}
-			finally
-			{
-				rwLock.DowngradeFromWriterLock(ref cookie);
-			}
+			DynamicProperty dp = properties[i];
+			FieldBuilder fb = tb.DefineField("_" + dp.Name, dp.Type, FieldAttributes.Private);
+			PropertyBuilder pb = tb.DefineProperty(dp.Name, PropertyAttributes.HasDefault, dp.Type, null);
+			MethodBuilder mbGet = tb.DefineMethod("get_" + dp.Name,
+				MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig,
+				dp.Type, Type.EmptyTypes);
+			ILGenerator genGet = mbGet.GetILGenerator();
+			genGet.Emit(OpCodes.Ldarg_0);
+			genGet.Emit(OpCodes.Ldfld, fb);
+			genGet.Emit(OpCodes.Ret);
+			MethodBuilder mbSet = tb.DefineMethod("set_" + dp.Name,
+				MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig,
+				null, new Type[] { dp.Type });
+			ILGenerator genSet = mbSet.GetILGenerator();
+			genSet.Emit(OpCodes.Ldarg_0);
+			genSet.Emit(OpCodes.Ldarg_1);
+			genSet.Emit(OpCodes.Stfld, fb);
+			genSet.Emit(OpCodes.Ret);
+			pb.SetGetMethod(mbGet);
+			pb.SetSetMethod(mbSet);
+			fields[i] = fb;
 		}
+		return fields;
+	}
 
-		System.Reflection.FieldInfo[] GenerateProperties(TypeBuilder tb, DynamicProperty[] properties)
-		{
-			System.Reflection.FieldInfo[] fields = new FieldBuilder[properties.Length];
-			for (Int32 i = 0; i < properties.Length; i++)
-			{
-				DynamicProperty dp = properties[i];
-				FieldBuilder fb = tb.DefineField("_" + dp.Name, dp.Type, FieldAttributes.Private);
-				PropertyBuilder pb = tb.DefineProperty(dp.Name, PropertyAttributes.HasDefault, dp.Type, null);
-				MethodBuilder mbGet = tb.DefineMethod("get_" + dp.Name,
-					MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig,
-					dp.Type, Type.EmptyTypes);
-				ILGenerator genGet = mbGet.GetILGenerator();
-				genGet.Emit(OpCodes.Ldarg_0);
-				genGet.Emit(OpCodes.Ldfld, fb);
-				genGet.Emit(OpCodes.Ret);
-				MethodBuilder mbSet = tb.DefineMethod("set_" + dp.Name,
-					MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig,
-					null, new Type[] { dp.Type });
-				ILGenerator genSet = mbSet.GetILGenerator();
-				genSet.Emit(OpCodes.Ldarg_0);
-				genSet.Emit(OpCodes.Ldarg_1);
-				genSet.Emit(OpCodes.Stfld, fb);
-				genSet.Emit(OpCodes.Ret);
-				pb.SetGetMethod(mbGet);
-				pb.SetSetMethod(mbSet);
-				fields[i] = fb;
-			}
-			return fields;
-		}
-
-		public static Type CreateClass(IEnumerable<DynamicProperty> properties)
-		{
-			return ClassFactory.Instance.GetDynamicClass(properties);
-		}
+	public static Type CreateClass(IEnumerable<DynamicProperty> properties)
+	{
+		return ClassFactory.Instance.GetDynamicClass(properties);
 	}
 }

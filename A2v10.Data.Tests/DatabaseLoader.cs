@@ -13,7 +13,7 @@ namespace A2v10.Data.Tests
 	[TestClass]
 	public class DatabaseLoader
 	{
-		IDbContext _dbContext;
+		private readonly IDbContext _dbContext;
 		public DatabaseLoader()
 		{
 			_dbContext = Starter.Create();
@@ -103,6 +103,20 @@ namespace A2v10.Data.Tests
 			seriesObj.IsArray(1);
 			seriesObj.AreArrayValueEqual(501, 0, "Id");
 			seriesObj.AreArrayValueEqual(10.0, 0, "Price");
+		}
+
+		[TestMethod]
+		public async Task EmptyTreeModel()
+		{
+			IDataModel dm = await _dbContext.LoadModelAsync(null, "a2test.EmptyTreeModel");
+			var md = new MetadataTester(dm);
+			md.IsAllKeys("TRoot,TMenu");
+			md.HasAllProperties("TRoot", "Menu");
+			md.HasAllProperties("TMenu", "Menu,Name");
+			md.IsName("TMenu", "Name");
+
+			var dt = new DataTester(dm, "Menu");
+			dt.IsArray(0);
 		}
 
 		[TestMethod]

@@ -65,7 +65,7 @@ namespace A2v10.Data
 			IsComplexField = false;
 		}
 
-		static HashSet<String> _reservedWords = new HashSet<String>()
+		static readonly HashSet<String> _reservedWords = new HashSet<String>()
 			{
 				"Parent",
 				"Root",

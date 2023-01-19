@@ -1,77 +1,75 @@
-﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2023 Oleksandr Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
 
-namespace A2v10.Data
+namespace A2v10.Data;
+
+internal class ObjectBuilder
 {
-	internal class ObjectBuilder
+	static Object CreateObjectSimple(Object source, Signature sign, String path)
 	{
-		static Object CreateObjectSimple(Object source, Signature sign, String path)
-		{
-			if (!(source is ExpandoObject))
-				throw new DataDynamicException($"Invalid dynamic object. {sign.ToString()}");
-			var type = ClassFactory.CreateClass(sign.properties);
-			var target = System.Activator.CreateInstance(type);
-			SetProperties(source, target, path);
-			return target;
-		}
+		if (source is not ExpandoObject)
+			throw new DataDynamicException($"Invalid dynamic object. {sign}");
+		var type = ClassFactory.CreateClass(sign.properties);
+		var target = System.Activator.CreateInstance(type);
+		SetProperties(source, target, path);
+		return target;
+	}
 
-		static Object CreateObject(Object source, String path)
+	static Object CreateObject(Object source, String path)
+	{
+		if (source == null)
+			return null;
+		if (source is ExpandoObject)
 		{
-			if (source == null)
-				return null;
-			if (source is ExpandoObject)
+			var sign = new Signature(source);
+			return CreateObjectSimple(source, sign, path);
+		}
+		else if (source is IList<ExpandoObject>)
+		{
+			var retList = new List<Object>();
+			Signature arraySign = null;
+			foreach (var listItem in source as List<ExpandoObject>)
 			{
-				var sign = new Signature(source);
-				return CreateObjectSimple(source, sign, path);
-			}
-			else if (source is IList<ExpandoObject>)
-			{
-				var retList = new List<Object>();
-				Signature arraySign = null;
-				foreach (var listItem in source as List<ExpandoObject>)
+				if (listItem is ExpandoObject)
 				{
-					if (listItem is ExpandoObject)
-					{
-						if (arraySign == null)
-							arraySign = new Signature(listItem);
-						retList.Add(CreateObjectSimple(listItem, arraySign, path));
-					}
-					else
-					{
-						retList.Add(listItem);
-					}
+					arraySign ??= new Signature(listItem);
+					retList.Add(CreateObjectSimple(listItem, arraySign, path));
 				}
-				return retList;
-			}
-			return source;
-		}
-
-		static void SetProperties(Object source, Object target, String path)
-		{
-			var props = target.GetType().GetProperties();
-			var dict = source as IDictionary<String, Object>;
-			foreach (var prop in props)
-			{
-				if (dict.ContainsKey(prop.Name))
+				else
 				{
-					var val = dict[prop.Name];
-					prop.SetValue(target, CreateObject(val, path + "." + prop.Name));
+					retList.Add(listItem);
 				}
 			}
+			return retList;
 		}
+		return source;
+	}
 
-		public static Dictionary<String, Object> BuildObject(ExpandoObject root)
+	static void SetProperties(Object source, Object target, String path)
+	{
+		var props = target.GetType().GetProperties();
+		var dict = source as IDictionary<String, Object>;
+		foreach (var prop in props)
 		{
-			var list = new Dictionary<String, Object>();
-			var rootD = root as IDictionary<String, Object>;
-			foreach (var obj in rootD)
+			if (dict.ContainsKey(prop.Name))
 			{
-				list.Add(obj.Key, CreateObject(obj.Value, obj.Key));
+				var val = dict[prop.Name];
+				prop.SetValue(target, CreateObject(val, path + "." + prop.Name));
 			}
-			return list;
 		}
+	}
+
+	public static Dictionary<String, Object> BuildObject(ExpandoObject root)
+	{
+		var list = new Dictionary<String, Object>();
+		var rootD = root as IDictionary<String, Object>;
+		foreach (var obj in rootD)
+		{
+			list.Add(obj.Key, CreateObject(obj.Value, obj.Key));
+		}
+		return list;
 	}
 }
