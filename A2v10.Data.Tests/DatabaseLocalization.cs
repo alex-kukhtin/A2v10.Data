@@ -1,10 +1,7 @@
-﻿// Copyright © 2015-2018 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2023 Oleksandr Kukhtin. All rights reserved.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+
 using A2v10.Data.Interfaces;
 using A2v10.Data.Tests.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,6 +9,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace A2v10.Data.Tests
 {
 	[TestClass]
+	[TestCategory("Localizer")]
+
 	public class DatabaseLocalization
 	{
 		IDbContext _dbContext;

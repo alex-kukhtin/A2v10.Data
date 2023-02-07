@@ -15,6 +15,7 @@ using A2v10.Data.Tests.Configuration;
 namespace A2v10.Data.Tests
 {
 	[TestClass]
+	[TestCategory("SubObjects")]
 	public class DatabaseWriter
 	{
 		IDbContext _dbContext;

@@ -14,6 +14,7 @@ using A2v10.Data.Tests;
 namespace A2v10.Data.Models;
 
 [TestClass]
+[TestCategory("Tree Models")]
 public class MultiplyTrees
 {
 	IDbContext _dbContext;

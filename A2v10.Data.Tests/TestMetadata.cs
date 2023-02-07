@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace A2v10.Data.Tests
 {
 	[TestClass]
+	[TestCategory("Map Objects")]
 	public class TestMetadata
 	{
 		IDbContext _dbContext;

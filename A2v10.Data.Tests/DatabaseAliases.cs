@@ -12,6 +12,7 @@ using A2v10.Data.Tests.Configuration;
 namespace A2v10.Data.Tests
 {
 	[TestClass]
+	[TestCategory("Aliases")]
 	public class DatabaseAliases
 	{
 		IDbContext _dbContext;
