@@ -46,6 +46,8 @@ namespace A2v10.Data
 				return null;
 			if (type == value.GetType())
 				return value;
+			if (type == typeof(DateTime) && value is Double dblVal)
+				return DateTime.FromOADate(dblVal);
 			var fp = FormatProvider ?? CultureInfo.InvariantCulture;
 			return Convert.ChangeType(value, type, fp);
 		}
