@@ -67,8 +67,9 @@ public static class SqlExtensions
 
 	public static Object FromString(String strVal, Type to)
 	{
-		if (strVal == null)
-			return null;
+		if (String.IsNullOrEmpty(strVal)) // allowEmptyStrings: false
+			return DBNull.Value;
+
 		if (to == typeof(Guid))
 		{
 			if (Guid.TryParse(strVal, out Guid guidResult))
@@ -103,17 +104,12 @@ public static class SqlExtensions
 				return Guid.Parse(id.ToString());
 			return Convert.ChangeType(id, to, CultureInfo.InvariantCulture);
 		}
-		if (value.GetType() == to)
-			return value;
-		if (value is String str)
-		{
-			if (String.IsNullOrEmpty(str))
-				return DBNull.Value;
-			if (to == typeof(Guid))
-				return Guid.Parse(str);
+		else if (value is String str)
 			return FromString(str, to);
-		}
-		return Convert.ChangeType(value, to, CultureInfo.InvariantCulture);
+		// AFTER string
+        if (value.GetType() == to)
+            return value;
+        return Convert.ChangeType(value, to, CultureInfo.InvariantCulture);
 	}
 
 	public static Object Value2SqlValue(Object value)

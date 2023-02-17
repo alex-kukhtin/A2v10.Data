@@ -15,7 +15,6 @@ internal class DataModelWriter
 {
 	private readonly IDictionary<String, Tuple<DataTable, String>> _tables = new Dictionary<String, Tuple<DataTable, String>>();
 	private readonly IDictionary<String, String> _jsonParams = new Dictionary<String, String>();
-
 	internal void ProcessOneMetadata(IDataReader rdr)
 	{
 		var rsName = rdr.GetName(0);
@@ -103,6 +102,13 @@ internal class DataModelWriter
 		}
 	}
 
+	void CheckStringLength(DataColumn col, Object value, Int32 rowIndex)
+	{
+		if (col.DataType != typeof(String) || value is not String valString)
+			return;
+		if (value != null && valString.Length > col.MaxLength)
+            throw new InvalidOperationException($"Line {rowIndex + 1}. The string '{valString}' is too long for the '{col.ColumnName}' field. The max length is {col.MaxLength}.");
+	}
 	Object CheckId(String colName, Object dbVal, Type dataType)
 	{
 		if (dbVal == DBNull.Value)
@@ -138,6 +144,7 @@ internal class DataModelWriter
 			{
 				var dbVal = SqlExtensions.ConvertTo(rowVal, col.DataType);
 				dbVal = CheckId(col.ColumnName, dbVal, col.DataType);
+				CheckStringLength(col, dbVal, table.Rows.Count);
 				row[col.ColumnName] = dbVal;
 			}
 		}
@@ -161,7 +168,7 @@ internal class DataModelWriter
 		if (String.IsNullOrEmpty(path))
 			yield return data;
 		var x = path.Split('.');
-		if (!(data is IDictionary<String, Object> currentData))
+		if (data is not IDictionary<String, Object> currentData)
 			throw new DataWriterException("There is no current data");
 		var currentId = data.Get<Object>("Id");
 		Guid? currentGuid = null;
