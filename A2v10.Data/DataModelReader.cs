@@ -37,6 +37,7 @@ public class DataModelReader
 	private readonly IDictionary<String, Object> _sys = new ExpandoObject() as IDictionary<String, Object>;
 	FieldInfo? mainElement;
 
+	private DynamicDataGrouping _dynamicGrouping = null;
 	public DataModelReader(IDataLocalizer localizer, ITokenProvider tokenProvider)
 	{
 		_localizer = localizer;
@@ -138,9 +139,8 @@ public class DataModelReader
 	}
 	void ProcessGroupingRecord(IDataReader rdr)
 	{
-		for (Int32 i = 1; i < rdr.FieldCount; i++)
-		{
-		}
+		_dynamicGrouping ??= new DynamicDataGrouping(_root, _metadata);
+		_dynamicGrouping.AddGrouping(rdr);
 	}
 
 	void ProcessAliasesRecord(IDataReader rdr)
@@ -755,6 +755,8 @@ public class DataModelReader
 
 	public void PostProcess()
 	{
+		_dynamicGrouping?.Process();
+
 		_crossMap.Transform();
 		foreach (var cmi in _crossMap)
 		{

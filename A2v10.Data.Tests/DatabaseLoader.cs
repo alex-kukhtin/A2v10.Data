@@ -250,7 +250,7 @@ public class DatabaseLoader
 	public async Task LoadDocument()
 	{
 		Int64 docId = 10;
-		ExpandoObject prms = new ExpandoObject
+		ExpandoObject prms = new()
 		{
 			{ "UserId", 100 },
 			{ "Id", docId }
@@ -322,7 +322,7 @@ public class DatabaseLoader
 	[TestMethod]
 	public async Task LoadDocument2()
 	{
-		ExpandoObject prms = new ExpandoObject
+		ExpandoObject prms = new()
 		{
 			{ "UserId", 100 }
 		};
