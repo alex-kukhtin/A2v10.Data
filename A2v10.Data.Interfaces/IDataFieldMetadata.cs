@@ -33,8 +33,9 @@ namespace A2v10.Data.Interfaces
 		Int32 Length { get; }
 
 		String GetObjectType(String fieldName);
+		void ToDynamicGroup();
 
-		String TypeForValidate { get; }
+        String TypeForValidate { get; }
 		String TypeScriptName { get; }
 	}
 }

@@ -62,7 +62,7 @@ namespace A2v10.Data
 	public class FieldMetadata : IDataFieldMetadata
 	{
 		public DataType DataType { get; }
-		public FieldType ItemType { get; } // for object, array
+		public FieldType ItemType { get; set; } // for object, array
 		public String RefObject { get; private set; } // for object, array
 		public Boolean IsLazy { get; }
 		public Int32 Length { get; }
@@ -89,6 +89,11 @@ namespace A2v10.Data
 				ItemType = FieldType.Object;
 				RefObject = fi.TypeName;
 			}
+		}
+
+		public void ToDynamicGroup()
+		{
+			ItemType = FieldType.Group;			
 		}
 
 		public String GetObjectType(String fieldName)

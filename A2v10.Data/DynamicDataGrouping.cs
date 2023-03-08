@@ -9,20 +9,55 @@ using A2v10.Data.Interfaces;
 
 namespace A2v10.Data;
 
+internal class KeyComparer : IEqualityComparer<Object>
+{
+	private const String Id = "Id";
+    public new Boolean Equals(Object x, object y)
+    {
+		if (x == null && y == null) 
+			return true;
+		if (x == null || y == null) return false;
+		if (x is ExpandoObject eox && y is ExpandoObject eoy)
+			return eox.Get<Object>(Id) == eoy.Get<Object>(Id);
+		return x == y;
+    }
+
+    public int GetHashCode(Object obj)
+    {
+		if (obj == null)
+			return 0;
+		if (obj is ExpandoObject eo)
+			return eo.Get<Object>(Id).GetHashCode();
+		return obj.GetHashCode();
+    }
+}
+
 internal class DynamicGroupItem
 {
 	private readonly Object _key;
-	private readonly Dictionary<Object, DynamicGroupItem> _children = new();
+	private readonly Dictionary<Object, DynamicGroupItem> _children = new(new KeyComparer());
 	private ExpandoObject _data = new();
-	public DynamicGroupItem(Object key = null)
+	public DynamicGroupItem(Object key = null, String elem = null)
 	{
 		_key = key;
+		if (elem != null)
+			_data.Set(elem, key);
 	}
-	public DynamicGroupItem GetOrCreate(Object key)
+
+	public ExpandoObject ToExpando(String propertyName)
+	{
+		var e = _data;
+		var coll = new List<ExpandoObject>();
+		foreach (var c in _children.Values)
+			coll.Add(c.ToExpando(propertyName));
+		e.Set(propertyName, coll);
+		return e;
+	}
+	public DynamicGroupItem GetOrCreate(Object key, String elem)
 	{
 		if (_children.TryGetValue(key, out var item))
 			return item;
-		var newElem = new DynamicGroupItem(key);
+		var newElem = new DynamicGroupItem(key, elem);
 		_children.Add(key, newElem);
 		return newElem;
 	}
@@ -88,11 +123,13 @@ internal class DynamicDataGrouping
 
 	private readonly IDictionary<String, IDataMetadata> _metadata;
 	private readonly Dictionary<String, RecordsetDescriptor> _recordsets = new();
-	public DynamicDataGrouping(ExpandoObject root, IDictionary<String, IDataMetadata> metadata)
+	private readonly DataModelReader _modelReader;
+    public DynamicDataGrouping(ExpandoObject root, IDictionary<String, IDataMetadata> metadata, DataModelReader modelReader)
 	{
 		_root = root;
 		_metadata = metadata;
-	}
+        _modelReader = modelReader;
+    }
 
 	private RecordsetDescriptor GetOrCreateRSDescriptor(String name)
 	{
@@ -142,10 +179,15 @@ internal class DynamicDataGrouping
 		}
 	}
 
-	void ProcessRecordset(RecordsetDescriptor descr, IDataMetadata itemMeta,
+	void ProcessRecordset(RecordsetDescriptor descr, IDataMetadata itemMeta, GroupMetadata groupMeta,
 		DynamicGroupItem dynaroot, List<ExpandoObject> items)
 	{
-		foreach (var dat in items)
+		for (var i = 0; i < descr.Groups.Count; i++)
+		{
+			var gr = descr.Groups[i];
+            groupMeta.AddMarkerMetadata(gr);
+		}
+        foreach (var dat in items)
 		{
 			Object elem = null;
 			DynamicGroupItem group = dynaroot;
@@ -153,7 +195,7 @@ internal class DynamicDataGrouping
 			{
 				var gr = descr.Groups[i];
 				elem = dat.Eval<Object>(gr);
-				group = group.GetOrCreate(elem);
+				group = group.GetOrCreate(elem, gr);
 			}
 			group?.SetData(dat);
 		}
@@ -194,19 +236,8 @@ internal class DynamicDataGrouping
 					}
 					break;
 				case AggregateType.Count:
-					switch (dataMeta.SqlDataType)
-					{
-						case SqlDataType.Float:
-							dynaroot.Calculate<Double>(v.Property, (values) =>
-								Count(values));
-							break;
-						case SqlDataType.Currency:
-							dynaroot.Calculate<Decimal>(v.Property, (values) =>
-								Count(values));
-							break;
-						default:
-							throw new InvalidOperationException($"Count for {dataMeta.SqlDataType} not yet implemented");
-					}
+                    dynaroot.Calculate<Int32>(v.Property, (values) =>
+                        Count(values));
 					break;
 			}
 		}
@@ -217,14 +248,18 @@ internal class DynamicDataGrouping
 		var rootMd = _metadata["TRoot"];
 		foreach (var pd in _recordsets)
 		{
-			if (!rootMd.Fields.TryGetValue(pd.Key, out var fieldMeta))
+            if (!rootMd.Fields.TryGetValue(pd.Key, out var fieldMeta))
 				throw new InvalidOperationException($"Metadata {pd.Key} not found");
 			if (!_metadata.TryGetValue(fieldMeta.RefObject, out var itemMeta))
 				throw new InvalidOperationException($"Metadata {fieldMeta.RefObject} not found");
-			var list = _root.Get<List<ExpandoObject>>(pd.Key);
+            var gm = _modelReader.GetOrCreateGroupMetadata(fieldMeta.RefObject);
+            var list = _root.Get<List<ExpandoObject>>(pd.Key);
 			var dr = new DynamicGroupItem();
-			ProcessRecordset(pd.Value, itemMeta, dr, list);
-			int zx = 0;
+			ProcessRecordset(pd.Value, itemMeta, gm, dr, list);
+			var result = dr.ToExpando(itemMeta.Items);
+			_root.Set(pd.Key, result);
+            itemMeta.IsGroup = true;
+            fieldMeta.ToDynamicGroup();
 		}
 	}
 

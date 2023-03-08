@@ -139,9 +139,9 @@ public class DataModelReader
 	}
 	void ProcessGroupingRecord(IDataReader rdr)
 	{
-		_dynamicGrouping ??= new DynamicDataGrouping(_root, _metadata);
+		_dynamicGrouping ??= new DynamicDataGrouping(_root, _metadata, this);
 		_dynamicGrouping.AddGrouping(rdr);
-	}
+    }
 
 	void ProcessAliasesRecord(IDataReader rdr)
 	{
@@ -551,7 +551,7 @@ public class DataModelReader
 		return newMeta;
 	}
 
-	GroupMetadata GetOrCreateGroupMetadata(String typeName)
+	internal GroupMetadata GetOrCreateGroupMetadata(String typeName)
 	{
 		_groupMetadata ??= new Dictionary<String, GroupMetadata>();
 		if (_groupMetadata.TryGetValue(typeName, out GroupMetadata groupMeta))
@@ -755,8 +755,6 @@ public class DataModelReader
 
 	public void PostProcess()
 	{
-		_dynamicGrouping?.Process();
-
 		_crossMap.Transform();
 		foreach (var cmi in _crossMap)
 		{
@@ -786,5 +784,6 @@ public class DataModelReader
 				typeMeta.AddCross(prop, crossKeys);
 			}
 		}
-	}
+        _dynamicGrouping?.Process();
+    }
 }
