@@ -132,8 +132,9 @@ namespace A2v10.Data
 		public Boolean IsCrossArray => FieldType == FieldType.CrossArray; 
 		public Boolean IsCrossObject => FieldType == FieldType.CrossObject;
 		public Boolean IsCross => IsCrossArray || IsCrossObject;
+		public Boolean IsLookup => FieldType == FieldType.Lookup;
 
-		public Boolean IsObjectLike =>  IsArray || IsObject || IsTree || IsGroup || IsMap || IsMapObject || IsCrossArray || IsCrossObject;
+		public Boolean IsObjectLike =>  IsArray || IsObject || IsTree || IsGroup || IsMap || IsMapObject || IsCrossArray || IsCrossObject || IsLookup;
 		public Boolean IsNestedType => IsRefId || IsArray || IsCrossArray || IsCrossObject;
 		public Boolean IsRefId =>  SpecType == SpecType.RefId; 
 		public Boolean IsParentId =>  SpecType == SpecType.ParentId; 

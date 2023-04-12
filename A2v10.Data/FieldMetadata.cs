@@ -26,7 +26,8 @@ namespace A2v10.Data
 		MapObject,
 		Json,
 		CrossArray,
-		CrossObject
+		CrossObject,
+		Lookup
 	}
 
 	public enum SpecType
@@ -69,7 +70,17 @@ namespace A2v10.Data
 		public Boolean IsJson { get; set; }
 		public SqlDataType SqlDataType { get; }
 
-		public Boolean IsArrayLike { get { return ItemType == FieldType.Object || ItemType == FieldType.Array || ItemType == FieldType.Map; } }
+		public Boolean IsArrayLike 
+		{ 
+			get 
+			{ 
+				return 
+					ItemType == FieldType.Object || 
+					ItemType == FieldType.Array || 
+					ItemType == FieldType.Map || 
+					ItemType == FieldType.Lookup; 
+			} 
+		}
 
 		public FieldMetadata(FieldInfo fi, DataType type, SqlDataType sqlDataType, Int32 length)
 		{
@@ -110,6 +121,7 @@ namespace A2v10.Data
 				case FieldType.Group:
 					return RefObject;
 				case FieldType.MapObject:
+				case FieldType.Lookup:
 					return RefObject + "Map";
 				case FieldType.Json:
 					return "Json";
@@ -136,6 +148,7 @@ namespace A2v10.Data
 					case FieldType.Tree:
 					case FieldType.Map:
 					case FieldType.MapObject:
+					case FieldType.Lookup:
 						return RefObject + "[]";
 					case FieldType.Object:
 					case FieldType.Group:
@@ -168,6 +181,7 @@ namespace A2v10.Data
 						return $"IElementArray<{RefObject}>";
 					case FieldType.Map:
 					case FieldType.MapObject:
+					case FieldType.Lookup:
 						return RefObject + "[]";
 					case FieldType.Object:
 					case FieldType.Group:
