@@ -24,6 +24,7 @@ namespace A2v10.Data.Interfaces
 		public Boolean IsDialog;
         public Boolean IsIndex;
 		public Boolean IsSkipDataStack;
+		public Boolean IsPlain;
 		public String RawData;
 	}
 
