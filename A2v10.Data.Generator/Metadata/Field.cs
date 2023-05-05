@@ -54,27 +54,18 @@ namespace A2v10.Data.Generator
 		{
 			get
 			{
-				switch (Type)
+				return Type switch
 				{
-					case FieldType.VarChar:
-						return $"nvarchar({Size})";
-					case FieldType.Char:
-						return $"nchar({Size})";
-					case FieldType.DateTime:
-						return "datetime";
-					case FieldType.Money:
-						return "money";
-					case FieldType.Sequence:
-						return "bigint";
-					case FieldType.Integer:
-						return "int";
-					case FieldType.Boolean:
-						return "bit";
-					case FieldType.Float:
-						return "float";
-					default:
-						throw new NotSupportedException($"Invalid field type {Type}");
-				}
+					FieldType.VarChar => $"nvarchar({Size})",
+					FieldType.Char => $"nchar({Size})",
+					FieldType.DateTime => "datetime",
+					FieldType.Money => "money",
+					FieldType.Sequence => "bigint",
+					FieldType.Integer => "int",
+					FieldType.Boolean => "bit",
+					FieldType.Float => "float",
+					_ => throw new NotSupportedException($"Invalid field type {Type}"),
+				};
 			}
 		}
 

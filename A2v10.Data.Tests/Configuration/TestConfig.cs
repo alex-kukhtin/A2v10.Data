@@ -12,9 +12,8 @@ public class TestConfig : IDataConfiguration
     {
         if (String.IsNullOrEmpty(source))
             source = "Default";
-        var cnnStr = ConfigurationManager.ConnectionStrings[source];
-        if (cnnStr == null)
-            throw new ConfigurationErrorsException($"Connection string '{source}' not found");
-        return cnnStr.ConnectionString;
+        var cnnStr = ConfigurationManager.ConnectionStrings[source] 
+            ?? throw new ConfigurationErrorsException($"Connection string '{source}' not found");
+		return cnnStr.ConnectionString;
     }
 }

@@ -14,13 +14,13 @@ namespace A2v10.Data.DynamicExpression
 	{
 		public static Expression Parse(String expression)
 		{
-			ExpressionParser parser = new ExpressionParser(null, expression);
+			ExpressionParser parser = new(null, expression);
 			return parser.Parse();
 		}
 
 		public static LambdaExpression ParseLambda(ParameterExpression[] parameters, String expression)
 		{
-			ExpressionParser parser = new ExpressionParser(parameters, expression);
+			ExpressionParser parser = new(parameters, expression);
 			return Expression.Lambda(parser.Parse(), parameters);
 		}
 	}
@@ -90,8 +90,7 @@ namespace A2v10.Data.DynamicExpression
 		public ExpressionParser(ParameterExpression[] parameters, String expression)
 		{
 			text = expression ?? throw new ArgumentNullException(nameof(expression));
-			if (keywords == null)
-				keywords = CreateKeywords();
+			keywords ??= CreateKeywords();
 			symbols = new Dictionary<String, Object>();
 			literals = new Dictionary<Expression, String>();
 			if (parameters != null)
@@ -165,7 +164,6 @@ namespace A2v10.Data.DynamicExpression
 			Expression left = ParseLogicalAnd();
 			while (token.id == TokenId.DoubleBar)
 			{
-				Token op = token;
 				NextToken();
 				Expression right = ParseLogicalAnd();
 				left = Expression.OrElse(PromoteLogical(left), PromoteLogical(right));
@@ -179,7 +177,6 @@ namespace A2v10.Data.DynamicExpression
 			Expression left = ParseComparison();
 			while (token.id == TokenId.DoubleAmphersand)
 			{
-				Token op = token;
 				NextToken();
 				Expression right = ParseComparison();
 				left = Expression.AndAlso(PromoteLogical(left), PromoteLogical(right));
@@ -294,7 +291,7 @@ namespace A2v10.Data.DynamicExpression
 				if (token.id == TokenId.Dot)
 				{
 					NextToken();
-					expr = ParseMemberAccess(null, expr);
+					expr = ParseMemberAccess(expr);
 				}
 				else if (token.id == TokenId.OpenBracket)
 				{
@@ -310,19 +307,14 @@ namespace A2v10.Data.DynamicExpression
 
 		Expression ParsePrimaryStart()
 		{
-			switch (token.id)
+			return token.id switch
 			{
-				case TokenId.Identifier:
-					return ParseIdentifier();
-				case TokenId.StringLiteral:
-					return ParseStringLiteral();
-				case TokenId.NumberLiteral:
-					return ParseNumberLiteral();
-				case TokenId.OpenParen:
-					return ParseParenExpression();
-				default:
-					return ParseUnary();
-			}
+				TokenId.Identifier => ParseIdentifier(),
+				TokenId.StringLiteral => ParseStringLiteral(),
+				TokenId.NumberLiteral => ParseNumberLiteral(),
+				TokenId.OpenParen => ParseParenExpression(),
+				_ => ParseUnary(),
+			};
 		}
 
 		Expression ParseStringLiteral()
@@ -348,7 +340,6 @@ namespace A2v10.Data.DynamicExpression
 			ValidateToken(TokenId.NumberLiteral);
 			String text = token.text;
 			Object value = null;
-			Char last = text[text.Length - 1];
 			if (Decimal.TryParse(text, out Decimal d))
 				value = d;
 			if (value == null)
@@ -384,7 +375,7 @@ namespace A2v10.Data.DynamicExpression
 			}
 			if (symbols.TryGetValue(token.text, out value))
 			{
-				if (!(value is Expression expr))
+				if (value is not Expression expr)
 				{
 					expr = Expression.Constant(value);
 				}
@@ -397,7 +388,7 @@ namespace A2v10.Data.DynamicExpression
 				return expr;
 			}
 			if (it != null)
-				return ParseMemberAccess(null, it);
+				return ParseMemberAccess(it);
 			if (symbols.TryGetValue("Root", out Object root))
 			{
 				var argId = Expression.Constant(token.text, typeof(String));
@@ -415,10 +406,8 @@ namespace A2v10.Data.DynamicExpression
 		}
 
 
-		Expression ParseMemberAccess(Type type, Expression instance)
+		Expression ParseMemberAccess(Expression instance)
 		{
-			if (instance != null)
-				type = instance.Type;
 			Int32 errorPos = token.pos;
 			String id = GetIdentifier();
 			NextToken();
@@ -428,7 +417,7 @@ namespace A2v10.Data.DynamicExpression
 
 		Expression[] ParseArguments()
 		{
-			List<Expression> argList = new List<Expression>();
+			List<Expression> argList = new();
 			while (true)
 			{
 				argList.Add(ParseExpression());

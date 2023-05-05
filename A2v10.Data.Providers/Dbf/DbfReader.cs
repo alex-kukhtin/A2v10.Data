@@ -45,7 +45,7 @@ public class DbfReader : IExternalDataReader
 
 	public void Read(BinaryReader rdr)
 	{
-		Char c = (Char)rdr.ReadByte();
+		rdr.ReadByte();
 		Byte y = rdr.ReadByte(); // modified date
 		Byte m = rdr.ReadByte();
 		if (m < 1 || m > 12)
@@ -96,23 +96,22 @@ public class DbfReader : IExternalDataReader
 
 	FieldType Char2FieldType(Char ch)
 	{
-		switch (ch)
+		return ch switch
 		{
-			case 'N': return FieldType.Numeric;
-			case 'D': return FieldType.Date;
-			case 'C': return FieldType.Char;
-			case 'M': return FieldType.Memo;
-			case 'L': return FieldType.Boolean;
-			case 'F': return FieldType.Float;
-			default:
-				throw new FormatException($"Invalid field type: '{ch}'");
-		}
+			'N' => FieldType.Numeric,
+			'D' => FieldType.Date,
+			'C' => FieldType.Char,
+			'M' => FieldType.Memo,
+			'L' => FieldType.Boolean,
+			'F' => FieldType.Float,
+			_ => throw new FormatException($"Invalid field type: '{ch}'"),
+		};
 	}
 
 	void ReadHeader(BinaryReader rdr)
 	{
 		Byte[] name = rdr.ReadBytes(11); // max length
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new();
 		for (Int32 i = 0; i < 11; i++)
 		{
 			if (name[i] == 0)
@@ -123,13 +122,13 @@ public class DbfReader : IExternalDataReader
 		f.Name = sb.ToString();
 		Char ft = (Char)rdr.ReadByte();
 		f.Type = Char2FieldType(ft);
-		Int32 addr = rdr.ReadInt32();
+		rdr.ReadInt32(); // addr
 		f.Size = (Int32)rdr.ReadByte(); // fieldSize;
 		f.Decimal = (Int32) rdr.ReadByte();
 		rdr.ReadInt16();  // reserved
 		rdr.ReadByte(); // workarea
 		rdr.ReadInt16(); // reserved
-		Byte flag = rdr.ReadByte();
+		rdr.ReadByte(); /*flag*/
 		rdr.ReadBytes(8); // tail
 	}
 
@@ -170,7 +169,7 @@ public class DbfReader : IExternalDataReader
 						Decoder dec = _file.FindDecoding(xb).GetDecoder();
 						Char[] chs = new Char[xb.Length];
 						dec.GetChars(xb, 0, xb.Length, chs, 0);
-						StringBuilder sb = new StringBuilder();
+						StringBuilder sb = new();
 						sb.Append(chs);
 						String str = sb.ToString().Trim();
 						fd.StringValue = str;
@@ -178,7 +177,7 @@ public class DbfReader : IExternalDataReader
 					break;
 				case FieldType.Numeric:
 					{
-						StringBuilder sb = new StringBuilder();
+						StringBuilder sb = new();
 						for (Int32 j = 0; j < f.Size; j++)
 							sb.Append((Char)dat[iIndex + j]);
 						String x = sb.ToString().Trim();
@@ -201,7 +200,7 @@ public class DbfReader : IExternalDataReader
 					Int32 day = (dat[iIndex + 6] - '0') * 10 + (dat[iIndex + 7] - '0');
 					try
 					{
-						DateTime dt = new DateTime(year, month, day);
+						DateTime dt = new(year, month, day);
 						fd.DateValue = dt;
 					}
 					catch (Exception)

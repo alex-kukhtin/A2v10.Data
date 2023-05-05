@@ -1,11 +1,9 @@
-﻿// Copyright © 2015-2023 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2023 Oleksandr Kukhtin. All rights reserved.
 
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
 using System.Globalization;
 using System.Linq;
@@ -14,7 +12,6 @@ namespace A2v10.Data;
 
 public static class SqlExtensions
 {
-	[SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
 	public static SqlCommand CreateCommandSP(this SqlConnection cnn, String command)
 	{
 		var cmd = cnn.CreateCommand();
@@ -25,45 +22,31 @@ public static class SqlExtensions
 
 	public static Type ToType(this SqlDbType sqlType)
 	{
-		switch (sqlType)
+		return sqlType switch
 		{
-			case SqlDbType.BigInt:
-				return typeof(Int64);
-			case SqlDbType.Int:
-				return typeof(Int32);
-			case SqlDbType.SmallInt:
-				return typeof(Int16);
-			case SqlDbType.TinyInt:
-				return typeof(Byte);
-			case SqlDbType.Bit:
-				return typeof(Boolean);
-			case SqlDbType.Float:
-				return typeof(Double);
-			case SqlDbType.Money:
-			case SqlDbType.Decimal:
-				return typeof(Decimal);
-			case SqlDbType.Real:
-				return typeof(Double);
-			case SqlDbType.DateTime:
-			case SqlDbType.Date:
-			case SqlDbType.DateTime2:
-				return typeof(DateTime);
-			case SqlDbType.DateTimeOffset:
-				return typeof(DateTimeOffset);
-			case SqlDbType.NVarChar:
-			case SqlDbType.NText:
-			case SqlDbType.NChar:
-			case SqlDbType.VarChar:
-			case SqlDbType.Text:
-			case SqlDbType.Char:
-				return typeof(String);
-			case SqlDbType.VarBinary:
-				return typeof(Byte[]);
-			case SqlDbType.UniqueIdentifier:
-				return typeof(Guid);
-		}
-		throw new ArgumentOutOfRangeException("SqlExtensions.SqlType.ToType");
+			SqlDbType.BigInt => typeof(Int64),
+			SqlDbType.Int => typeof(Int32),
+			SqlDbType.SmallInt => typeof(Int16),
+			SqlDbType.TinyInt => typeof(Byte),
+			SqlDbType.Bit => typeof(Boolean),
+			SqlDbType.Float => typeof(Double),
+			SqlDbType.Money or SqlDbType.Decimal => typeof(Decimal),
+			SqlDbType.Real => typeof(Double),
+			SqlDbType.DateTime or SqlDbType.Date or SqlDbType.DateTime2 => typeof(DateTime),
+			SqlDbType.DateTimeOffset => typeof(DateTimeOffset),
+			SqlDbType.NVarChar or SqlDbType.NText or SqlDbType.NChar or SqlDbType.VarChar or SqlDbType.Text or SqlDbType.Char => typeof(String),
+			SqlDbType.VarBinary => typeof(Byte[]),
+			SqlDbType.UniqueIdentifier => typeof(Guid),
+			_ => throw new ArgumentOutOfRangeException("SqlExtensions.SqlType.ToType"),
+		};
 	}
+
+	static readonly String[] dateFormats = new String[]
+	{
+		"yyyyMMdd",
+		"yyyy-MM-dd",
+		"yyyy-MM-ddTHH:mm"
+	};
 
 	public static Object FromString(String strVal, Type to)
 	{
@@ -74,19 +57,27 @@ public static class SqlExtensions
 		{
 			if (Guid.TryParse(strVal, out Guid guidResult))
 				return guidResult;
-			throw new InvalidCastException($"Can't convert '{guidResult}' to Guid");
+			throw new InvalidCastException($"Can't convert '{strVal}' to Guid");
 		}
 		else if (to == typeof(Decimal)) 
 		{ 
 			if (Decimal.TryParse(strVal, NumberStyles.Any, CultureInfo.InvariantCulture, out Decimal decResult))
 				return decResult;
-			throw new InvalidCastException($"Can't convert '{decResult}' to Decimal");
+			throw new InvalidCastException($"Can't convert '{strVal}' to Decimal");
 		}
 		else if (to == typeof(Double))
 		{
 			if (Double.TryParse(strVal, NumberStyles.Any, CultureInfo.InvariantCulture, out Double dblResult))
 				return dblResult;
-			throw new InvalidCastException($"Can't convert '{dblResult}' to Double");
+			throw new InvalidCastException($"Can't convert '{strVal}' to Double");
+		}
+		else if (to == typeof(DateTime))
+		{
+			if (DateTime.TryParseExact(strVal, dateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateResult))
+				return dateResult;
+			if (DateTime.TryParse(strVal, out var dateResult2))
+				return dateResult2;
+			return Convert.ToDateTime(strVal);
 		}
 		return Convert.ChangeType(strVal, to, CultureInfo.InvariantCulture);
 	}
@@ -155,16 +146,11 @@ public static class SqlExtensions
 		IDictionary<String, Object> valsD;
 		// may be EpandoObject
 		valsD = vals as IDictionary<String, Object>;
-		if (valsD == null)
-		{
-			valsD = vals.GetType()
+		valsD ??= vals.GetType()
 				.GetProperties()
 				.ToDictionary(key => key.Name, val => val.GetValue(vals));
-		}
 		foreach (var prop in valsD)
-		{
 			prms.AddWithValue("@" + prop.Key, prop.Value);
-		}
 	}
 
 

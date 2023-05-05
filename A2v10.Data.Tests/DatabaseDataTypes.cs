@@ -15,7 +15,7 @@ namespace A2v10.Data.Tests;
 [TestCategory("Scalar Data Types")]
 public class DatabaseDataTypes
 {
-	IDbContext _dbContext;
+	readonly IDbContext _dbContext;
 	public DatabaseDataTypes()
 	{
 		_dbContext = Starter.Create();
@@ -44,5 +44,20 @@ public class DatabaseDataTypes
 		dt.AreValueEqual(77.6633, "Float");
 		dt.AreValueEqual(new DateTime(2018, 02, 19), "Date");
 		dt.AreValueEqual(new DateTime(2018, 02, 19, 15, 10, 20), "DateTime");
+	}
+
+	[TestMethod]
+	public async Task ParamsTypes()
+	{
+
+		var prms = new ExpandoObject()
+		{
+			{"Date", "20230420" },
+			{"Date2", "2023-04-22T12:37:20.000" }
+		};
+		var res = await _dbContext.ExecuteAndLoadExpandoAsync(null, "a2test.[TypesModel.Params]", prms);
+
+		Assert.AreEqual("20230420", res.Get<DateTime>("Date").ToString("yyyyMMdd"));
+		Assert.AreEqual("22.04.2023 12:37:20", res.Get<DateTime>("Date2").ToString());
 	}
 }

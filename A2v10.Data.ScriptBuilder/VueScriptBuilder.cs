@@ -79,10 +79,10 @@ namespace A2v10.Data.ScriptBuilder
 					val = val.ToString().ToLowerInvariant();
 				else if (val is String)
 					val = $"'{val}'";
-				else if (val is Object)
-					val = JsonConvert.SerializeObject(val);
 				else if (val is DateTime)
 					val = helper.DateTime2StringWrap(val);
+				else if (val is not null)
+					val = JsonConvert.SerializeObject(val);
 				sb.Append($" {k.Key}: {val},");
 			}
 			sb.RemoveTailComma();
@@ -177,7 +177,7 @@ namespace A2v10.Data.ScriptBuilder
 
 		String GetSpecialProperties(IDataMetadata meta)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			if (!String.IsNullOrEmpty(meta.Id))
 				sb.Append($"$id: '{meta.Id}',");
 			if (!String.IsNullOrEmpty(meta.Name))
@@ -200,7 +200,7 @@ namespace A2v10.Data.ScriptBuilder
 				sb.Append($"$group: true,");
 			if (meta.HasCross)
 				sb.Append($"$cross: {GetCrossProperties(meta)},");
-			StringBuilder lazyFields = new StringBuilder();
+			StringBuilder lazyFields = new();
 			foreach (var f in meta.Fields)
 			{
 				if (f.Value.IsLazy)

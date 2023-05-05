@@ -51,18 +51,12 @@ public class SqlDbContext : IDbContext
 	}
 	public async Task ExecuteAsync<T>(String source, String command, T element) where T : class
 	{
-		using (var p = _profiler.Start(command))
-		{
-			using (var cnn = await GetConnectionAsync(source))
-			{
-				using (var cmd = cnn.CreateCommandSP(command))
-				{
-					var retParam = SetParametersFrom(cmd, element);
-					await cmd.ExecuteNonQueryAsync();
-					SetReturnParamResult(retParam, element);
-				}
-			}
-		}
+		using var p = _profiler.Start(command);
+		using var cnn = await GetConnectionAsync(source);
+		using var cmd = cnn.CreateCommandSP(command);
+			var retParam = SetParametersFrom(cmd, element);
+			await cmd.ExecuteNonQueryAsync();
+			SetReturnParamResult(retParam, element);
 	}
 
 	public ExpandoObject ExecuteAndLoadExpando(String source, String command, ExpandoObject element)
@@ -70,26 +64,22 @@ public class SqlDbContext : IDbContext
 		var rv = new ExpandoObject();
 		using (var p = _profiler.Start(command))
 		{
-			using (var cnn = GetConnection(source))
+			using var cnn = GetConnection(source);
+			using var cmd = cnn.CreateCommandSP(command);
+			var retParam = SetParametersFromExpandoObject(cmd, element);
+			using (var rdr = cmd.ExecuteReader())
 			{
-				using (var cmd = cnn.CreateCommandSP(command))
+				if (rdr.Read())
 				{
-					var retParam = SetParametersFromExpandoObject(cmd, element);
-					using (var rdr = cmd.ExecuteReader())
+					for (Int32 c = 0; c < rdr.FieldCount; c++)
 					{
-						if (rdr.Read())
-						{
-							for (Int32 c = 0; c < rdr.FieldCount; c++)
-							{
-								var name = rdr.GetName(c);
-								var val = rdr.GetValue(c);
-								rv.Add(name, val);
-							}
-						}
+						var name = rdr.GetName(c);
+						var val = rdr.GetValue(c);
+						rv.Add(name, val);
 					}
-					SetReturnParamResult(retParam, element);
 				}
 			}
+			SetReturnParamResult(retParam, element);
 		}
 		return rv;
 	}
@@ -99,44 +89,34 @@ public class SqlDbContext : IDbContext
 		var rv = new ExpandoObject();
 		using (var p = _profiler.Start(command))
 		{
-			using (var cnn = await GetConnectionAsync(source))
+			using var cnn = await GetConnectionAsync(source);
+			using var cmd = cnn.CreateCommandSP(command);
+			var retParam = SetParametersFromExpandoObject(cmd, element);
+			using (var rdr = await cmd.ExecuteReaderAsync())
 			{
-				using (var cmd = cnn.CreateCommandSP(command))
+				if (rdr.Read())
 				{
-					var retParam = SetParametersFromExpandoObject(cmd, element);
-					using (var rdr = await cmd.ExecuteReaderAsync())
+					for (Int32 c = 0; c < rdr.FieldCount; c++)
 					{
-						if (rdr.Read())
-						{
-							for (Int32 c = 0; c < rdr.FieldCount; c++)
-							{
-								var name = rdr.GetName(c);
-								var val = rdr.GetValue(c);
-								rv.Add(name, val);
-							}
-						}
+						var name = rdr.GetName(c);
+						var val = rdr.GetValue(c);
+						rv.Add(name, val);
 					}
-					SetReturnParamResult(retParam, element);
 				}
 			}
+			SetReturnParamResult(retParam, element);
 		}
 		return rv;
 	}
 
 	public async Task ExecuteExpandoAsync(String source, String command, ExpandoObject element)
 	{
-		using (var p = _profiler.Start(command))
-		{
-			using (var cnn = await GetConnectionAsync(source))
-			{
-				using (var cmd = cnn.CreateCommandSP(command))
-				{
-					var retParam = SetParametersFromExpandoObject(cmd, element);
-					await cmd.ExecuteNonQueryAsync();
-					SetReturnParamResult(retParam, element);
-				}
-			}
-		}
+		using var p = _profiler.Start(command);
+		using var cnn = await GetConnectionAsync(source);
+		using var cmd = cnn.CreateCommandSP(command);
+		var retParam = SetParametersFromExpandoObject(cmd, element);
+		await cmd.ExecuteNonQueryAsync();
+		SetReturnParamResult(retParam, element);
 	}
 
 
@@ -145,24 +125,20 @@ public class SqlDbContext : IDbContext
 		TOut outValue = null;
 		using (var p = _profiler.Start(command))
 		{
-			using (var cnn = GetConnection(source))
+			using var cnn = GetConnection(source);
+			using var cmd = cnn.CreateCommandSP(command);
+			var retParam = SetParametersFrom(cmd, element);
+			using (var rdr = cmd.ExecuteReader())
 			{
-				using (var cmd = cnn.CreateCommandSP(command))
+				var helper = new LoadHelper<TOut>();
+				helper.ProcessRecord(rdr);
+				if (rdr.Read())
 				{
-					var retParam = SetParametersFrom(cmd, element);
-					using (var rdr = cmd.ExecuteReader())
-					{
-						var helper = new LoadHelper<TOut>();
-						helper.ProcessRecord(rdr);
-						if (rdr.Read())
-						{
-							outValue = helper.ProcessFields(rdr);
+					outValue = helper.ProcessFields(rdr);
 
-						}
-					}
-					SetReturnParamResult(retParam, element);
 				}
 			}
+			SetReturnParamResult(retParam, element);
 		}
 		return outValue;
 	}
@@ -172,24 +148,20 @@ public class SqlDbContext : IDbContext
 		TOut outValue = null;
 		using (var p = _profiler.Start(command))
 		{
-			using (var cnn = await GetConnectionAsync(source))
+			using var cnn = await GetConnectionAsync(source);
+			using var cmd = cnn.CreateCommandSP(command);
+			var retParam = SetParametersFrom(cmd, element);
+			using (var rdr = await cmd.ExecuteReaderAsync())
 			{
-				using (var cmd = cnn.CreateCommandSP(command))
+				var helper = new LoadHelper<TOut>();
+				helper.ProcessRecord(rdr);
+				if (await rdr.ReadAsync())
 				{
-					var retParam = SetParametersFrom(cmd, element);
-					using (var rdr = await cmd.ExecuteReaderAsync())
-					{
-						var helper = new LoadHelper<TOut>();
-						helper.ProcessRecord(rdr);
-						if (await rdr.ReadAsync())
-						{
-							outValue = helper.ProcessFields(rdr);
+					outValue = helper.ProcessFields(rdr);
 
-						}
-					}
-					SetReturnParamResult(retParam, element);
 				}
 			}
+			SetReturnParamResult(retParam, element);
 		}
 		return outValue;
 	}
@@ -214,103 +186,75 @@ public class SqlDbContext : IDbContext
 
 	public T Load<T>(String source, String command, System.Object prms = null) where T : class
 	{
-		using (var p = _profiler.Start(command))
+		using var p = _profiler.Start(command);
+		var helper = new LoadHelper<T>();
+		using var cnn = GetConnection(source);
+		using var cmd = cnn.CreateCommandSP(command);
+		SqlExtensions.SetFromDynamic(cmd.Parameters, prms);
+		using var rdr = cmd.ExecuteReader();
+		helper.ProcessRecord(rdr);
+		if (rdr.Read())
 		{
-			var helper = new LoadHelper<T>();
-			using (var cnn = GetConnection(source))
-			{
-				using (var cmd = cnn.CreateCommandSP(command))
-				{
-					SqlExtensions.SetFromDynamic(cmd.Parameters, prms);
-					using (var rdr = cmd.ExecuteReader())
-					{
-						helper.ProcessRecord(rdr);
-						if (rdr.Read())
-						{
-							T result = helper.ProcessFields(rdr);
-							return result;
-						}
-					}
-				}
-			}
+			T result = helper.ProcessFields(rdr);
+			return result;
 		}
 		return null;
 	}
 
 	public async Task<T> LoadAsync<T>(String source, String command, System.Object prms = null) where T : class
 	{
-		using (var p = _profiler.Start(command))
+		using var p = _profiler.Start(command);
+		var helper = new LoadHelper<T>();
+		using var cnn = await GetConnectionAsync(source);
+		using var cmd = cnn.CreateCommandSP(command);
+		SqlExtensions.SetFromDynamic(cmd.Parameters, prms);
+		using var rdr = await cmd.ExecuteReaderAsync();
+		helper.ProcessRecord(rdr);
+		if (await rdr.ReadAsync())
 		{
-			var helper = new LoadHelper<T>();
-			using (var cnn = await GetConnectionAsync(source))
-			{
-				using (var cmd = cnn.CreateCommandSP(command))
-				{
-					SqlExtensions.SetFromDynamic(cmd.Parameters, prms);
-					using (var rdr = await cmd.ExecuteReaderAsync())
-					{
-						helper.ProcessRecord(rdr);
-						if (await rdr.ReadAsync())
-						{
-							T result = helper.ProcessFields(rdr);
-							return result;
-						}
-					}
-				}
-			}
+			T result = helper.ProcessFields(rdr);
+			return result;
 		}
 		return null;
 	}
 
 	public IList<T> LoadList<T>(String source, String command, Object prms) where T : class
 	{
-		using (var token = _profiler.Start(command))
+		using var token = _profiler.Start(command);
+		var listLoader = new ListLoader<T>();
+		using (var cnn = GetConnection(source))
 		{
-			var listLoader = new ListLoader<T>();
-			using (var cnn = GetConnection(source))
+			using var cmd = cnn.CreateCommandSP(command);
+			SqlExtensions.SetFromDynamic(cmd.Parameters, prms);
+			using var rdr = cmd.ExecuteReader();
+			listLoader.ProcessFields(rdr);
+			while (rdr.Read())
 			{
-				using (var cmd = cnn.CreateCommandSP(command))
-				{
-					SqlExtensions.SetFromDynamic(cmd.Parameters, prms);
-					using (var rdr = cmd.ExecuteReader())
-					{
-						listLoader.ProcessFields(rdr);
-						while (rdr.Read())
-						{
-							listLoader.ProcessRecord(rdr);
-						}
-					}
-				}
+				listLoader.ProcessRecord(rdr);
 			}
-			return listLoader.Result;
 		}
+		return listLoader.Result;
 	}
 
 	public async Task<IList<T>> LoadListAsync<T>(String source, String command, System.Object prms) where T : class
 	{
-		using (var token = _profiler.Start(command))
+		using var token = _profiler.Start(command);
+		var listLoader = new ListLoader<T>();
+		using (var cnn = await GetConnectionAsync(source))
 		{
-			var listLoader = new ListLoader<T>();
-			using (var cnn = await GetConnectionAsync(source))
+			using var cmd = cnn.CreateCommandSP(command);
+			SqlExtensions.SetFromDynamic(cmd.Parameters, prms);
+			using var rdr = await cmd.ExecuteReaderAsync();
+			listLoader.ProcessFields(rdr);
+			while (await rdr.ReadAsync())
 			{
-				using (var cmd = cnn.CreateCommandSP(command))
-				{
-					SqlExtensions.SetFromDynamic(cmd.Parameters, prms);
-					using (var rdr = await cmd.ExecuteReaderAsync())
-					{
-						listLoader.ProcessFields(rdr);
-						while (await rdr.ReadAsync())
-						{
-							listLoader.ProcessRecord(rdr);
-						}
-					}
-				}
+				listLoader.ProcessRecord(rdr);
 			}
-			return listLoader.Result;
 		}
+		return listLoader.Result;
 	}
 
-	String ResolveSource(String source, Object prms, DataModelReader rdr)
+	String ResolveSource(String source, Object prms, DataModelReader _1/*rdr*/)
 	{
 		if (source == null)
 			return null;
@@ -400,111 +344,93 @@ public class SqlDbContext : IDbContext
 
 	public async Task SaveListAsync<T>(String source, String command, System.Object prms, IEnumerable<T> list) where T : class
 	{
-		using (var token = _profiler.Start(command))
-		{
-			using (var cnn = await GetConnectionAsync(source))
-			{
-				using (var cmd = cnn.CreateCommandSP(command))
-				{
-					SqlCommandBuilder.DeriveParameters(cmd);
-					var retParam = SetParametersWithList<T>(cmd, prms, list);
-					await cmd.ExecuteNonQueryAsync();
-					SetReturnParamResult(retParam, prms);
-				}
-			}
-		}
+		using var token = _profiler.Start(command);
+		using var cnn = await GetConnectionAsync(source);
+		using var cmd = cnn.CreateCommandSP(command);
+		SqlCommandBuilder.DeriveParameters(cmd);
+		var retParam = SetParametersWithList<T>(cmd, prms, list);
+		await cmd.ExecuteNonQueryAsync();
+		SetReturnParamResult(retParam, prms);
 	}
 
 	public IDataModel SaveModel(String source, String command, ExpandoObject data, Object prms = null)
 	{
 		var dataReader = new DataModelReader(_localizer, _tokenProvider);
 		var dataWriter = new DataModelWriter();
-		using (var p = _profiler.Start(command))
+		using var p = _profiler.Start(command);
+		var metadataCommand = command.Update2Metadata();
+		using (var cnn = GetConnection(source))
 		{
-			var metadataCommand = command.Update2Metadata();
-			using (var cnn = GetConnection(source))
+			using (var cmd = cnn.CreateCommandSP(metadataCommand))
 			{
-				using (var cmd = cnn.CreateCommandSP(metadataCommand))
+				using var rdr = cmd.ExecuteReader();
+				do
 				{
-					using (var rdr = cmd.ExecuteReader())
-					{
-						do
-						{
-							dataWriter.ProcessOneMetadata(rdr);
-						}
-						while (rdr.NextResult());
-					}
+					dataWriter.ProcessOneMetadata(rdr);
 				}
-				using (var cmd = cnn.CreateCommandSP(command))
-				{
-					SqlCommandBuilder.DeriveParameters(cmd);
-					dataWriter.SetTableParameters(cmd, data, prms);
-					using (var rdr = cmd.ExecuteReader())
-					{
-						do
-						{
-							dataReader.ProcessOneMetadata(rdr);
-							while (rdr.Read())
-							{
-								dataReader.ProcessOneRecord(rdr);
-							}
-						}
-						while (rdr.NextResult());
-					}
-				}
+				while (rdr.NextResult());
 			}
-			dataReader.PostProcess();
-			return dataReader.DataModel;
+			using (var cmd = cnn.CreateCommandSP(command))
+			{
+				SqlCommandBuilder.DeriveParameters(cmd);
+				dataWriter.SetTableParameters(cmd, data, prms);
+				using var rdr = cmd.ExecuteReader();
+				do
+				{
+					dataReader.ProcessOneMetadata(rdr);
+					while (rdr.Read())
+					{
+						dataReader.ProcessOneRecord(rdr);
+					}
+				}
+				while (rdr.NextResult());
+			}
 		}
+		dataReader.PostProcess();
+		return dataReader.DataModel;
 	}
 
 	public async Task<IDataModel> SaveModelAsync(String source, String command, ExpandoObject data, Object prms = null, Func<ITableDescription, ExpandoObject> onSetData = null, Int32 commandTimeout = 0)
 	{
 		var dataReader = new DataModelReader(_localizer, _tokenProvider);
 		var dataWriter = new DataModelWriter();
-		using (var p = _profiler.Start(command))
+		using var p = _profiler.Start(command);
+		var metadataCommand = command.Update2Metadata();
+		using (var cnn = await GetConnectionAsync(source))
 		{
-			var metadataCommand = command.Update2Metadata();
-			using (var cnn = await GetConnectionAsync(source))
+			using (var cmd = cnn.CreateCommandSP(metadataCommand))
 			{
-				using (var cmd = cnn.CreateCommandSP(metadataCommand))
+				if (commandTimeout != 0)
+					cmd.CommandTimeout = commandTimeout;
+				using var rdr = await cmd.ExecuteReaderAsync();
+				do
 				{
-					if (commandTimeout != 0)
-						cmd.CommandTimeout = commandTimeout;
-					using (var rdr = await cmd.ExecuteReaderAsync())
-					{
-						do
-						{
-							dataWriter.ProcessOneMetadata(rdr);
-						}
-						while (await rdr.NextResultAsync());
-					}
+					dataWriter.ProcessOneMetadata(rdr);
 				}
-				if (onSetData != null)
-					data = onSetData(dataWriter.GetTableDescription());
-				using (var cmd = cnn.CreateCommandSP(command))
-				{
-					if (commandTimeout != 0)
-						cmd.CommandTimeout = commandTimeout;
-					SqlCommandBuilder.DeriveParameters(cmd);
-					dataWriter.SetTableParameters(cmd, data, prms);
-					using (var rdr = await cmd.ExecuteReaderAsync())
-					{
-						do
-						{
-							dataReader.ProcessOneMetadata(rdr);
-							while (await rdr.ReadAsync())
-							{
-								dataReader.ProcessOneRecord(rdr);
-							}
-						}
-						while (await rdr.NextResultAsync());
-					}
-				}
+				while (await rdr.NextResultAsync());
 			}
-			dataReader.PostProcess();
-			return dataReader.DataModel;
+			if (onSetData != null)
+				data = onSetData(dataWriter.GetTableDescription());
+			using (var cmd = cnn.CreateCommandSP(command))
+			{
+				if (commandTimeout != 0)
+					cmd.CommandTimeout = commandTimeout;
+				SqlCommandBuilder.DeriveParameters(cmd);
+				dataWriter.SetTableParameters(cmd, data, prms);
+				using var rdr = await cmd.ExecuteReaderAsync();
+				do
+				{
+					dataReader.ProcessOneMetadata(rdr);
+					while (await rdr.ReadAsync())
+					{
+						dataReader.ProcessOneRecord(rdr);
+					}
+				}
+				while (await rdr.NextResultAsync());
+			}
 		}
+		dataReader.PostProcess();
+		return dataReader.DataModel;
 	}
 	#endregion
 
@@ -608,28 +534,22 @@ public class SqlDbContext : IDbContext
 		Action<Int32, IDataReader> onMetadata, 
 		Int32 commandTimeout = 0)
 	{
-		using (var cnn = await GetConnectionAsync(source))
+		using var cnn = await GetConnectionAsync(source);
+		Int32 rdrNo = 0;
+		using var cmd = cnn.CreateCommandSP(command);
+		if (commandTimeout != 0)
+			cmd.CommandTimeout = commandTimeout;
+		setParams?.Invoke(cmd.Parameters);
+		using SqlDataReader rdr = await cmd.ExecuteReaderAsync();
+		do
 		{
-			Int32 rdrNo = 0;
-			using (var cmd = cnn.CreateCommandSP(command))
+			onMetadata?.Invoke(rdrNo, rdr);
+			while (await rdr.ReadAsync())
 			{
-				if (commandTimeout != 0)
-					cmd.CommandTimeout = commandTimeout;
-				setParams?.Invoke(cmd.Parameters);
-				using (SqlDataReader rdr = await cmd.ExecuteReaderAsync())
-				{
-					do
-					{
-						onMetadata?.Invoke(rdrNo, rdr);
-						while (await rdr.ReadAsync())
-						{
-							onRead?.Invoke(rdrNo, rdr);
-						}
-						rdrNo += 1;
-					} while (await rdr.NextResultAsync());
-				}
+				onRead?.Invoke(rdrNo, rdr);
 			}
-		}
+			rdrNo += 1;
+		} while (await rdr.NextResultAsync());
 	}
 
 	void ReadData(String source, String command,
@@ -638,28 +558,22 @@ public class SqlDbContext : IDbContext
 		Action<Int32, IDataReader> onMetadata,
 		Int32 commandTimeout)
 	{
-		using (var cnn = GetConnection(source))
+		using var cnn = GetConnection(source);
+		Int32 rdrNo = 0;
+		using var cmd = cnn.CreateCommandSP(command);
+		if (commandTimeout != 0)
+			cmd.CommandTimeout = commandTimeout;
+		setParams?.Invoke(cmd.Parameters);
+		using SqlDataReader rdr = cmd.ExecuteReader();
+		do
 		{
-			Int32 rdrNo = 0;
-			using (var cmd = cnn.CreateCommandSP(command))
+			onMetadata?.Invoke(rdrNo, rdr);
+			while (rdr.Read())
 			{
-				if (commandTimeout != 0)
-					cmd.CommandTimeout = commandTimeout;
-				setParams?.Invoke(cmd.Parameters);
-				using (SqlDataReader rdr = cmd.ExecuteReader())
-				{
-					do
-					{
-						onMetadata?.Invoke(rdrNo, rdr);
-						while (rdr.Read())
-						{
-							onRead?.Invoke(rdrNo, rdr);
-						}
-						rdrNo += 1;
-					} while (rdr.NextResult());
-				}
+				onRead?.Invoke(rdrNo, rdr);
 			}
-		}
+			rdrNo += 1;
+		} while (rdr.NextResult());
 	}
 
 	SqlParameter SetParametersWithList<T>(SqlCommand cmd, Object prms, IEnumerable<T> list) where T : class
@@ -669,7 +583,7 @@ public class SqlDbContext : IDbContext
 		Type prmsType = prms?.GetType();
 		var props = listType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 		var propsD = new Dictionary<String, PropertyInfo>();
-		DataTable dt = new DataTable();
+		DataTable dt = new();
 		foreach (var p in props)
 		{
 			var column = new DataColumn(p.Name, p.PropertyType);

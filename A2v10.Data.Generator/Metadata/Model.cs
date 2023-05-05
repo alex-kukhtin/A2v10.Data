@@ -40,7 +40,7 @@ namespace A2v10.Data.Generator
 
 		public void BuildCreateIndex(ModelBuilder modelBuilder)
 		{
-			HashSet<String> refTables = new HashSet<String>();
+			HashSet<String> refTables = new();
 			var sb = modelBuilder.StringBuilder;
 			sb.AppendLine($"create procedure [{Schema}].[{Name}.Index]");
 			modelBuilder.BuildTenantParam();
@@ -149,14 +149,13 @@ namespace A2v10.Data.Generator
 
 		public void BuildCreateLoad(ModelBuilder modelBuilder)
 		{
-			HashSet<String> refTables = new HashSet<String>();
+			HashSet<String> refTables = new();
 			StringBuilder sb = modelBuilder.StringBuilder;
 			sb.AppendLine($"create procedure [{Schema}].[{Name}.Load]");
 			modelBuilder.BuildTenantParam();
 			sb.AppendLine("@UserId bigint,");
-			var idKey = BasedOn.Key;
-			if (idKey == null)
-				throw new DataCreatorException($"There is no key in the '{BasedOn.TableName}' table");
+			var idKey = BasedOn.Key 
+				?? throw new DataCreatorException($"There is no key in the '{BasedOn.TableName}' table");
 			sb.AppendLine($"@Id {idKey.TypeAsString} = null,");
 			sb.RemoveTailCommma();
 			sb.AppendLine("as begin");
@@ -276,9 +275,8 @@ namespace A2v10.Data.Generator
 
 		public void BuildCreateUpdate(ModelBuilder modelBuilder)
 		{
-			var idKey = BasedOn.Key;
-			if (idKey == null)
-				throw new DataCreatorException($"There is no key in the '{BasedOn.TableName}' table");
+			var idKey = BasedOn.Key 
+				?? throw new DataCreatorException($"There is no key in the '{BasedOn.TableName}' table");
 			var sb = modelBuilder.StringBuilder;
 			sb.AppendLine($"create procedure [{Schema}].[{Name}.Update]");
 			modelBuilder.BuildTenantParam();

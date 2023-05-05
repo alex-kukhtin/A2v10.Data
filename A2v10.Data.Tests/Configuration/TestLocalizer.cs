@@ -4,32 +4,31 @@ using A2v10.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace A2v10.Data.Tests.Configuration
+namespace A2v10.Data.Tests.Configuration;
+
+public class TestLocalizer : IDataLocalizer
 {
-	public class TestLocalizer : IDataLocalizer
+	readonly IDictionary<String, String> _dict;
+
+	public TestLocalizer()
 	{
-		IDictionary<String, String> _dict;
-
-		public TestLocalizer()
+		_dict = new Dictionary<String, String>()
 		{
-			_dict = new Dictionary<String, String>()
-			{
-				{ "@[Item1]", "Item 1" },
-				{ "@[Item2]", "Item 2" },
-				{ "@[Item3]", "Item 3" },
-			};
-		}
+			{ "@[Item1]", "Item 1" },
+			{ "@[Item2]", "Item 2" },
+			{ "@[Item3]", "Item 3" },
+		};
+	}
 
-		public String Localize(String locale, String content, Boolean replaceNewLine = true)
-		{
-			return content;
-		}
+	public String Localize(String _1/*locale*/, String content, Boolean _2/*replaceNewLine*/ = true)
+	{
+		return content;
+	}
 
-		public String Localize(String content)
-		{
-			if (_dict.TryGetValue(content, out String outValue))
-				return outValue;
-			return content;
-		}
+	public String Localize(String content)
+	{
+		if (_dict.TryGetValue(content, out String outValue))
+			return outValue;
+		return content;
 	}
 }

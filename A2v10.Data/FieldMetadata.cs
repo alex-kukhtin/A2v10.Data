@@ -142,55 +142,28 @@ namespace A2v10.Data
 		{
 			get
 			{
-				switch (ItemType)
+				return ItemType switch
 				{
-					case FieldType.Array:
-					case FieldType.Tree:
-					case FieldType.Map:
-					case FieldType.MapObject:
-					case FieldType.Lookup:
-						return RefObject + "[]";
-					case FieldType.Object:
-					case FieldType.Group:
-						return RefObject;
-					default:
-						return DataType.ToString();
-				}
+					FieldType.Array or FieldType.Tree or FieldType.Map or FieldType.MapObject or FieldType.Lookup => RefObject + "[]",
+					FieldType.Object or FieldType.Group => RefObject,
+					_ => DataType.ToString(),
+				};
 			}
 		}
 
-		public String TypeScriptName
+		public String TypeScriptName => ItemType switch
 		{
-			get
+			FieldType.Scalar => DataType switch
 			{
-				switch (ItemType)
-				{
-					case FieldType.Scalar:
-						switch (DataType)
-						{
-							case DataType.Number:
-							case DataType.String:
-							case DataType.Boolean:
-								return DataType.ToString().ToLowerInvariant();
-							case DataType.Date:
-								return "Date";
-						}
-						return DataType.ToString();
-					case FieldType.Array:
-					case FieldType.Tree:
-						return $"IElementArray<{RefObject}>";
-					case FieldType.Map:
-					case FieldType.MapObject:
-					case FieldType.Lookup:
-						return RefObject + "[]";
-					case FieldType.Object:
-					case FieldType.Group:
-						return RefObject;
-					default:
-						return DataType.ToString();
-				}
-			}
-		}
+				DataType.Number or DataType.String or DataType.Boolean => DataType.ToString().ToLowerInvariant(),
+				DataType.Date => "Date",
+				_ => DataType.ToString(),
+			},
+			FieldType.Array or FieldType.Tree => $"IElementArray<{RefObject}>",
+			FieldType.Map or FieldType.MapObject or FieldType.Lookup => RefObject + "[]",
+			FieldType.Object or FieldType.Group => RefObject,
+			_ => DataType.ToString(),
+		};
 
 	}
 }
