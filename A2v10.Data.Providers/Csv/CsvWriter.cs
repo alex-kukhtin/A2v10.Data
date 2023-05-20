@@ -20,10 +20,8 @@ public class CsvWriter : IExternalDataWriter
 
 	public void Write(Stream stream)
 	{
-		using (var sw = new StreamWriter(stream, _file.Encoding))
-		{
-			Write(sw);
-		}
+		using var sw = new StreamWriter(stream, _file.Encoding);
+		Write(sw);
 	}
 
 	public void Write(StreamWriter wr)

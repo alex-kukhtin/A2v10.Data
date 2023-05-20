@@ -21,12 +21,12 @@ namespace A2v10.Data.Validator
 		public String Name { get; private set; }
 
 		[JsonIgnore]
-		private static HashSet<String> _specialPropNames = new HashSet<String> {
+		private readonly static HashSet<String> _specialPropNames = new () {
 			"_id", "_name"
 		};
 
 		[JsonIgnore]
-		private Dictionary<String, String> _specialFieldNames = new Dictionary<String, String>();
+		private readonly Dictionary<String, String> _specialFieldNames = new();
 
 		[JsonIgnore]
 		private Boolean _parsed;
@@ -36,7 +36,7 @@ namespace A2v10.Data.Validator
 			if (_parsed)
 				return;
 			Name = name;
-			List<String> toRemoveFields = new List<String>();
+			List<String> toRemoveFields = new();
 			TType extends = null;
 
 			foreach (var m in this)

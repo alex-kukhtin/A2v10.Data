@@ -13,7 +13,7 @@ namespace A2v10.Data.Tests
 	[TestClass]
 	public class UtcDate
 	{
-		IDbContext _dbContext;
+		readonly IDbContext _dbContext;
 		public UtcDate()
 		{
 			_dbContext = Starter.Create();

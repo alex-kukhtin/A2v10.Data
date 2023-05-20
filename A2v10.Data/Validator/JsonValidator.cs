@@ -10,7 +10,7 @@ namespace A2v10.Data.Validator
 {
 	public class JsonValidator
 	{
-		private AllModels _models;
+		private readonly AllModels _models;
 
 		public static JsonValidator FromJson(String json)
 		{

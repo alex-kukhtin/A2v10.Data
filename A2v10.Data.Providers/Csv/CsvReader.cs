@@ -27,7 +27,7 @@ namespace A2v10.Data.Providers.Csv
 		{
 			// FindEncoding & delimiter
 			FindEncoding(stream);
-			using (StreamReader rdr = new StreamReader(stream, _file.Encoding))
+			using (StreamReader rdr = new(stream, _file.Encoding))
 			{
 				ReadHeader(rdr);
 				Read(rdr);
@@ -65,7 +65,7 @@ namespace A2v10.Data.Providers.Csv
 
 		String ReadLine(StreamReader rdr)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			if (_backwardChar != '\0')
 			{
 				sb.Append(_backwardChar);
@@ -169,7 +169,7 @@ namespace A2v10.Data.Providers.Csv
 			// very simple tokenizer
 			Int32 ix = 0;
 			Int32 len = line.Length;
-			StringBuilder token = new StringBuilder();
+			StringBuilder token = new();
 			Char ch;
 			var retval = new List<String>();
 

@@ -26,7 +26,7 @@ namespace A2v10.Data.DynamicExpression
 
 		public static Object MemberOperation(Object source, String prop)
 		{
-			if (!(source is IDictionary<String, Object> src))
+			if (source is not IDictionary<String, Object> src)
 				return null;
 			if (src.TryGetValue(prop, out Object result))
 				return result;

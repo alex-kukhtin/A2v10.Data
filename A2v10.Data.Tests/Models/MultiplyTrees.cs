@@ -17,7 +17,7 @@ namespace A2v10.Data.Models;
 [TestCategory("Tree Models")]
 public class MultiplyTrees
 {
-	IDbContext _dbContext;
+	private readonly IDbContext _dbContext;
 	public MultiplyTrees()
 	{
 		_dbContext = Starter.Create();
@@ -29,7 +29,7 @@ public class MultiplyTrees
 		var dm = await _dbContext.LoadModelAsync(null, "a2test.[MultiplyTrees.Load]");
 
 
-		var json = JsonConvert.SerializeObject(dm.Root);
+		//var json = JsonConvert.SerializeObject(dm.Root);
 
 		var md = new MetadataTester(dm);
 		md.IsAllKeys("TRoot,TModel,TElem");
@@ -85,7 +85,7 @@ public class MultiplyTrees
 		var dm = await _dbContext.LoadModelAsync(null, "a2test.[ChildrenTree.Load]");
 
 
-		var json = JsonConvert.SerializeObject(dm.Root);
+		//var json = JsonConvert.SerializeObject(dm.Root);
 
 		var md = new MetadataTester(dm);
 		md.IsAllKeys("TRoot,TModel,TElem");

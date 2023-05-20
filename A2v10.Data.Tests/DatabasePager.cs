@@ -13,7 +13,7 @@ namespace A2v10.Data.Tests
 	[TestCategory("Pager")]
 	public class DatabasePager
 	{
-		IDbContext _dbContext;
+		readonly IDbContext _dbContext;
 		public DatabasePager()
 		{
 			_dbContext = Starter.Create();

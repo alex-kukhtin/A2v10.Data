@@ -51,15 +51,14 @@ namespace A2v10.Data
 
 		public T CalcExpression<T>(ExpandoObject root, String expression)
 		{
-			Object result = null;
+			Object result;
 			if (_lambdas != null && _lambdas.TryGetValue(expression, out Delegate expr))
 			{
 				result = expr.DynamicInvoke(root);
 			}
 			else
 			{
-				if (_lambdas == null)
-					_lambdas = new Dictionary<String, Delegate>();
+				_lambdas ??= new Dictionary<String, Delegate>();
 				var prms = new ParameterExpression[] {
 					Expression.Parameter(typeof(ExpandoObject), "Root")
 				};
@@ -98,16 +97,14 @@ namespace A2v10.Data
 		{
 			get
 			{
-				if (_helper == null)
-					_helper = new DataHelper();
+				_helper ??= new DataHelper();
 				return _helper;
 			}
 		}
 
 		public void SetReadOnly()
 		{
-			if (System == null)
-				System = new ExpandoObject();
+			System ??= new ExpandoObject();
 			System.Set("ReadOnly", true);
 			System.Set("StateReadOnly", true);
 		}
@@ -197,8 +194,7 @@ namespace A2v10.Data
 				IDataMetadata md = m.Value;
 				if (md.HasCross)
 				{
-					if (rt == null)
-						rt = new ExpandoObject();
+					rt ??= new ExpandoObject();
 					var cross = new ExpandoObject();
 					rt.Add("$cross", cross);
 					var xo = new ExpandoObject();

@@ -65,7 +65,7 @@ namespace A2v10.Data
 			IsComplexField = false;
 		}
 
-		static readonly HashSet<String> _reservedWords = new HashSet<String>()
+		static readonly HashSet<String> _reservedWords = new()
 			{
 				"Parent",
 				"Root",
@@ -85,7 +85,7 @@ namespace A2v10.Data
 			}
 		}
 
-		static Regex _ider = new Regex(@"^[a-z_\$][a-z0-9_\$]*$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+		static readonly Regex _ider = new(@"^[a-z_\$][a-z0-9_\$]*$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
 		public void CheckTypeName()
 		{
@@ -121,32 +121,31 @@ namespace A2v10.Data
 		}
 
 
-		public Boolean IsVisible { get { return !String.IsNullOrEmpty(PropertyName); } }
+		public readonly Boolean IsVisible => !String.IsNullOrEmpty(PropertyName);
+		public readonly Boolean IsArray =>  FieldType == FieldType.Array; 
+		public readonly Boolean IsObject =>  FieldType == FieldType.Object; 
+		public readonly Boolean IsMap => FieldType == FieldType.Map; 
+		public readonly Boolean IsMapObject => FieldType == FieldType.MapObject; 
+		public readonly Boolean IsTree => FieldType == FieldType.Tree; 
+		public readonly Boolean IsGroup =>  FieldType == FieldType.Group;
+		public readonly Boolean IsCrossArray => FieldType == FieldType.CrossArray; 
+		public readonly Boolean IsCrossObject => FieldType == FieldType.CrossObject;
+		public readonly Boolean IsCross => IsCrossArray || IsCrossObject;
+		public readonly Boolean IsLookup => FieldType == FieldType.Lookup;
 
-		public Boolean IsArray =>  FieldType == FieldType.Array; 
-		public Boolean IsObject =>  FieldType == FieldType.Object; 
-		public Boolean IsMap => FieldType == FieldType.Map; 
-		public Boolean IsMapObject => FieldType == FieldType.MapObject; 
-		public Boolean IsTree => FieldType == FieldType.Tree; 
-		public Boolean IsGroup =>  FieldType == FieldType.Group;
-		public Boolean IsCrossArray => FieldType == FieldType.CrossArray; 
-		public Boolean IsCrossObject => FieldType == FieldType.CrossObject;
-		public Boolean IsCross => IsCrossArray || IsCrossObject;
-		public Boolean IsLookup => FieldType == FieldType.Lookup;
-
-		public Boolean IsObjectLike =>  IsArray || IsObject || IsTree || IsGroup || IsMap || IsMapObject || IsCrossArray || IsCrossObject || IsLookup;
-		public Boolean IsNestedType => IsRefId || IsArray || IsCrossArray || IsCrossObject;
-		public Boolean IsRefId =>  SpecType == SpecType.RefId; 
-		public Boolean IsParentId =>  SpecType == SpecType.ParentId; 
-		public Boolean IsId =>  SpecType == SpecType.Id; 
-		public Boolean IsKey =>  SpecType == SpecType.Key;
-		public Boolean IsToken => SpecType == SpecType.Token;
-		public Boolean IsRowCount =>  SpecType == SpecType.RowCount; 
-		public Boolean IsItems =>  SpecType == SpecType.Items; 
-		public Boolean IsGroupMarker => SpecType == SpecType.GroupMarker; 
-		public Boolean IsJson =>  SpecType == SpecType.Json; 
-		public Boolean IsPermissions =>  SpecType == SpecType.Permissions;
-		public Boolean IsUtc => SpecType == SpecType.Utc;
+		public readonly Boolean IsObjectLike =>  IsArray || IsObject || IsTree || IsGroup || IsMap || IsMapObject || IsCrossArray || IsCrossObject || IsLookup;
+		public readonly Boolean IsNestedType => IsRefId || IsArray || IsCrossArray || IsCrossObject;
+		public readonly Boolean IsRefId =>  SpecType == SpecType.RefId; 
+		public readonly Boolean IsParentId =>  SpecType == SpecType.ParentId; 
+		public readonly Boolean IsId =>  SpecType == SpecType.Id; 
+		public readonly Boolean IsKey =>  SpecType == SpecType.Key;
+		public readonly Boolean IsToken => SpecType == SpecType.Token;
+		public readonly Boolean IsRowCount =>  SpecType == SpecType.RowCount; 
+		public readonly Boolean IsItems =>  SpecType == SpecType.Items; 
+		public readonly Boolean IsGroupMarker => SpecType == SpecType.GroupMarker; 
+		public readonly Boolean IsJson =>  SpecType == SpecType.Json; 
+		public readonly Boolean IsPermissions =>  SpecType == SpecType.Permissions;
+		public readonly Boolean IsUtc => SpecType == SpecType.Utc;
 
 		public Boolean IsParentIdSelf(FieldInfo root)
 		{
@@ -158,7 +157,7 @@ namespace A2v10.Data
 			if (parts.Length == 2)
 			{
 				var p1 = parts[1];
-				if (SpecType.TryParse(p1, out SpecType st))
+				if (SpecType.TryParse(p1, out SpecType _))
 				{
 					// A special type is specified, but there are only two parts in the field name
 					throw new DataLoaderException($"Invalid field name '{String.Join("!", parts)}'");

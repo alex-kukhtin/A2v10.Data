@@ -18,7 +18,7 @@ namespace A2v10.Data.Tests
 	[TestCategory("SubObjects")]
 	public class DatabaseWriter
 	{
-		IDbContext _dbContext;
+		readonly IDbContext _dbContext;
 
 		public DatabaseWriter()
 		{

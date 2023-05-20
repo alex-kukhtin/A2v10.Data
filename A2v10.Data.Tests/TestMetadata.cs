@@ -13,7 +13,7 @@ namespace A2v10.Data.Tests
 	[TestCategory("Map Objects")]
 	public class TestMetadata
 	{
-		IDbContext _dbContext;
+		private readonly IDbContext _dbContext;
 		public TestMetadata()
 		{
 			_dbContext = Starter.Create();

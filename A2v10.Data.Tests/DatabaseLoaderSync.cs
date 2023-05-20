@@ -11,7 +11,7 @@ namespace A2v10.Data.Tests;
 [TestCategory("Sync models")]
 public class DatabaseLoaderSync
 {
-	IDbContext _dbContext;
+	readonly IDbContext _dbContext;
 	public DatabaseLoaderSync()
 	{
 		_dbContext = Starter.Create();

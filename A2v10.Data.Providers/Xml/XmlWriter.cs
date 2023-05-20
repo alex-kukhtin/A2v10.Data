@@ -21,14 +21,12 @@ namespace A2v10.Data.Providers.Csv
 
 		public void Write(Stream stream)
 		{
-			using (var sw = System.Xml.XmlWriter.Create(stream, new XmlWriterSettings() { Encoding = _file.Encoding, Indent = true, IndentChars = "\t"}))
-			{
-				sw.WriteStartDocument();
-				sw.WriteStartElement(RootElement);
-				Write(sw);
-				sw.WriteEndElement();
-				sw.WriteEndDocument();
-			}
+			using var sw = System.Xml.XmlWriter.Create(stream, new XmlWriterSettings() { Encoding = _file.Encoding, Indent = true, IndentChars = "\t" });
+			sw.WriteStartDocument();
+			sw.WriteStartElement(RootElement);
+			Write(sw);
+			sw.WriteEndElement();
+			sw.WriteEndDocument();
 		}
 
 		public void Write(System.Xml.XmlWriter wr)

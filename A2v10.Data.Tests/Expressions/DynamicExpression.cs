@@ -21,7 +21,7 @@ namespace A2v10.Data.Tests.Expressions
 	public class Expressions
 	{
 
-		IDbContext _dbContext;
+		readonly IDbContext _dbContext;
 		public Expressions()
 		{
 			_dbContext = Starter.Create();

@@ -15,7 +15,7 @@ namespace A2v10.Data.Validator
 	[TestClass]
 	public class ValidateModel
 	{
-		IDbContext _dbContext;
+		private readonly IDbContext _dbContext;
 		public ValidateModel()
 		{
 			_dbContext = Starter.Create();

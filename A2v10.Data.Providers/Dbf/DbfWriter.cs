@@ -19,10 +19,8 @@ namespace A2v10.Data.Providers.Dbf
 
 		public void Write(Stream stream)
 		{
-			using (var bw = new BinaryWriter(stream))
-			{
-				Write(bw);
-			}
+			using var bw = new BinaryWriter(stream);
+			Write(bw);
 		}
 
 		public void Write(BinaryWriter wr)
@@ -80,7 +78,7 @@ namespace A2v10.Data.Providers.Dbf
 			return sz;
 		}
 
-		void WriteHeader(BinaryWriter wr, Field f, Int32 index)
+		void WriteHeader(BinaryWriter wr, Field f, Int32 _1/*index*/)
 		{
 			// 32 bytes
 			// 11 bytes name
@@ -125,7 +123,7 @@ namespace A2v10.Data.Providers.Dbf
 		void WriteRecord(BinaryWriter wr, Record rec)
 		{
 			wr.Write((Byte) 0x20); // not deleted
-			String sVal = String.Empty;
+			String sVal;
 
 			// simply write
 			for (Int32 i = 0; i < rec.DataFields.Count; i++)
@@ -139,7 +137,7 @@ namespace A2v10.Data.Providers.Dbf
 						sVal = xd.DecimalValue.ToString(CultureInfo.InvariantCulture);
 						if (sVal.Length < fd.Size)
 						{
-							String x = new String(' ', fd.Size- sVal.Length);
+							String x = new(' ', fd.Size- sVal.Length);
 							sVal = x + sVal;
 						}
 						if (sVal.Length != fd.Size)
@@ -158,7 +156,7 @@ namespace A2v10.Data.Providers.Dbf
 						sVal = xd.StringValue ?? String.Empty;
 						if (sVal.Length < fd.Size)
 						{
-							String x = new String(' ',  fd.Size - sVal.Length);
+							String x = new(' ',  fd.Size - sVal.Length);
 							sVal += x;
 						}
 						if (sVal.Length != fd.Size)

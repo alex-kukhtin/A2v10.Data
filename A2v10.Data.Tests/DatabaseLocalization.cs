@@ -13,7 +13,7 @@ namespace A2v10.Data.Tests
 
 	public class DatabaseLocalization
 	{
-		IDbContext _dbContext;
+		readonly IDbContext _dbContext;
 
 		public DatabaseLocalization()
 		{

@@ -114,7 +114,7 @@ namespace A2v10.Data.Generator
 		}
 
 
-		void BuildReferences(StringBuilder sb, Boolean where)
+		void BuildReferences(StringBuilder sb, Boolean _1/*where*/)
 		{
 			var refFeilds = AllFieldsForReferences()
 				.Where(fld => fld.IsReference)
@@ -266,7 +266,6 @@ namespace A2v10.Data.Generator
 			sb.AppendLine($"\tselect [{BasedOn.EntityName}!{BasedOn.EntityName}!Metadata] = null, * from @{BasedOn.EntityName};");
 			foreach (var ch in Children)
 			{
-				var chTable = ch.Value;
 				sb.AppendLine($"\tselect [{ch.Key}!{BasedOn.EntityName}.{ch.Key}!Metadata] = null, * from @{ch.Key};");
 			}
 			sb.AppendLine("end");

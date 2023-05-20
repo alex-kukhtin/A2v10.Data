@@ -118,7 +118,6 @@ namespace A2v10.Data.DynamicExpression
 
 		public Expression Parse()
 		{
-			Int32 exprPos = token.pos;
 			Expression expr = ParseExpression();
 			ValidateToken(TokenId.End, Res.SyntaxError);
 			return expr;
@@ -381,7 +380,7 @@ namespace A2v10.Data.DynamicExpression
 				}
 				else
 				{
-					if (expr is LambdaExpression lambda)
+					if (expr is LambdaExpression)
 						throw ParseError(textPos, Res.UnknownIdentifier, token.text);
 				}
 				NextToken();
@@ -399,7 +398,7 @@ namespace A2v10.Data.DynamicExpression
 			throw ParseError(Res.UnknownIdentifier, token.text);
 		}
 
-		Expression GenerateConditional(Expression test, Expression expr1, Expression expr2, Int32 errorPos)
+		Expression GenerateConditional(Expression test, Expression expr1, Expression expr2, Int32 _1/*errorPos*/)
 		{
 			test = PromoteLogical(test);
 			return Expression.Condition(test, expr1, expr2);
@@ -408,7 +407,6 @@ namespace A2v10.Data.DynamicExpression
 
 		Expression ParseMemberAccess(Expression instance)
 		{
-			Int32 errorPos = token.pos;
 			String id = GetIdentifier();
 			NextToken();
 			var argId = Expression.Constant(id, typeof(String));

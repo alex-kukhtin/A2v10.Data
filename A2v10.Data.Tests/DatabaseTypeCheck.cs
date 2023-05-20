@@ -13,7 +13,7 @@ namespace A2v10.Data.Tests;
 [TestCategory("Data Types")]
 public class DatabaseTypeCheck
 {
-	IDbContext _dbContext;
+	private readonly IDbContext _dbContext;
 	public DatabaseTypeCheck()
 	{
 		_dbContext = Starter.Create();

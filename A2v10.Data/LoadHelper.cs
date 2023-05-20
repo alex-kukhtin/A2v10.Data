@@ -9,7 +9,7 @@ namespace A2v10.Data
 {
 	class LoadHelper<T> where T : class
 	{
-		Type _type;
+		readonly Type _type;
 		readonly PropertyInfo[] _props;
 		Dictionary<String, Int32> _keyMap;
 		public LoadHelper()

@@ -61,10 +61,9 @@ internal class CrossItem
             {
                 Int32 index = key.Value;
                 var val = targetVal.Get<ExpandoObject>(key.Key);
-					if (val == null)
-						val = new ExpandoObject() { { 
-							KeyName, key.Key}
-						};
+					val ??= new ExpandoObject() { 
+                        { KeyName, key.Key}
+					};
                 arr[index] = val;
             }
             eo.Set(TargetProp, arr);
@@ -74,7 +73,7 @@ internal class CrossItem
     List<ExpandoObject> CreateArray(Int32 cnt)
     {
         var arr = new List<ExpandoObject>();
-        foreach (var key in _keys)
+        foreach (var _ in _keys)
             arr.Add(null);
         return arr;
     }

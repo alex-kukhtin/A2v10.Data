@@ -12,7 +12,7 @@ namespace A2v10.Data
 	{
 		public static T Get<T>(this ExpandoObject obj, String name)
 		{
-			if (!(obj is IDictionary<String, Object> d))
+			if (obj is not IDictionary<String, Object> d)
 				return default;
 			if (d.TryGetValue(name, out Object result))
 			{
@@ -24,7 +24,7 @@ namespace A2v10.Data
 
 		public static T GetOrCreate<T>(this ExpandoObject obj, String name) where T: new()
 		{
-			if (!(obj is IDictionary<String, Object> d))
+			if (obj is not IDictionary<String, Object> d)
 				return default;
 			if (d.TryGetValue(name, out Object result))
 			{
@@ -40,7 +40,7 @@ namespace A2v10.Data
 
 		public static T GetOrCreate<T>(this ExpandoObject obj, String name, Func<T> create) where T : new()
 		{
-			if (!(obj is IDictionary<String, Object> d))
+			if (obj is not IDictionary<String, Object> d)
 				return default;
 			if (d.TryGetValue(name, out Object result))
 			{
@@ -57,7 +57,7 @@ namespace A2v10.Data
 
 		public static Object GetObject(this ExpandoObject obj, String name)
 		{
-			if (!(obj is IDictionary<String, Object> d))
+			if (obj is not IDictionary<String, Object> d)
 				return null;
 			if (d.TryGetValue(name, out Object result))
 			{
@@ -68,7 +68,7 @@ namespace A2v10.Data
 
 		public static Boolean IsEmpty(this ExpandoObject obj)
 		{
-			if (!(obj is IDictionary<String, Object> d))
+			if (obj is not IDictionary<String, Object> d)
 				return true;
 			if (d.Keys.Count == 0)
 				return true;
@@ -77,7 +77,7 @@ namespace A2v10.Data
 
 		public static void RemoveKey(this ExpandoObject obj, String name)
 		{
-			if (!(obj is IDictionary<String, Object> d))
+			if (obj is not IDictionary<String, Object> d)
 				return;
 			if (d.ContainsKey(name))
 				d.Remove(name);
@@ -86,7 +86,7 @@ namespace A2v10.Data
 
 		public static void Set(this ExpandoObject obj, String name, Object value)
 		{
-			if (!(obj is IDictionary<String, Object> d))
+			if (obj is not IDictionary<String, Object> d)
 				return;
 			if (d.ContainsKey(name))
 				d[name] = value;

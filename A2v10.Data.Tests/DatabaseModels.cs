@@ -15,7 +15,7 @@ namespace A2v10.Data.Tests;
 [TestCategory("Complex Models")]
 public class DatabaseModels
 {
-	IDbContext _dbContext;
+	private readonly IDbContext _dbContext;
 	public DatabaseModels()
 	{
 		_dbContext = Starter.Create();

@@ -11,9 +11,9 @@ namespace A2v10.Data.Tests
 {
 	public class DataTester
 	{
-		IDataModel _dataModel;
+		private readonly IDataModel _dataModel;
 		readonly ExpandoObject _instance;
-		IList<ExpandoObject> _instanceArray;
+		readonly IList<ExpandoObject> _instanceArray;
 		public DataTester(IDataModel dataModel, String expression)
 		{
 			_dataModel = dataModel;
