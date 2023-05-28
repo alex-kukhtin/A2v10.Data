@@ -365,6 +365,8 @@ public class DataModelReader
 			{
 				if (rootFI.IsArray)
 				{
+					if (dataVal == null)
+						continue;
 					AddRecordToArray(fi.TypeName, dataVal, currentRecord, rootFI.TypeName);
 					if (!rootFI.IsVisible)
 						bAdded = true;

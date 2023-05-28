@@ -19,10 +19,10 @@ internal class KeyComparer : IEqualityComparer<Object>
 		if (x == null || y == null) return false;
 		if (x is ExpandoObject eox && y is ExpandoObject eoy)
 			return eox.Get<Object>(Id) == eoy.Get<Object>(Id);
-		return x == y;
-    }
+		return x.Equals(y);
+	}
 
-    public int GetHashCode(Object obj)
+	public int GetHashCode(Object obj)
     {
 		if (obj == null)
 			return 0;
@@ -37,6 +37,7 @@ internal class DynamicGroupItem
 	private readonly Object _key;
 	private readonly Dictionary<Object, DynamicGroupItem> _children = new(new KeyComparer());
 	private ExpandoObject _data = new();
+	private readonly List<ExpandoObject> _leafs = new();
 	public DynamicGroupItem(Object key = null, String elem = null)
 	{
 		_key = key;
@@ -65,6 +66,19 @@ internal class DynamicGroupItem
 	public void SetData(ExpandoObject data)
 	{
 		_data = data;
+		_leafs.Add(data);
+	}
+
+	public void CalculateLeafs<T>(String propName, Func<T[], T> calc)
+	{
+		if (_leafs.Count == 0)
+			return;
+		T result;
+		T[] values = new T[_leafs.Count];
+		for (int i = 0; i < _leafs.Count; i++)
+			values[i] = _leafs[i].Get<T>(propName);
+		result = calc(values);
+		_data.Set(propName, result);
 	}
 
 	public void Calculate<T>(String propName, Func<T[], T> calc)
@@ -78,6 +92,8 @@ internal class DynamicGroupItem
 		{
 			if (item._children.Count > 0)
 				item.Calculate<T>(propName, calc);
+			else
+				item?.CalculateLeafs<T>(propName, calc);
 			values[i++] = item._data.Get<T>(propName);
 		}
 		result = calc(values);
@@ -87,9 +103,12 @@ internal class DynamicGroupItem
 
 internal enum AggregateType
 {
+	None,
 	Sum,
 	Avg,
-	Count
+	Count,
+	First,
+	Last,
 }
 
 internal record AggregateDescriptor
@@ -173,6 +192,14 @@ internal class DynamicDataGrouping
 				break;
 			case "Count":
 				rsDescr.AddAggregate(propName, AggregateType.Count);
+				break;
+			case "First":
+				rsDescr.AddAggregate(propName, AggregateType.First);
+				break;
+			case "Last":
+				rsDescr.AddAggregate(propName, AggregateType.Last);
+				break;
+			case "None":
 				break;
 			default:
 				throw new InvalidOperationException($"Invalid Function for grouping: {funcName}");
