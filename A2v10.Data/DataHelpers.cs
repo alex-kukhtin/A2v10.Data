@@ -1,4 +1,4 @@
-﻿// Copyright © 2012-2022 Oleksandr Kukhtin. All rights reserved.
+﻿// Copyright © 2012-2023 Oleksandr Kukhtin. All rights reserved.
 
 
 using System;
@@ -28,6 +28,18 @@ public static class DataHelpers
 		};
 	}
 
+	public static Object SqlDataTypeDefault(this SqlDataType s)
+	{
+		return s switch
+		{
+			SqlDataType.Decimal => (Decimal)0,
+			SqlDataType.Currency => (Decimal)0,
+			SqlDataType.Float => (Double)0,
+			SqlDataType.Bigint => (Int64)0,
+			SqlDataType.Int => (Int32)0,
+			_ => throw new DataLoaderException($"SqlDataType not supported 's'")
+		};
+	}
 
 	public static SqlDataType SqlTypeName2SqlDataType(this String s)
 	{

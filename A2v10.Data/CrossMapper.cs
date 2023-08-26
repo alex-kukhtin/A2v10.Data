@@ -1,4 +1,4 @@
-﻿// Copyright © 2019-2023 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2019-2023 Oleksandr Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -15,8 +15,9 @@ internal class CrossItem
     public String CrossType { get; }
 
     public String KeyName { get; }
+	public IEnumerable<String> Keys => _keys.Keys;
 
-    public CrossItem(String targetProp, Boolean isArray, String crossType, String keyName)
+	public CrossItem(String targetProp, Boolean isArray, String crossType, String keyName)
     {
         TargetProp = targetProp;
         IsArray = isArray;

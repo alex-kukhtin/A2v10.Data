@@ -804,6 +804,6 @@ public class DataModelReader
 				typeMeta.AddCross(prop, crossKeys);
 			}
 		}
-        _dynamicGrouping?.Process();
+		_dynamicGrouping?.Process(_crossMap);
     }
 }
