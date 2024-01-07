@@ -223,12 +223,13 @@ public static class DataHelpers
 		return rv;
 	}
 
+	private static JsonSerializerSettings JsonIsoDateSettings =
+		new () { DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Unspecified };
+
 	public static Object DateTime2StringWrap(Object val)
 	{
 		if (val is not DateTime) return val;
-		return "\"\\/" +
-			JsonConvert.SerializeObject(val, new JsonSerializerSettings() { DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Utc }) +
-			"\\/\"";
+		return $"\"\\/{JsonConvert.SerializeObject(val, JsonIsoDateSettings)}\\/\"";
 	}
 }
 
