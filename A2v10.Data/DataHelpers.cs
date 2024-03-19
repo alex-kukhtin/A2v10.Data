@@ -223,7 +223,7 @@ public static class DataHelpers
 		return rv;
 	}
 
-	private static JsonSerializerSettings JsonIsoDateSettings =
+	private readonly static JsonSerializerSettings JsonIsoDateSettings =
 		new () { DateFormatHandling = DateFormatHandling.IsoDateFormat, DateTimeZoneHandling = DateTimeZoneHandling.Unspecified };
 
 	public static Object DateTime2StringWrap(Object val)

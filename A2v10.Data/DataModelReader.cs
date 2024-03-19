@@ -493,7 +493,7 @@ public class DataModelReader
 			if (fieldDef.IsPermissions)
 			{
 				fieldDef.CheckPermissionsName();
-				var fm = typeMetadata.AddField(fieldDef, DataType.Number, SqlDataType.Int, 0);
+				typeMetadata.AddField(fieldDef, DataType.Number, SqlDataType.Int, 0);
 				continue;
 			}
 			if (fieldDef.IsCrossArray)
