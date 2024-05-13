@@ -6,6 +6,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using A2v10.Data.Providers.Csv;
 using A2v10.Data.Tests.Providers;
+using A2v10.Data.Interfaces;
+using A2v10.Data.Tests.Configuration;
+using System.Threading.Tasks;
 
 namespace A2v10.Data.Providers;
 
@@ -13,6 +16,14 @@ namespace A2v10.Data.Providers;
 [TestCategory("Providers")]
 public class CsvReaderTest
 {
+
+	private readonly IDbContext _dbContext;
+
+	public CsvReaderTest()
+	{
+		_dbContext = Starter.Create();
+	}
+
 	[TestMethod]
 	public void CsvReadSimpleFile()
 	{
@@ -123,5 +134,39 @@ public class CsvReaderTest
 
 		using var file = File.Open("../../../testfiles/uquoted.csv", FileMode.Open);
 		var df = rdr.Read(file);
+	}
+
+	[TestMethod]
+	public void CsvReadTabbedFile()
+	{
+		var f = new DataFile();
+		var rdr = new CsvReader(f);
+
+		using (var file = File.Open("../../../testfiles/tabbed.csv", FileMode.Open))
+		{
+			rdr.Read(file);
+		}
+
+		var wrt = new CsvWriter(f);
+		using (var file = File.Create("../../../testfiles/output.csv"))
+		{
+			wrt.Write(file);
+		}
+
+		ProviderTools.CompareFiles("../../../testfiles/tabbed.csv", "../../../testfiles/output.csv");
+	}
+
+	[TestMethod]
+	public async Task CsvReadTabbedModel()
+	{
+		var f = new DataFile();
+		var rdr = new CsvReader(f);
+
+		using (var file = File.Open("../../../testfiles/tabbed.csv", FileMode.Open))
+		{
+			var dm = rdr.CreateDataModel(file);
+
+			var result = await _dbContext.SaveModelAsync(null, "Tabbed.Csv.Update", dm);
+		}		
 	}
 }
