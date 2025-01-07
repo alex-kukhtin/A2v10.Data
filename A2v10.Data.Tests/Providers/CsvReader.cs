@@ -169,4 +169,18 @@ public class CsvReaderTest
 			var result = await _dbContext.SaveModelAsync(null, "Tabbed.Csv.Update", dm);
 		}		
 	}
+
+    [TestMethod]
+    public void CsvReadZeroSpaceModel()
+    {
+        var f = new DataFile();
+        var rdr = new CsvReader(f);
+
+        using (var file = File.Open("../../../testfiles/novapay.csv", FileMode.Open))
+        {
+            var dm = rdr.CreateDataModel(file);
+
+			int z = 55;
+        }
+    }
 }
