@@ -1,4 +1,4 @@
-﻿// Copyright © 2015-2022 Alex Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2025 Oleksandr Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -465,7 +465,7 @@ public class SqlDbContext : IDbContext
 				}
 				else
 				{
-					sqlParam.Value = SqlExtensions.ConvertTo(sqlVal, sqlParam.SqlDbType.ToType());
+					sqlParam.Value = SqlExtensions.ConvertTo(sqlVal, sqlParam.SqlDbType.ToType(), kv.Key);
 				}
 			}
 		}
@@ -504,7 +504,7 @@ public class SqlDbContext : IDbContext
 				}
 				else
 				{
-					sqlParam.Value = SqlExtensions.ConvertTo(sqlVal, sqlParam.SqlDbType.ToType());
+					sqlParam.Value = SqlExtensions.ConvertTo(sqlVal, sqlParam.SqlDbType.ToType(), p.Name);
 				}
 			}
 		}
@@ -611,7 +611,7 @@ public class SqlDbContext : IDbContext
 					{
 						var col = dt.Columns[c];
 						var rowVal = propsD[col.ColumnName].GetValue(itm);
-						var dbVal = SqlExtensions.ConvertTo(rowVal, col.DataType);
+						var dbVal = SqlExtensions.ConvertTo(rowVal, col.DataType, col.ColumnName);
 						row[col.ColumnName] = dbVal;
 					}
 					dt.Rows.Add(row);

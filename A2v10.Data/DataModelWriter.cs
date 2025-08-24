@@ -134,7 +134,7 @@ internal class DataModelWriter
 				// complex value
 				if (GetComplexValue(data, col.ColumnName, out rowVal))
 				{
-					var dbVal = SqlExtensions.ConvertTo(rowVal, col.DataType);
+					var dbVal = SqlExtensions.ConvertTo(rowVal, col.DataType, col.ColumnName);
 					dbVal = CheckId(col.ColumnName, dbVal, col.DataType);
 					row[col.ColumnName] = dbVal;
 					break;
@@ -142,7 +142,7 @@ internal class DataModelWriter
 			}
 			if (dataD.TryGetValue(col.ColumnName, out rowVal))
 			{
-				var dbVal = SqlExtensions.ConvertTo(rowVal, col.DataType);
+				var dbVal = SqlExtensions.ConvertTo(rowVal, col.DataType, col.ColumnName);
 				dbVal = CheckId(col.ColumnName, dbVal, col.DataType);
 				CheckStringLength(col, dbVal, table.Rows.Count);
 				row[col.ColumnName] = dbVal;

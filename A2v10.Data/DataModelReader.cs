@@ -566,8 +566,10 @@ public class DataModelReader
 		_groupMetadata.Add(typeName, groupMeta);
 		return groupMeta;
 	}
+    public static string ToHexString(byte[] bytes) =>
+		BitConverter.ToString(bytes).Replace("-", "");
 
-	void AddValueToRecord(IDictionary<String, Object> record, FieldInfo field, Object value)
+    void AddValueToRecord(IDictionary<String, Object> record, FieldInfo field, Object value)
 	{
 		if (!field.IsVisible)
 			return;
@@ -594,8 +596,10 @@ public class DataModelReader
 			record.Add(field.PropertyName, _localizer.Localize(value?.ToString()));
 		else if (field.IsUtc && value is DateTime dt)
 			record.Add(field.PropertyName, DateTime.SpecifyKind(dt.ToLocalTime(), DateTimeKind.Unspecified));
-		else
-			record.Add(field.PropertyName, value);
+        else if (field.IsRowVersion && value is Byte[] byteVal)
+            record.Add(field.PropertyName, ToHexString(byteVal));
+        else
+            record.Add(field.PropertyName, value);
 	}
 
 	void AddRecordToGroup(ExpandoObject currentRecord, FieldInfo field, List<Boolean> groupKeys)

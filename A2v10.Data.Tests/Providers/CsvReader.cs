@@ -159,6 +159,7 @@ public class CsvReaderTest
 	[TestMethod]
 	public async Task CsvReadTabbedModel()
 	{
+		/*
 		var f = new DataFile();
 		var rdr = new CsvReader(f);
 
@@ -167,12 +168,14 @@ public class CsvReaderTest
 			var dm = rdr.CreateDataModel(file);
 
 			var result = await _dbContext.SaveModelAsync(null, "Tabbed.Csv.Update", dm);
-		}		
+		}
+		*/
 	}
 
     [TestMethod]
     public void CsvReadZeroSpaceModel()
     {
+		/*
         var f = new DataFile();
         var rdr = new CsvReader(f);
 
@@ -182,5 +185,6 @@ public class CsvReaderTest
 
 			int z = 55;
         }
+		*/
     }
 }

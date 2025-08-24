@@ -1,4 +1,4 @@
-﻿// Copyright © 2015-2023 Oleksandr Kukhtin. All rights reserved.
+﻿// Copyright © 2015-2025 Oleksandr Kukhtin. All rights reserved.
 
 using System;
 using System.Collections.Generic;
@@ -82,7 +82,14 @@ public static class SqlExtensions
 		return Convert.ChangeType(strVal, to, CultureInfo.InvariantCulture);
 	}
 
-	public static Object ConvertTo(Object value, Type to)
+
+    public static byte[] FromHexString(string hex) =>
+    Enumerable.Range(0, hex.Length / 2)
+              .Select(i => Convert.ToByte(hex.Substring(i * 2, 2), 16))
+              .ToArray();
+
+
+    public static Object ConvertTo(Object value, Type to, String columnName)
 	{
 		if (value == null)
 			return DBNull.Value;
@@ -95,7 +102,16 @@ public static class SqlExtensions
 				return Guid.Parse(id.ToString());
 			return Convert.ChangeType(id, to, CultureInfo.InvariantCulture);
 		}
-		else if (value is String str)
+        else if (to == typeof(Byte[]) && columnName.EndsWith("!!RowVersion"))
+        {
+            // BEFORE STRING
+            if (value is Byte[])
+                return value;
+            else if (value is String s)
+                return FromHexString(s);
+            throw new InvalidCastException($"Cannot convert {value.GetType().Name} to Byte[]");
+        }
+        else if (value is String str)
 			return FromString(str, to);
 		// AFTER string
         if (value.GetType() == to)

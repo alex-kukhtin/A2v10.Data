@@ -1,4 +1,4 @@
-﻿// Copyright © 2012-2024 Oleksandr Kukhtin. All rights reserved.
+﻿// Copyright © 2012-2025 Oleksandr Kukhtin. All rights reserved.
 
 
 using System;
@@ -78,7 +78,8 @@ public static class DataHelpers
 			"CrossObject" => FieldType.CrossObject,
 			"Json" => FieldType.Json,
 			"Lookup" => FieldType.Lookup,
-			_ => FieldType.Scalar,
+            "RowVersion" => FieldType.RowVersion,
+            _ => FieldType.Scalar,
 		};
 	}
 
