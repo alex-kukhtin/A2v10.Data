@@ -70,8 +70,9 @@ public class FieldMetadata : IDataFieldMetadata
 	public Int32 Length { get; }
 	public Boolean IsJson { get; set; }
 	public SqlDataType SqlDataType { get; }
+    public Boolean IsRefId { get; private set; }
 
-	public Boolean IsArrayLike 
+    public Boolean IsArrayLike 
 	{ 
 		get 
 		{ 
@@ -100,10 +101,17 @@ public class FieldMetadata : IDataFieldMetadata
 		{
 			ItemType = FieldType.Object;
 			RefObject = fi.TypeName;
-		}
-	}
+            IsRefId = true;
+        }
+        if (fi.IsRowVersion)
+        {
+            DataType = DataType.String;
+            Length = 16;
+            ItemType = FieldType.RowVersion;
+        }
+    }
 
-	public void ToDynamicGroup()
+    public void ToDynamicGroup()
 	{
 		ItemType = FieldType.Group;			
 	}

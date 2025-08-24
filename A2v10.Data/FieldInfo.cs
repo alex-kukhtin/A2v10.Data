@@ -31,7 +31,9 @@ public struct FieldInfo
 		if (x.Length > 0)
 			PropertyName = x[0];
 		CheckField(x);
-		if (x.Length > 1)
+        if (x.Length == 1 && PropertyName == "rv")
+            FieldType = FieldType.RowVersion;
+        if (x.Length > 1)
 		{
 			TypeName = x[1];
 			FieldType = FieldType.Object;
