@@ -188,4 +188,16 @@ public class CsvReaderTest
         }
 		*/
     }
+
+    [TestMethod]
+    public void CsvReadStrangeCoding()
+    {
+        var f = new DataFile();
+        var rdr = new CsvReader(f);
+
+        using (var file = File.Open("../../../testfiles/strange_encoding.csv", FileMode.Open))
+        {
+            var dm = rdr.CreateDataModel(file);
+        }
+    }
 }
